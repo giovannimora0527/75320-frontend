@@ -28,6 +28,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/usuarios',
         icon: 'feather icon-user',
         classes: 'nav-item'
+      },
+      {
+        id: 'autor',
+        title: 'Gestión de Autores',
+        type: 'item',
+        url: '/inicio/autores',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
       }
     ]
   },
