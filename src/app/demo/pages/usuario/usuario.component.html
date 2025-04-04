@@ -80,22 +80,24 @@
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="crearUsuarioModalLabel">Crear Usuario</h5>
+        <h5 class="modal-title" id="crearUsuarioModalLabel">{{accion}}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="form">
           <div class="mb-3">
-            <label for="nombreCompleto" class="form-label">Nombre Completo</label>
-            <input type="text" formControlName="nombreCompleto" class="form-control" id="nombreCompleto" placeholder="Ingrese el nombre completo" />
-            <div *ngIf="form.get('nombreCompleto')?.hasError('required') && form.get('nombreCompleto')?.touched" class="text-danger">
+            <label for="nombre" class="form-label">Nombre Completo</label>
+            <input type="text" formControlName="nombre" class="form-control" id="nombre" placeholder="Ingrese el nombre completo" 
+            [ngModel]="usuarioSelected?.nombre"/>
+            <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
               El nombre completo es requerido.
             </div>
           </div>
         
           <div class="mb-3">
             <label for="correo" class="form-label">Correo</label>
-            <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="Ingrese el correo" />
+            <input type="email" formControlName="correo" class="form-control" id="correo" placeholder="Ingrese el correo" 
+            [ngModel]="usuarioSelected?.correo"/>
             <div *ngIf="form.get('correo')?.hasError('required') && form.get('correo')?.touched" class="text-danger">
               El correo es requerido.
             </div>
@@ -106,7 +108,8 @@
         
           <div class="mb-3">
             <label for="telefono" class="form-label">Teléfono</label>
-            <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" />
+            <input type="text" formControlName="telefono" class="form-control" id="telefono" placeholder="Ingrese el teléfono" 
+            [ngModel]="usuarioSelected?.telefono"/>
             <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
               El teléfono es requerido.
             </div>
@@ -115,7 +118,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary"(click)="cerrarModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">Guardar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarActualizarUsuario()">{{accion}}</button>
       </div>
     </div>
   </div>

@@ -5,6 +5,7 @@ import { UsuarioService } from './service/usuario.service';
 import { Usuario } from 'src/app/models/usuario';
 import Swal from 'sweetalert2';
 import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import { MessageUtils } from 'src/app/utils/message-utils';
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
 
@@ -20,16 +21,18 @@ export class UsuarioComponent {
   modoFormulario: string = '';
 
   usuarioSelected: Usuario;
+  accion: string = "";
 
   form: FormGroup = new FormGroup({
-    nombreCompleto: new FormControl(''),
+    nombre: new FormControl(''),
     correo: new FormControl(''),
     telefono: new FormControl('')
   });
 
   constructor(
     private usuarioService: UsuarioService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private messageUtils: MessageUtils
   ) {
     this.cargarListaUsuarios();
     this.cargarFormulario();
@@ -37,7 +40,7 @@ export class UsuarioComponent {
 
   cargarFormulario() {
     this.form = this.formBuilder.group({
-      nombreCompleto: ['', [Validators.required]],
+      nombre: ['', [Validators.required]],
       correo: ['', [Validators.required]],
       telefono: ['', [Validators.required]]
     });
@@ -61,6 +64,7 @@ export class UsuarioComponent {
 
   crearUsuarioModal(modoForm: string) {
     this.modoFormulario = modoForm;
+    this.accion = modoForm == 'C'? "Crear Usuario": "Actualizar Usuario";
     const modalElement = document.getElementById('crearUsuarioModal');
     modalElement.blur();
     modalElement.setAttribute('aria-hidden', 'false');
@@ -88,8 +92,8 @@ export class UsuarioComponent {
   }
 
   abrirModoEdicion(usuario: Usuario) {
-    this.crearUsuarioModal('E');
     this.usuarioSelected = usuario;
+    this.crearUsuarioModal('E');    
     console.log(this.usuarioSelected);
   }
 
@@ -100,8 +104,40 @@ export class UsuarioComponent {
       console.log('El formualario es valido');
       if (this.modoFormulario.includes('C')) {
         console.log('Creamos un usuario nuevo');
+        this.usuarioService.crearUsuario(this.form.getRawValue())
+        .subscribe(
+          {
+             next: (data) => {               
+               this.cerrarModal();
+               this.messageUtils.showMessage("Éxito", data.message, "success");
+               this.cargarListaUsuarios();
+               this.form.reset();
+               this.form.markAsPristine();
+               this.form.markAsUntouched();
+             },
+             error: (error) => {            
+              this.messageUtils.showMessage("Error", error.error.message, "error");
+             }
+          }
+        );
       } else {
         console.log('Actualizamos un usuario existente');
+        this.usuarioService.actualizarUsuario(this.usuarioSelected)
+        .subscribe(
+          {
+             next: (data) => {               
+               this.cerrarModal();
+               this.messageUtils.showMessage("Éxito", data.message, "success");
+               this.cargarListaUsuarios();
+               this.form.reset();
+               this.form.markAsPristine();
+               this.form.markAsUntouched();
+             },
+             error: (error) => {            
+              this.messageUtils.showMessage("Error", error.error.message, "error");
+             }
+          }
+        );
       }
     }
   }
