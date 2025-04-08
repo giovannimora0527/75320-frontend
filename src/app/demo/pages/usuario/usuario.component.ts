@@ -89,12 +89,13 @@ export class UsuarioComponent {
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
+    this.usuarioSelected = null;
   }
 
   abrirModoEdicion(usuario: Usuario) {
     this.usuarioSelected = usuario;
-    this.crearUsuarioModal('E');    
-    console.log(this.usuarioSelected);
+    this.form.patchValue(usuario);
+    this.crearUsuarioModal('E');  
   }
 
   guardarActualizarUsuario() {
