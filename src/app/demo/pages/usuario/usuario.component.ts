@@ -26,7 +26,8 @@ export class UsuarioComponent {
   form: FormGroup = new FormGroup({
     nombre: new FormControl(''),
     correo: new FormControl(''),
-    telefono: new FormControl('')
+    telefono: new FormControl(''),
+    activo: new FormControl('')
   });
 
   constructor(
@@ -42,7 +43,8 @@ export class UsuarioComponent {
     this.form = this.formBuilder.group({
       nombre: ['', [Validators.required]],
       correo: ['', [Validators.required]],
-      telefono: ['', [Validators.required]]
+      telefono: ['', [Validators.required]],
+      activo: ['', [Validators.required]]
     });
   }
 
@@ -84,7 +86,8 @@ export class UsuarioComponent {
     this.form.reset({
       nombreCompleto: "",
       correo: "",
-      telefono: ""
+      telefono: "",
+      activo: ""
     });
     if (this.modalInstance) {
       this.modalInstance.hide();
@@ -99,12 +102,12 @@ export class UsuarioComponent {
   }
 
   guardarActualizarUsuario() {
-    console.log('Entro');
-    console.log(this.form.valid);
-    if (this.form.valid) {
-      console.log('El formualario es valido');
-      if (this.modoFormulario.includes('C')) {
-        console.log('Creamos un usuario nuevo');
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo').setValue(true);
+    }
+
+    if (this.form.valid) {      
+      if (this.modoFormulario.includes('C')) {        
         this.usuarioService.crearUsuario(this.form.getRawValue())
         .subscribe(
           {
@@ -121,8 +124,12 @@ export class UsuarioComponent {
              }
           }
         );
-      } else {
-        console.log('Actualizamos un usuario existente');
+      } else { 
+        // Actualizar solo los campos específicos
+        this.usuarioSelected = {
+          ...this.usuarioSelected, // Mantener los valores anteriores
+          ...this.form.getRawValue() // Sobrescribir con los valores del formulario
+        };          
         this.usuarioService.actualizarUsuario(this.usuarioSelected)
         .subscribe(
           {
@@ -135,7 +142,7 @@ export class UsuarioComponent {
                this.form.markAsUntouched();
              },
              error: (error) => {            
-              this.messageUtils.showMessage("Error", error.error.message, "error");
+              this.messageUtils.showMessage("Error", error.error.message, "warning");
              }
           }
         );
