@@ -8,10 +8,12 @@ import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveF
 import { MessageUtils } from 'src/app/utils/message-utils';
 // Importa los objetos necesarios de Bootstrap
 declare const bootstrap: any;
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -22,6 +24,7 @@ export class UsuarioComponent {
 
   usuarioSelected: Usuario;
   accion: string = "";
+  msjSpinner: string = "Cargando";
 
   form: FormGroup = new FormGroup({
     nombre: new FormControl(''),
@@ -33,7 +36,8 @@ export class UsuarioComponent {
   constructor(
     private usuarioService: UsuarioService,
     private formBuilder: FormBuilder,
-    private messageUtils: MessageUtils
+    private messageUtils: MessageUtils,
+    private spinner: NgxSpinnerService
   ) {
     this.cargarListaUsuarios();
     this.cargarFormulario();
@@ -53,13 +57,16 @@ export class UsuarioComponent {
   }
 
   cargarListaUsuarios() {
+    this.spinner.show();
     this.usuarioService.getUsuarios().subscribe({
       next: (data) => {
         console.log(data);
         this.usuarios = data;
+        this.spinner.hide();
       },
       error: (error) => {
         Swal.fire('Error', error.error.message, 'error');
+        this.spinner.hide();
       }
     });
   }
@@ -105,6 +112,9 @@ export class UsuarioComponent {
     if (this.modoFormulario === 'C') {
       this.form.get('activo').setValue(true);
     }
+
+    this.msjSpinner = this.modoFormulario === 'C' ? "Creando usuario": "Actualizando usuario";
+    this.spinner.show();
 
     if (this.form.valid) {      
       if (this.modoFormulario.includes('C')) {        
