@@ -14,6 +14,7 @@ export interface NavigationItem {
 
   children?: NavigationItem[];
 }
+
 export const NavigationItems: NavigationItem[] = [
   {
     id: 'navigation',
@@ -34,7 +35,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Autores',
         type: 'item',
         url: '/inicio/autores',
-        icon: 'feather icon-users',
+        icon: 'feather icon-home',
         classes: 'nav-item'
       },
       {
@@ -50,10 +51,10 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Prestamos',
         type: 'item',
         url: '/inicio/prestamos',
-        icon: 'feather icon-book',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       }
     ]
   },
-  /* ---------- Nuevos menus aqui -------------  */
+  /* ---------- Nuevos menus aqui -------------  */  
 ];
