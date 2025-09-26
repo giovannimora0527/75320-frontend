@@ -28,8 +28,9 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/usuario',
         icon: 'feather icon-user',
         classes: 'nav-item'
-      }
+      },
+      /* ---------- Nuevos menus aqui -------------  */
     ]
   },
-  /* ---------- Nuevos menus aqui -------------  */
+  
 ];
