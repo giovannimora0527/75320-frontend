@@ -1,1 +1,116 @@
-<p>usuario componente nuevo!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+            <i class="fa fa-users"></i>
+            &nbsp;Mis usuarios
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoUsuario()">Nuevo Usuario</button>
+    </div>
+    </div>
+    <div class="card-body">
+      <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Username</th>
+              <th>Rol</th>
+              <th>Fecha de creación</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuario of usuarios">
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.rol }}</td>
+              <td>{{ usuario.fechaCreacion }}</td>
+            <td>
+                <i 
+                    class="fa" 
+                    [ngClass]="usuario.activo === true ? 'fa-check text-success' : 'fa-times text-danger'"
+                    aria-hidden="true">
+                </i>
+            </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarUsuario(usuario)">
+                  <i class="fa fa-edit"></i>
+                  &nbsp;Editar
+                </button>                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearUsuario" tabindex="-1" aria-labelledby="modalCrearUsuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearUsuarioModalLabel">
+            {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form [formGroup]="form">
+          <!--  Nombre de usuario -->
+          <div class="mb-3">
+            <label for="username" class="form-label">Nombre de usuario</label>
+            <input
+              type="text"
+              formControlName="username"
+              class="form-control"
+              id="username"
+              placeholder="Ingrese el nombre de usuario"             
+            />
+            <div *ngIf="form.get('username')?.hasError('required') && form.get('username')?.touched" class="text-danger">
+              El nombre de usuario es requerido.
+            </div>
+          </div>
+          <!-- Password -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Escriba su contraseña</label>
+            <input
+              type="password"
+              formControlName="password"
+              class="form-control"
+              id="password"
+              placeholder="Ingrese su contraseña"
+            />
+            <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="text-danger">
+              La contraseña es requerida.
+            </div>
+          </div>
+          <!-- Rol -->
+          <div class="mb-3">
+            <label for="rol" class="form-label">Escriba su rol</label>
+            <input
+              type="text"
+              formControlName="rol"
+              class="form-control"
+              id="rol"
+              placeholder="Ingrese su rol"              
+            />
+            <div *ngIf="form.get('rol')?.hasError('required') && form.get('rol')?.touched" class="text-danger">
+              El rol es requerido.
+            </div>
+          </div>
+         </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarUsuario()"
+        [disabled]="form.invalid">{{titleBoton}}</button>
+      </div>
+    </div>
+  </div>
+</div>

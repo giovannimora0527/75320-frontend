@@ -28,8 +28,25 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/usuario',
         icon: 'feather icon-user',
         classes: 'nav-item'
-      }
+      },
+      /* ---------- Nuevos menus aqui -------------  */
+      {
+        id: 'medico',
+        title: 'Gestión de medicos',
+        type: 'item',
+        url: '/inicio/medico',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'paciente',
+        title: 'Gestión de pacientes',
+        type: 'item',
+        url: '/inicio/paciente',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
     ]
   },
-  /* ---------- Nuevos menus aqui -------------  */
+  
 ];
