@@ -2,7 +2,16 @@ import { Component } from '@angular/core';
 import { Usuario } from './models/usuario';
 import { UsuarioService } from './service/usuario.service';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors
+} from '@angular/forms';
 
 import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
@@ -41,18 +50,18 @@ export class UsuarioComponent {
   cargarFormulario() {
     this.form = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator] ],
+      password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator]],
       rol: ['', [Validators.required]],
       activo: ['']
     });
   }
 
-   passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+  passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | null> {
     const contrasenasProhibidas = ['123456', 'password', 'admin'];
 
     return of(contrasenasProhibidas.includes(control.value)).pipe(
       delay(800), // simulamos llamada a servidor
-      map(invalida => (invalida ? { passwordProhibida: true } : null))
+      map((invalida) => (invalida ? { passwordProhibida: true } : null))
     );
   }
 
@@ -80,7 +89,7 @@ export class UsuarioComponent {
     }
     if (this.form.valid) {
       if (this.modoFormulario.includes('C')) {
-        // Modo Creación      
+        // Modo Creación
         this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
           next: (data) => {
             console.log('Usuario guardado:', data);
@@ -102,6 +111,7 @@ export class UsuarioComponent {
   closeModal() {
     if (this.modalInstance) {
       this.modalInstance.hide();
+      this.limpiarFormulario();
     }
   }
 
@@ -119,6 +129,9 @@ export class UsuarioComponent {
 
   abrirNuevoUsuario() {
     this.usuarioSelected = new Usuario();
+    this.limpiarFormulario();
+    // Cargamos los datos del usuario seleccionado en el formulario
+    
     // Dejamos el formulario en blanco
     this.openModal('C');
   }
@@ -126,5 +139,17 @@ export class UsuarioComponent {
   abrirEditarUsuario(usuario: Usuario) {
     this.usuarioSelected = usuario;
     this.openModal('E');
+    this.limpiarFormulario();
+  }
+
+  limpiarFormulario() {
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.form.reset({
+      username: '',
+      password: '',
+      rol: '',
+      activo: ''
+    });
   }
 }
