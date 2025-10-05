@@ -51,6 +51,38 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de medicamentos',
         type: 'item',
         url: '/inicio/medicamento',
+        icon: 'feather icon-package',
+        classes: 'nav-item'
+      },
+      {
+        id: 'cita',
+        title: 'Gestión de citas',
+        type: 'item',
+        url: '/inicio/cita',
+        icon: 'feather icon-calendar',
+        classes: 'nav-item'
+      },
+      {
+        id: 'formulamedica',
+        title: 'Gestión de formulas medicas',
+        type: 'item',
+        url: '/inicio/formulamedica',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historiamedica',
+        title: 'Gestión de historias medicas',
+        type: 'item',
+        url: '/inicio/historiamedica',
+        icon: 'feather icon-folder',
+        classes: 'nav-item'
+      },
+      {
+        id: 'gestionespecializacion',
+        title: 'Gestión de especializaciones',
+        type: 'item',
+        url: '/inicio/gestionespecializacion',
         icon: 'feather icon-book',
         classes: 'nav-item'
       },
