@@ -48,7 +48,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'especializacion',
-        title: 'Gestión de Especializaciones',
+        title: 'Especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
         icon: 'feather icon-shield',
@@ -56,7 +56,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'cita',
-        title: 'Gestión de Citas',
+        title: 'Citas',
         type: 'item',
         url: '/inicio/cita',
         icon: 'feather icon-calendar',
@@ -64,7 +64,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'medicamento',
-        title: 'Gestión de Medicamentos',
+        title: 'Medicamentos',
         type: 'item',
         url: '/inicio/medicamento',
         icon: 'feather icon-pills',
@@ -72,7 +72,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'formula_medica',
-        title: 'Gestión de Formulas Medicas',
+        title: 'Formulas Medicas',
         type: 'item',
         url: '/inicio/formula_medica',
         icon: 'feather icon-file-text',
@@ -80,7 +80,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'historia_medica',
-        title: 'Gestión de Historias Medicas',
+        title: 'Historias Medicas',
         type: 'item',
         url: '/inicio/historia_medica',
         icon: 'feather icon-book',

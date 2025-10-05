@@ -1,1 +1,48 @@
-<p>paciente works!</p>
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Listado de Pacientes</h5>
+    <button class="btn btn-primary btn-sm" (click)="ListarPacientes()">
+      <i class="fa fa-refresh"></i> Actualizar
+    </button>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tipo Doc</th>
+            <th>N° Documento</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Fecha Nacimiento</th>
+            <th>Género</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (pacientes?.length) {
+            @for (p of pacientes; track p) {
+              <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.tipoDocumento }}</td>
+                <td>{{ p.numeroDocumento }}</td>
+                <td>{{ p.nombres }}</td>
+                <td>{{ p.apellidos }}</td>
+                <td>{{ p.fechaNacimiento | date:'dd/MM/yyyy' }}</td>
+                <td>{{ p.genero }}</td>
+                <td>{{ p.telefono }}</td>
+                <td>{{ p.direccion }}</td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td colspan="9" class="text-center p-4">No hay pacientes para mostrar</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
