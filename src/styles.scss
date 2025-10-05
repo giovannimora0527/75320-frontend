@@ -5,6 +5,8 @@
 /* fonts-icon */
 @import 'scss/fonts/fontawesome/scss/fontawesome';
 @import 'scss/fonts/feather/iconfont';
+/* include icofont so we can map pills */
+@import 'assets/icon/icofont/css/icofont';
 
 @import 'scss/general';
 @import 'scss/generic';
@@ -20,6 +22,12 @@
 @import 'scss/plugins/plugins';
 
 @import 'scss/custom';
+
+/* map feather's icon-pills to IcoFont glyph without changing HTML */
+.feather.icon-pills:before {
+  font-family: 'IcoFont' !important;
+  content: '\ed0b';
+}
 /* Ajusta el z-index del modal y su backdrop */
 .modal {
   z-index: 1040 !important; 

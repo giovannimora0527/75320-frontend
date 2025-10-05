@@ -1,1 +1,43 @@
-<p>medico works!</p>
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">Listado de Médicos</h5>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tipo Doc</th>
+            <th>N° Documento</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Teléfono</th>
+            <th>Reg. Profesional</th>
+            <th>Especialización</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (medicos?.length) {
+            @for (m of medicos; track m) {
+              <tr>
+                <td>{{ m.id }}</td>
+                <td>{{ m.tipoDocumento }}</td>
+                <td>{{ m.numeroDocumento }}</td>
+                <td>{{ m.nombres }}</td>
+                <td>{{ m.apellidos }}</td>
+                <td>{{ m.telefono }}</td>
+                <td>{{ m.registroProfesional }}</td>
+                <td>{{ m.especializacion?.nombre }}</td>
+              </tr>
+            }
+          } @else {
+            <tr>
+              <td colspan="8" class="text-center p-4">No hay médicos para mostrar</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
