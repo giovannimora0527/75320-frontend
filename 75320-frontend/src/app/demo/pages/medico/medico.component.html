@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-user-md"></i>
+          &nbsp;Gestión de Médicos
+        </h3>
+        <button 
+          type="button" 
+          class="btn btn-outline-primary" 
+          (click)="abrirNuevoMedico()"
+          aria-label="Crear nuevo médico">
+          <i class="fa fa-plus"></i> Nuevo Médico
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Especialidad</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let medico of medicos">
+              <td>{{ medico.id }}</td>
+              <td>{{ medico.nombre }}</td>
+              <td>{{ medico.apellido }}</td>
+              <td>{{ medico.especialidad }}</td>
+              <td>
+                <button 
+                  type="button" 
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="abrirEditarMedico(medico)"
+                  aria-label="Editar médico">
+                  <i class="fa fa-edit"></i>
+                </button>
+
+                <button 
+                  type="button" 
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="eliminarMedico(medico.id)"
+                  aria-label="Eliminar médico">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="medicos.length === 0">
+              <td colspan="5" class="text-center">No hay médicos registrados</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Crear/Editar Médico -->
+  <div class="modal fade" id="modalCrearMedico" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ titleModal }}</h5>
+          <button type="button" class="btn-close" (click)="closeModal()" aria-label="Cerrar modal"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="form">
+            <div class="mb-3">
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" formControlName="nombre" class="form-control" placeholder="Ingrese nombre">
+            </div>
+            <div class="mb-3">
+              <label for="apellido">Apellido</label>
+              <input type="text" id="apellido" formControlName="apellido" class="form-control" placeholder="Ingrese apellido">
+            </div>
+            <div class="mb-3">
+              <label for="especialidad">Especialidad</label>
+              <input type="text" id="especialidad" formControlName="especialidad" class="form-control" placeholder="Ingrese especialidad">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()" aria-label="Cerrar modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" (click)="guardarMedico()" aria-label="Guardar médico">{{ titleBoton }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
