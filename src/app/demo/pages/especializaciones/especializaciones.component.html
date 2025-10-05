@@ -1,0 +1,23 @@
+<div class="page-header">
+  <h3 class="mb-3">Gestión de Especializaciones</h3>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of especializaciones">
+          <td>{{ e.nombre }}</td>
+          <td>{{ e.descripcion }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+

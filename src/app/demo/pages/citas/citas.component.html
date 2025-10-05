@@ -1,0 +1,27 @@
+<div class="page-header">
+  <h3 class="mb-3">Citas</h3>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Paciente</th>
+          <th>Médico</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of citas">
+          <td>{{ c.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ c.paciente }}</td>
+          <td>{{ c.medico }}</td>
+          <td><span class="badge bg-info">{{ c.estado }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+

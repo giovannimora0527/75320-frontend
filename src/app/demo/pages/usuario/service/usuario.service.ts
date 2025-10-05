@@ -15,6 +15,9 @@ export class UsuarioService {
   constructor(private backendService: BackendService) {}
 
   listarUsuarios(): Observable<Usuario[]> {
+    console.log('URL base:', this.urlBase);
+    console.log('URL API:', this.urlApi);
+    console.log('URL completa:', `${this.urlBase}/${this.urlApi}/listar`);
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
   }
 

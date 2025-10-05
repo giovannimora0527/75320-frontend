@@ -76,10 +76,15 @@ export class UsuarioComponent {
     console.log('Entro a cargar usuarios');
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
+        console.log('Respuesta del servicio:', data);
         this.usuarios = data;
-        console.log('Usuarios cargados:', this.usuarios);
+        console.log('Usuarios asignados:', this.usuarios);
+        console.log('Cantidad de usuarios:', this.usuarios?.length);
       },
-      error: (err) => console.error('Error al listar usuarios:', err)
+      error: (err) => {
+        console.error('Error al listar usuarios:', err);
+        console.error('Detalles del error:', err);
+      }
     });
   }
 
