@@ -11,7 +11,7 @@ export class MedicoService {
 
   constructor(private backendService: BackendService) {}
 
-  getMedicos() {
+  listarMedicos() {
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
   }
 }

@@ -3,5 +3,6 @@ export class Medicamento {
     nombre: string;
     descripcion: string;
     presentacion: string;
-    fechaCmpra: string;  
+    fechaCompra: string;
+    fechaVence: string;
 }
