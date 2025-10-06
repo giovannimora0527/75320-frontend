@@ -7,7 +7,6 @@ export class Medicamento {
     fechaCompra!: Date;
     fechaVence!: Date
     fechaCreacionRegistro!: Date;
-    fechaModificacionRegistro: Date |null;
-    activo: boolean;  
+    fechaModificacionRegistro: Date |null; 
      
 }
