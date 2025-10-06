@@ -1,4 +1,4 @@
-import { Especializacion } from './especializacion';
+import { Especializacion } from "./especializacion";
 
 export class Medico {
   id!: number;
