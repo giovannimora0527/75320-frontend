@@ -1,0 +1,122 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-briefcase-medical"></i>
+          &nbsp;Gestión de Especializaciones
+        </h3>
+
+        <!-- Botón accesible para abrir modal -->
+        <button 
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="abrirNuevaEspecializacion()"
+          title="Crear nueva especialización"
+          aria-label="Abrir formulario de nueva especialización">
+          <i class="fa fa-plus"></i>
+          <span class="visually-hidden">Nueva Especialización</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Nombre</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let especializacion of especializaciones">
+              <td>{{ especializacion.nombre }}</td>
+              <td>{{ especializacion.descripcion }}</td>
+            </tr>
+
+            <!-- Mensaje si no hay especializaciones -->
+            <tr *ngIf="especializaciones.length === 0">
+              <td colspan="2" class="text-center text-muted">
+                No hay especializaciones registradas.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de creación -->
+<div 
+  class="modal fade" 
+  id="modalCrearEspecializacion" 
+  tabindex="-1" 
+  aria-labelledby="modalCrearEspecializacionLabel" 
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCrearEspecializacionLabel">
+          Crear Nueva Especialización
+        </h5>
+
+        <!-- Botón accesible para cerrar modal -->
+        <button 
+          type="button"
+          class="btn-close"
+          (click)="closeModal()"
+          title="Cerrar"
+          aria-label="Cerrar ventana de creación">
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarEspecializacion()">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input 
+              id="nombre" 
+              type="text" 
+              formControlName="nombre" 
+              class="form-control"
+              placeholder="Ej: Cardiología" />
+          </div>
+
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea 
+              id="descripcion" 
+              formControlName="descripcion" 
+              class="form-control"
+              placeholder="Ej: Especialización médica en enfermedades del corazón">
+            </textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="closeModal()"
+          title="Cerrar ventana">
+          Cerrar
+        </button>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="form.invalid"
+          (click)="guardarEspecializacion()"
+          title="Guardar especialización">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
