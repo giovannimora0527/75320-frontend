@@ -2,10 +2,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
-import { AutorComponent } from './demo/pages/autor/autor.component';
-import { LibroComponent } from './demo/pages/libro/libro.component';
-import { PrestamoComponent } from './demo/pages/prestamo/prestamo.component';
-
+import { MedicoComponent } from './demo/pages/medico/medico.component';
+import { PacienteComponent } from './demo/pages/paciente/paciente.component';
+import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
+import { CitaComponent } from './demo/pages/cita/cita.component';
+import { FormulamedicaComponent } from './demo/pages/formulamedica/formulamedica.component';
+import { HistoriamedicaComponent } from './demo/pages/historiamedica/historiamedica.component';
+import { GestionespecializacionComponent } from './demo/pages/gestionespecializacion/gestionespecializacion.component';
 export const routes: Routes = [
   {
     path: '',
@@ -17,10 +20,15 @@ export const routes: Routes = [
     component: AdminComponent,
     data: { title: 'Inicio' },
     children: [      
-      { path: 'usuarios', component: UsuarioComponent, data: { title: 'Usuarios' }},
-      { path: 'autores', component: AutorComponent, data: { title: 'Autores' }},
-      { path: 'libros', component: LibroComponent, data: { title: 'Libros' }},
-      { path: 'prestamos', component: PrestamoComponent, data: { title: 'Prestamos' }},
+       { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }}, 
+       { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
+       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},  
+       { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamento' }},  
+       { path: 'cita', component: CitaComponent, data: { title: 'Cita' }}, 
+       { path: 'formulamedica', component: FormulamedicaComponent, data: { title: 'Formulamedica' }},    
+       { path: 'historiamedica', component: HistoriamedicaComponent, data: { title: 'Historiamedica' }}, 
+       { path: 'gestionespecializacion', component: GestionespecializacionComponent, data: { title: 'Gestionespecializacion' }}, 
+            
     ]
   },
   { path: '**', redirectTo: 'inicio' }

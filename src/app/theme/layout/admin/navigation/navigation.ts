@@ -14,7 +14,6 @@ export interface NavigationItem {
 
   children?: NavigationItem[];
 }
-
 export const NavigationItems: NavigationItem[] = [
   {
     id: 'navigation',
@@ -26,35 +25,68 @@ export const NavigationItems: NavigationItem[] = [
         id: 'usuario',
         title: 'Gestión de Usuarios',
         type: 'item',
-        url: '/inicio/usuarios',
+        url: '/inicio/usuario',
         icon: 'feather icon-user',
         classes: 'nav-item'
       },
+      /* ---------- Nuevos menus aqui -------------  */
       {
-        id: 'autor',
-        title: 'Gestión de Autores',
+        id: 'medico',
+        title: 'Gestión de medicos',
         type: 'item',
-        url: '/inicio/autores',
-        icon: 'feather icon-home',
+        url: '/inicio/medico',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
-        id: 'libro',
-        title: 'Gestión de Libros',
+        id: 'paciente',
+        title: 'Gestión de pacientes',
         type: 'item',
-        url: '/inicio/libros',
+        url: '/inicio/paciente',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'medicamento',
+        title: 'Gestión de medicamentos',
+        type: 'item',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-package',
+        classes: 'nav-item'
+      },
+      {
+        id: 'cita',
+        title: 'Gestión de citas',
+        type: 'item',
+        url: '/inicio/cita',
+        icon: 'feather icon-calendar',
+        classes: 'nav-item'
+      },
+      {
+        id: 'formulamedica',
+        title: 'Gestión de formulas medicas',
+        type: 'item',
+        url: '/inicio/formulamedica',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historiamedica',
+        title: 'Gestión de historias medicas',
+        type: 'item',
+        url: '/inicio/historiamedica',
+        icon: 'feather icon-folder',
+        classes: 'nav-item'
+      },
+      {
+        id: 'gestionespecializacion',
+        title: 'Gestión de especializaciones',
+        type: 'item',
+        url: '/inicio/gestionespecializacion',
         icon: 'feather icon-book',
         classes: 'nav-item'
       },
-      {
-        id: 'prestamo',
-        title: 'Gestión de Prestamos',
-        type: 'item',
-        url: '/inicio/prestamos',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
-      }
     ]
   },
-  /* ---------- Nuevos menus aqui -------------  */  
+  
 ];

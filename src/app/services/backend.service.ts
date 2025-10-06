@@ -5,8 +5,47 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Servicio para interactuar con el backend mediante peticiones HTTP.
+ * Proporciona métodos genéricos para realizar operaciones GET, POST, PUT y envío de archivos.
+ *
+ * @remarks
+ * Este servicio utiliza el token almacenado en localStorage para autenticar las peticiones.
+ *
+ * @example
+ * ```typescript
+ * backendService.get('https://api.example.com', 'users', 'list');
+ * ```
+ *
+ * @param http Instancia de HttpClient para realizar las peticiones HTTP.
+ *
+ * @method construirHeader Construye los encabezados HTTP, incluyendo el token de autenticación si está disponible.
+ * @method get Realiza una petición GET genérica al backend.
+ * @param urlApi URL base de la API.
+ * @param endpoint Endpoint específico de la API.
+ * @param service Servicio o recurso a consultar.
+ * @param routerParams Parámetros opcionales para la ruta.
+ *
+ * @method post Realiza una petición POST genérica al backend.
+ * @param urlApi URL base de la API.
+ * @param endpoint Endpoint específico de la API.
+ * @param service Servicio o recurso a consultar.
+ * @param data Datos a enviar en el cuerpo de la petición.
+ *
+ * @method put Realiza una petición PUT genérica al backend.
+ * @param urlApi URL base de la API.
+ * @param endpoint Endpoint específico de la API.
+ * @param service Servicio o recurso a consultar.
+ * @param data Datos a enviar en el cuerpo de la petición.
+ *
+ * @method postFile Realiza una petición POST para enviar archivos al backend.
+ * @param urlApi URL base de la API.
+ * @param endpoint Endpoint específico de la API.
+ * @param service Servicio o recurso a consultar.
+ * @param data Archivo o datos a enviar en el cuerpo de la petición.
+ */
 export class BackendService {
-  constructor(private readonly http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
   construirHeader() {
     // Aqui obtenemos el token desde el local storage
@@ -28,11 +67,20 @@ export class BackendService {
       return headers;
     }
   }
+
+  /**
+   * Metodo GET generico
+   * @param urlApi URL base de la API
+   * @param endpoint Endpoint específico
+   * @param service Servicio o recurso
+   * @param routerParams Parámetros opcionales de la ruta
+   * @returns Observable<T> respuesta del servidor
+   */
   get<T>(
-    urlApi: string,
-    endpoint: string,
-    service: string,
-    routerParams?: HttpParams
+    urlApi: string,        // URL base de la API
+    endpoint: string,      // Endpoint específico
+    service: string,       // Servicio o recurso
+    routerParams?: HttpParams // Parámetros opcionales de la ruta
   ) {
     const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
     const headers = new HttpHeaders({
@@ -46,6 +94,15 @@ export class BackendService {
     });
   }
 
+  /**
+   * Metodo generico POST
+   * @param urlApi URL base de la API
+   * @param endpoint Endpoint específico
+   * @param service Servicio o recurso
+   * @param data Datos a enviar en el cuerpo de la petición
+   * @returns Observable<T> respuesta del servidor
+   */
+  
   post<T>(
     urlApi: string,
     endpoint: string,
@@ -64,6 +121,14 @@ export class BackendService {
     });
   }
 
+  /**
+   * Metodo generico PUT
+   * @param urlApi URL base de la API
+   * @param endpoint Endpoint específico
+   * @param service Servicio o recurso
+   * @param data Datos a enviar en el cuerpo de la petición
+   * @returns Observable<T> respuesta del servidor
+   */
   put<T>(
     urlApi: string,
     endpoint: string,
