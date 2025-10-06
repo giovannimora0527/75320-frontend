@@ -46,6 +46,31 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
+            {
+        id: 'historia_medica',
+        title: 'Gestión de historias medica',
+        type: 'item',
+        url: '/inicio/historia_medica',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'medicamentos',
+        title: 'Gestión de medicamentos',
+        type: 'item',
+        url: '/inicio/medicamentos',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+
+      {
+        id: 'citas',
+        title: 'Gestión de citas',
+        type: 'item',
+        url: '/inicio/citas',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
     ]
   },
   

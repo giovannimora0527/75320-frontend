@@ -1,1 +1,48 @@
-<p>paciente works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+            <i class="fa fa-users "></i>
+            &nbsp;Pacientes
+        </h3>
+    </div>
+    </div>
+    <div class="card-body">
+      <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>tipo de documento</th>
+              <th>Número de Documento</th>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>fecha de nacimiento</th>
+              <th>Genero</th>
+              <th>Telefono</th>
+              <th>Direccion</th>
+            </tr>
+          </thead>
+                    <tbody>
+            <tr *ngFor="let Pacientes of Pacientes">
+              <td>{{ Pacientes.id }}</td>
+              <td>{{ Pacientes.tipoDocumento}}</td>
+              <td>{{ Pacientes.numeroDocumento }}</td>
+              <td>{{ Pacientes.nombres }}</td>
+              <td>{{ Pacientes.apellidos }}</td>
+              <td>{{ Pacientes.fechaNacimiento}}</td>
+              <td>{{ Pacientes.genero}}</td>
+              <td>{{ Pacientes.telefono}}</td>
+              <td>{{ Pacientes.direccion}}</td>
+              <td>
+              </td>
+              <td>             
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
