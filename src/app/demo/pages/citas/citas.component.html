@@ -1,0 +1,59 @@
+<div class="card">
+  <div class="card-header">
+    <h5>Gestión de Citas</h5>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label for="citaPaciente" class="form-label">Paciente</label>
+          <input id="citaPaciente" type="text" class="form-control" placeholder="Buscar paciente" [(ngModel)]="form.paciente" name="paciente" required />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="citaMedico" class="form-label">Médico</label>
+          <input id="citaMedico" type="text" class="form-control" placeholder="Buscar médico" [(ngModel)]="form.medico" name="medico" required />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="citaFecha" class="form-label">Fecha</label>
+          <input id="citaFecha" type="date" class="form-control" [(ngModel)]="form.fecha" name="fecha" required />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="citaHora" class="form-label">Hora</label>
+          <input id="citaHora" type="time" class="form-control" [(ngModel)]="form.hora" name="hora" required />
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">{{ editingIndex === null ? 'Guardar' : 'Actualizar' }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="reset()">Limpiar</button>
+      </div>
+    </form>
+    <hr />
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Médico</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of citas; let i = index">
+            <td>{{ c.paciente }}</td>
+            <td>{{ c.medico }}</td>
+            <td>{{ c.fecha }}</td>
+            <td>{{ c.hora }}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-link" (click)="reprogram(i)">Reprogramar</button>
+              <button type="button" class="btn btn-sm btn-link text-danger" (click)="remove(i)">Cancelar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+

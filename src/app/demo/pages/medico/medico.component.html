@@ -1,1 +1,178 @@
-<p>medico works!</p>
+<div class="container-fluid">
+  <!-- Encabezado estilo Gestión de Usuarios -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">Gestión de médicos</li>
+        </ol>
+      </nav>
+      <h2 class="page-title">Gestión de médicos</h2>
+    </div>
+  </div>
+
+  <!-- Sección "Mis médicos" con botón a la derecha -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4 class="section-title">Mis médicos</h4>
+        <button class="btn btn-primary btn-sm" (click)="nuevoMedico()">
+          <i class="fas fa-plus me-1"></i> Nuevo Médico
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla estilo limpio -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="border-0">ID</th>
+                  <th class="border-0">Documento</th>
+                  <th class="border-0">Nombres</th>
+                  <th class="border-0">Apellidos</th>
+                  <th class="border-0">Teléfono</th>
+                  <th class="border-0">Registro Profesional</th>
+                  <th class="border-0">Especialización</th>
+                  <th class="border-0">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let medico of medicos">
+                  <td class="fw-semibold">{{ medico.id }}</td>
+                  <td>
+                    <small class="text-muted">{{ medico.tipoDocumento }}</small><br>
+                    {{ medico.numeroDocumento }}
+                  </td>
+                  <td>{{ medico.nombres }}</td>
+                  <td>{{ medico.apellidos }}</td>
+                  <td>{{ medico.telefono }}</td>
+                  <td>
+                    <span class="badge bg-light text-dark">{{ medico.registroProfesional }}</span>
+                  </td>
+                  <td>
+                    <span class="badge bg-info text-white" *ngIf="medico.especializacion?.nombre; else sinEspecializacion">
+                      {{ medico.especializacion.nombre }}
+                      <small class="d-block">{{ medico.especializacion.codigoEspecializacion }}</small>
+                    </span>
+                    <ng-template #sinEspecializacion>
+                      <span class="badge bg-secondary">Sin especialización</span>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button class="btn btn-outline-primary" 
+                              (click)="editarMedico(medico)"
+                              title="Editar médico">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-outline-danger" 
+                              (click)="eliminarMedico(medico.id)"
+                              title="Eliminar médico">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="medicos.length === 0">
+                  <td colspan="8" class="text-center py-4">
+                    <div class="text-muted">
+                      <i class="fas fa-user-md fa-2x mb-2"></i>
+                      <p class="mb-0">No hay médicos registrados</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Nuevo/Editar Médico -->
+  <div *ngIf="mostrarFormulario" class="modal fade show d-block" 
+       style="background-color: rgba(0,0,0,0.5)" 
+       tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ medicoSeleccionado.id ? 'Editar Médico' : 'Nuevo Médico' }}
+          </h5>
+          <button type="button" class="btn-close" (click)="cancelar()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nombres *</label>
+              <input type="text" class="form-control" 
+                     [(ngModel)]="medicoSeleccionado.nombres" 
+                     placeholder="Ingrese los nombres" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Apellidos *</label>
+              <input type="text" class="form-control" 
+                     [(ngModel)]="medicoSeleccionado.apellidos" 
+                     placeholder="Ingrese los apellidos" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Tipo Documento *</label>
+              <select class="form-control" [(ngModel)]="medicoSeleccionado.tipoDocumento" name="tipoDocumento" required>
+                <option value="">Seleccione...</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="PA">Pasaporte</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Número Documento *</label>
+              <input type="text" class="form-control" 
+                     [(ngModel)]="medicoSeleccionado.numeroDocumento" 
+                     placeholder="Número de documento" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Teléfono</label>
+              <input type="text" class="form-control" 
+                     [(ngModel)]="medicoSeleccionado.telefono" 
+                     placeholder="Número de teléfono">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Registro Profesional *</label>
+              <input type="text" class="form-control" 
+                     [(ngModel)]="medicoSeleccionado.registroProfesional" 
+                     placeholder="Registro profesional" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Especialización</label>
+              <select class="form-control" [(ngModel)]="medicoSeleccionado.especializacion" name="especializacion">
+                <option [ngValue]="null">Seleccione especialización</option>
+                <option *ngFor="let esp of especializaciones" [ngValue]="esp">
+                  {{ esp.nombre }} ({{ esp.codigoEspecializacion }})
+                </option>
+              </select>
+              <small class="text-muted" *ngIf="medicoSeleccionado.especializacion?.descripcion">
+                {{ medicoSeleccionado.especializacion.descripcion }}
+              </small>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cancelar()">
+            <i class="fas fa-times me-1"></i> Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" (click)="guardarMedico()" 
+                  [disabled]="!medicoSeleccionado.nombres || !medicoSeleccionado.apellidos || !medicoSeleccionado.tipoDocumento || !medicoSeleccionado.numeroDocumento || !medicoSeleccionado.registroProfesional">
+            <i class="fas fa-save me-1"></i> Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

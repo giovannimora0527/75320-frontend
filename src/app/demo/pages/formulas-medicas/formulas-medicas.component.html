@@ -1,0 +1,57 @@
+<div class="card">
+  <div class="card-header">
+    <h5>Gestión de Fórmulas Médicas</h5>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="formulaPaciente" class="form-label">Paciente</label>
+          <input id="formulaPaciente" type="text" class="form-control" placeholder="Paciente" [(ngModel)]="form.paciente" name="paciente" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="formulaMedico" class="form-label">Médico</label>
+          <input id="formulaMedico" type="text" class="form-control" placeholder="Médico" [(ngModel)]="form.medico" name="medico" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="formulaFecha" class="form-label">Fecha</label>
+          <input id="formulaFecha" type="date" class="form-control" [(ngModel)]="form.fecha" name="fecha" required />
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="formulaIndicaciones" class="form-label">Indicaciones</label>
+        <textarea id="formulaIndicaciones" class="form-control" rows="3" placeholder="Indicaciones" [(ngModel)]="form.indicaciones" name="indicaciones" required></textarea>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">{{ editingIndex === null ? 'Guardar' : 'Actualizar' }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="reset()">Limpiar</button>
+      </div>
+    </form>
+    <hr />
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Médico</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let f of formulas; let i = index">
+            <td>{{ f.paciente }}</td>
+            <td>{{ f.medico }}</td>
+            <td>{{ f.fecha }}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-link" (click)="edit(i)">Editar</button>
+              <button type="button" class="btn btn-sm btn-link text-danger" (click)="remove(i)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+

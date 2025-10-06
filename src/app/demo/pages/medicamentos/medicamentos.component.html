@@ -1,0 +1,53 @@
+<div class="card">
+  <div class="card-header">
+    <h5>Gestión de Medicamentos</h5>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="medicamentoNombre" class="form-label">Nombre</label>
+          <input id="medicamentoNombre" type="text" class="form-control" placeholder="Ej: Paracetamol" [(ngModel)]="form.nombre" name="nombre" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="medicamentoCodigo" class="form-label">Código</label>
+          <input id="medicamentoCodigo" type="text" class="form-control" placeholder="Ej: MED-001" [(ngModel)]="form.codigo" name="codigo" required />
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="medicamentoPresentacion" class="form-label">Presentación</label>
+          <input id="medicamentoPresentacion" type="text" class="form-control" placeholder="Tabletas / Jarabe" [(ngModel)]="form.presentacion" name="presentacion" required />
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">{{ editingIndex === null ? 'Guardar' : 'Actualizar' }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="reset()">Limpiar</button>
+      </div>
+    </form>
+    <hr />
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Código</th>
+            <th>Presentación</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of medicamentos; let i = index">
+            <td>{{ m.nombre }}</td>
+            <td>{{ m.codigo }}</td>
+            <td>{{ m.presentacion }}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-link" (click)="edit(i)">Editar</button>
+              <button type="button" class="btn btn-sm btn-link text-danger" (click)="remove(i)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
