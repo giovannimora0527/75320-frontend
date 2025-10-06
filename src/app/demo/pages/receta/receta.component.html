@@ -1,0 +1,127 @@
+<div class="container">
+    <div class="card">
+    <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+            <i class="fa fa-users"></i>
+            &nbsp;Mis Recetas
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevaReceta()">Nueva Receta</button>
+    </div>
+    </div>
+    <div class="card-body">
+        <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cita ID</th>
+                <th>Medicamento ID</th>
+                <th>Dosis</th>
+                <th>Indicaciones y Hora</th>
+                <th>Fecha Creacion de Registro</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let Receta of Recetas">
+                <td>{{ Receta.id }}</td>
+                <td>{{ Receta.citaId?.id }}</td>
+                <td>{{ Receta.medicamento_id }}</td>
+                <td>{{ Receta.dosis }}</td>
+                <td>{{ Receta.indicaciones }}</td>
+                <td>{{ Receta.fecha_creacion_registro }}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarRecetas(Receta)">
+                <i class="fa fa-edit"></i>
+                &nbsp;Editar
+                </button>                
+            </td>
+                <td>               
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- Modal para Crear/Editar Receta -->
+<div class="modal fade" id="modalCrearReceta" tabindex="-1" aria-labelledby="modalCrearRecetaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalCrearRecetaLabel">
+                    {{ titleModal }}
+                </h1>
+                <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="form">
+                    <!-- Cita ID -->
+                    <div class="mb-3">
+                        <label for="cita_id" class="form-label">Cita ID</label>
+                        <input
+                            type="text"
+                            formControlName="cita_id"
+                            class="form-control"
+                            id="cita_id"
+                            placeholder="Ingrese el ID de la cita"
+                        />
+                        <div *ngIf="form.get('cita_id')?.hasError('required') && form.get('cita_id')?.touched" class="text-danger">
+                            El ID de la cita es requerido.
+                        </div>
+                    </div>
+                    <!-- Medicamento ID -->
+                    <div class="mb-3">
+                        <label for="medicamento_id" class="form-label">Medicamento ID</label>
+                        <input
+                            type="text"
+                            formControlName="medicamento_id"
+                            class="form-control"
+                            id="medicamento_id"
+                            placeholder="Ingrese el ID del medicamento"
+                        />
+                        <div *ngIf="form.get('medicamento_id')?.hasError('required') && form.get('medicamento_id')?.touched" class="text-danger">
+                            El ID del medicamento es requerido.
+                        </div>
+                    </div>
+                    <!-- Dosis -->
+                    <div class="mb-3">
+                        <label for="dosis" class="form-label">Dosis</label>
+                        <input
+                            type="text"
+                            formControlName="dosis"
+                            class="form-control"
+                            id="dosis"
+                            placeholder="Ingrese la dosis"
+                        />
+                        <div *ngIf="form.get('dosis')?.hasError('required') && form.get('dosis')?.touched" class="text-danger">
+                            La dosis es requerida.
+                        </div>
+                    </div>
+                    <!-- Indicaciones y Hora -->
+                    <div class="mb-3">
+                        <label for="indicaciones" class="form-label">Indicaciones y Hora</label>
+                        <input
+                            type="text"
+                            formControlName="indicaciones"
+                            class="form-control"
+                            id="indicaciones"
+                            placeholder="Ingrese las indicaciones y hora"
+                        />
+                        <div *ngIf="form.get('indicaciones')?.hasError('required') && form.get('indicaciones')?.touched" class="text-danger">
+                            Las indicaciones son requeridas.
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="guardarRecetas()" [disabled]="form.invalid">
+                    {{ titleBoton }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
