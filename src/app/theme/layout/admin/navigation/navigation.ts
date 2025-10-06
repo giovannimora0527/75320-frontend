@@ -63,10 +63,10 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
-        id: 'historiaMedica',
+        id: 'receta',
         title: 'Gestión de historias médicas',
         type: 'item',
-        url: '/inicio/historia-medica',
+        url: '/inicio/receta',
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
