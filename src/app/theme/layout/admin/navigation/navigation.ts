@@ -47,10 +47,10 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
             {
-        id: 'historia_medica',
-        title: 'Gestión de historias medica',
+        id: 'recetas',
+        title: 'Gestión de Recetas',
         type: 'item',
-        url: '/inicio/historia_medica',
+        url: '/inicio/receta',
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
@@ -58,7 +58,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'medicamentos',
         title: 'Gestión de medicamentos',
         type: 'item',
-        url: '/inicio/medicamentos',
+        url: '/inicio/medicamento',
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
