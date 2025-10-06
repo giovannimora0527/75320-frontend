@@ -1,0 +1,161 @@
+<div class="container">
+    <div class="card">
+    <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+            <i class="fa fa-users"></i>
+            &nbsp;Mis Citas
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevaCita()">Nueva Cita</button>
+    </div>
+    </div>
+    <div class="card-body">
+        <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>fechaHora</th>
+                <th>Estado</th>
+                <th>Motivo</th>
+                <th>Nombre Paciente</th>
+                <th>Apellido de Paciente</th>
+                <th>Nombre Medico</th>
+                <th>Apellido Medico</th>
+                <th>Especialización</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let Cita of Citas">
+                <td>{{ Cita.id }}</td>
+                <td>{{ Cita.fechaHora }}</td>
+                <td>{{ Cita.estado }}</td>
+                <td>{{ Cita.motivo }}</td>
+                <td>{{ Cita.paciente?.nombres }}</td>
+                <td>{{ Cita.paciente?.apellidos }}</td>
+                <td>{{ Cita.medico?.nombres }}</td>
+                <td>{{ Cita.medico?.apellidos }}</td>
+                <td>{{ Cita.medico?.especializacion?.nombre }}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarCitas(Cita)">
+                <i class="fa fa-edit"></i>
+                &nbsp;Editar
+                </button>                
+            </td>
+                <td>               
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearCita" tabindex="-1" aria-labelledby="modalCrearCitaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearCitaModalLabel">
+            {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="form">
+            <!--  Nombre de usuario -->
+            <!-- Paciente ID -->
+            <div class="mb-3">
+                <label for="paciente_id" class="form-label">Paciente ID</label>
+                <input
+                    type="text"
+                    formControlName="paciente_id"
+                    class="form-control"
+                    id="paciente_id"
+                    placeholder="Ingrese el ID del paciente"
+                />
+                <div *ngIf="form.get('paciente_id')?.hasError('required') && form.get('paciente_id')?.touched" class="text-danger">
+                    El ID del paciente es requerido.
+                </div>
+            </div>
+            <!-- Medico ID -->
+            <div class="mb-3">
+                <label for="medico_id" class="form-label">Médico ID</label>
+                <input
+                    type="text"
+                    formControlName="medico_id"
+                    class="form-control"
+                    id="medico_id"
+                    placeholder="Ingrese el ID del médico"
+                />
+                <div *ngIf="form.get('medico_id')?.hasError('required') && form.get('medico_id')?.touched" class="text-danger">
+                    El ID del médico es requerido.
+                </div>
+            </div>
+            <!-- Nombres -->
+            <div class="mb-3">
+                <label for="nombres" class="form-label">Nombres</label>
+                <input
+                    type="text"
+                    formControlName="nombres"
+                    class="form-control"
+                    id="nombres"
+                    placeholder="Ingrese los nombres"
+                />
+                <div *ngIf="form.get('nombres')?.hasError('required') && form.get('nombres')?.touched" class="text-danger">
+                    El nombre es requerido.
+                </div>
+            </div>
+            <!-- Fecha y Hora -->
+            <div class="mb-3">
+                <label for="fecha_hora" class="form-label">Fecha y Hora</label>
+                <input
+                    type="datetime-local"
+                    formControlName="fecha_hora"
+                    class="form-control"
+                    id="fecha_hora"
+                />
+                <div *ngIf="form.get('fecha_hora')?.hasError('required') && form.get('fecha_hora')?.touched" class="text-danger">
+                    La fecha y hora son requeridas.
+                </div>
+            </div>
+            <!-- Estado -->
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <input
+                    type="text"
+                    formControlName="estado"
+                    class="form-control"
+                    id="estado"
+                    placeholder="Ingrese el estado"
+                />
+                <div *ngIf="form.get('estado')?.hasError('required') && form.get('estado')?.touched" class="text-danger">
+                    El estado es requerido.
+                </div>
+            </div>
+            <!-- Motivo -->
+            <div class="mb-3">
+                <label for="motivo" class="form-label">Motivo</label>
+                <input
+                    type="text"
+                    formControlName="motivo"
+                    class="form-control"
+                    id="motivo"
+                    placeholder="Ingrese el motivo"
+                />
+                <div *ngIf="form.get('motivo')?.hasError('required') && form.get('motivo')?.touched" class="text-danger">
+                    El motivo es requerido.
+                </div>
+            </div>
+            </form>
+
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarCita()"
+        [disabled]="form.invalid">{{titleBoton}}</button>
+        </div>
+    </div>
+    </div>
+</div>
