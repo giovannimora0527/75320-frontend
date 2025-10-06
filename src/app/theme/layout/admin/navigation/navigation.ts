@@ -70,14 +70,6 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
-      {
-        id: 'especializacion',
-        title: 'Gestión de especializaciones',
-        type: 'item',
-        url: '/inicio/especializacion',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
-      },
     ]
   },
   

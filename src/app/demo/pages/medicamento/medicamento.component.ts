@@ -38,7 +38,7 @@ export class MedicamentoComponent {
         this.medicamento = data;
         console.log('Medicamentos cargados:', this.medicamento);
       },
-      error: (err) => console.error('Error al listar usuarios:', err)
+      error: (err) => console.error('Error al listar medicamentos:', err)
     });
   }
 }
