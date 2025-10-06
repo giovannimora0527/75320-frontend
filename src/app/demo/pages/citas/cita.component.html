@@ -1,0 +1,79 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-calendar"></i>
+          &nbsp;Gestión de Citas
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevaCita()">Nueva Cita</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Médico</th>
+              <th>Paciente</th>
+              <th>Motivo</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cita of citas">
+              <td>{{ cita.fecha }}</td>
+              <td>{{ cita.medico }}</td>
+              <td>{{ cita.paciente }}</td>
+              <td>{{ cita.motivo }}</td>
+              <td>
+                <i
+                  class="fa"
+                  [ngClass]="cita.estado === 'Pendiente' ? 'fa-clock text-warning' : 'fa-check text-success'">
+                </i>
+                {{ cita.estado }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearCita" tabindex="-1" aria-labelledby="modalCrearCitaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCrearCitaLabel">Crear Nueva Cita</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label>Fecha</label>
+            <input type="date" formControlName="fecha" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label>Médico</label>
+            <input type="text" formControlName="medico" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label>Paciente</label>
+            <input type="text" formControlName="paciente" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label>Motivo</label>
+            <textarea formControlName="motivo" class="form-control"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button class="btn btn-primary" (click)="guardarCita()" [disabled]="form.invalid">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
