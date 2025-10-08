@@ -6,6 +6,8 @@
             <i class="fa fa-users"></i>
             &nbsp;Mis medicamentos
         </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoMedicamento()">Nuevo Medicamento</button>
+    </div>
     </div>
     <div class="card-body">
       <div class="table table-responsive">
@@ -28,6 +30,12 @@
               <td>{{ medicamento.presentacion }}</td>
               <td>{{ medicamento.fechaCompra }}</td>
               <td>{{ medicamento.fechaVence }}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarMedicamento(medicamento)">
+                  <i class="fa fa-edit"></i>
+                  &nbsp;Editar
+                </button>                
+              </td>
               </tr>
           </tbody>
         </table>
@@ -35,3 +43,111 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearMedicamento" tabindex="-1" aria-labelledby="modalCrearMedicamentoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearMedicamentoModalLabel">
+            {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form [formGroup]="form">
+          <!--  Nombre de usuario -->
+          <div class="mb-3">
+            <label for="id" class="form-label">Id</label>
+            <input
+              type="text"
+              formControlName="id"
+              class="form-control"
+              id="id"
+              placeholder="Ingrese el nombre de usuario"             
+            />
+            <div *ngIf="form.get('id')?.hasError('required') && form.get('id')?.touched" class="text-danger">
+              El Id es requerido.
+            </div>
+          </div>
+          <!-- nombre -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="form-control"
+              id="nombre"
+              placeholder="Ingrese el nombre del medicamento"             
+            />
+            <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+              El nombre es requerido.
+            </div>
+          </div>
+          <!-- descripcion -->
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripcion</label>
+            <input
+              type="text"
+              formControlName="descripcion"
+              class="form-control"
+              id="descripcion"
+              placeholder="Ingrese la descripcion del medicamento"             
+            />
+            <div *ngIf="form.get('descripcion')?.hasError('required') && form.get('descripcion')?.touched" class="text-danger">
+              La descripcion es requerida.
+            </div>
+          </div>
+          <!-- presentacion -->
+          <div class="mb-3">
+            <label for="presentacion" class="form-label">Presentacion</label>
+            <input
+              type="text"
+              formControlName="presentacion"
+              class="form-control"
+              id="presentacion"
+              placeholder="Ingrese la presentacion del medicamento"             
+            />
+            <div *ngIf="form.get('presentacion')?.hasError('required') && form.get('presentacion')?.touched" class="text-danger">
+              La presentacion es requerida.
+            </div>
+          </div>
+          <!-- fechaCompra -->
+          <div class="mb-3">
+            <label for="fechaCompra" class="form-label">Fecha de compra</label>
+            <input
+              type="date"
+              formControlName="fechaCompra"
+              class="form-control"
+              id="fechaCompra"
+              placeholder="YYYY-MM-DD"
+            />
+            <div *ngIf="form.get('fechaCompra')?.hasError('required') && form.get('fechaCompra')?.touched" class="text-danger">
+              La fecha de compra es requerida.
+            </div>
+          </div>
+          <!-- fechaVence -->
+          <div class="mb-3">
+            <label for="fechaVence" class="form-label">Fecha de vencimiento</label>
+            <input
+              type="date"
+              formControlName="fechaVence"
+              class="form-control"
+              id="fechaVence"
+              placeholder="YYYY-MM-DD"
+            />
+            <div *ngIf="form.get('fechaVence')?.hasError('required') && form.get('fechaVence')?.touched" class="text-danger">
+              La fecha de vencimiento es requerida.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary" (click)="guardarMedicamento()"
+            [disabled]="form.invalid">{{titleBoton}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { Medicamento } from '../models/medicamento';
 import { environment } from './../../../../../environments/environment';
+import { RespuestaRs } from '../models/respuesta';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,13 @@ export class MedicamentoService {
 
   listarMedicamentos(): Observable<Medicamento[]> {
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
+  }
+
+  guardarMedicamento(medicamento: Medicamento): Observable<RespuestaRs> {   
+    return this.backendService.post(this.urlBase, this.urlApi, 'guardar', medicamento);
+  }
+
+  actualizarMedicamento(medicamento: Medicamento): Observable<RespuestaRs> {   
+    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', medicamento);
   }
 }
