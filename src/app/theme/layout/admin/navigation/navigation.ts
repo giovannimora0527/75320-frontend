@@ -30,7 +30,7 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       /* ---------- Nuevos menus aqui -------------  */
-      {
+        {
         id: 'medico',
         title: 'Gestión de medicos',
         type: 'item',
@@ -43,6 +43,31 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de pacientes',
         type: 'item',
         url: '/inicio/paciente',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+            {
+        id: 'recetas',
+        title: 'Gestión de Recetas',
+        type: 'item',
+        url: '/inicio/receta',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+      {
+        id: 'medicamentos',
+        title: 'Gestión de medicamentos',
+        type: 'item',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-users',
+        classes: 'nav-item'
+      },
+
+      {
+        id: 'citas',
+        title: 'Gestión de citas',
+        type: 'item',
+        url: '/inicio/citas',
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
