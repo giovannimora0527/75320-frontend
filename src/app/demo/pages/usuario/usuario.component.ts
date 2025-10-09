@@ -31,6 +31,7 @@ export class UsuarioComponent {
   titleModal: string = '';
   titleBoton: string = '';
   usuarioSelected: Usuario;
+  showPassword: boolean = false;
 
   form: FormGroup = new FormGroup({
     username: new FormControl(''),
@@ -104,7 +105,23 @@ export class UsuarioComponent {
         });
       } else {
         // Modo Edición
-        // TODO logica para actualizar un usuario
+        const usuarioActualizado = { ...this.usuarioSelected, ...this.form.getRawValue() };
+        console.log(usuarioActualizado);
+        this.usuarioService.actualizarUsuario(usuarioActualizado)
+        .subscribe(
+          {
+            next: (data) => {             
+              Swal.fire('Actualización exitosa', data.message, 'success');
+              this.listarUsuarios();
+              this.closeModal();
+            },
+            error: (error) => {
+              console.error('Error al actualizar usuario:', error);
+              Swal.fire('Error', error.error?.message || 'Ocurrió un error al actualizar el usuario.', 'error');
+            } 
+          }
+        );
+       
       }
     }
   }
@@ -130,17 +147,19 @@ export class UsuarioComponent {
 
   abrirNuevoUsuario() {
     this.usuarioSelected = new Usuario();
-    this.limpiarFormulario();
-    // Cargamos los datos del usuario seleccionado en el formulario
-    
+    this.limpiarFormulario();    
     // Dejamos el formulario en blanco
     this.openModal('C');
   }
 
   abrirEditarUsuario(usuario: Usuario) {
-    this.usuarioSelected = usuario;
-    this.openModal('E');
     this.limpiarFormulario();
+    this.usuarioSelected = usuario;
+    this.form.get("activo").setValue(this.usuarioSelected.activo);
+    this.form.get("rol").setValue(this.usuarioSelected.rol);
+    this.form.get("username").setValue(this.usuarioSelected.username);
+    this.form.get("password").setValue(this.usuarioSelected.password);
+    this.openModal('E');
   }
 
   limpiarFormulario() {

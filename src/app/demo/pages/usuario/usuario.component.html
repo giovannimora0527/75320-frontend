@@ -63,15 +63,14 @@
          <form [formGroup]="form">
           <!--  Nombre de usuario -->
           <div class="mb-3">
-            <label for="username" class="form-label">Nombre de usuario</label>
-            <!--  [ngModel] = "usuarioSelected ? usuarioSelected.username : ''"      -->  
+            <label for="username" class="form-label">Nombre de usuario</label>           
             <input
               type="text"
               formControlName="username"
               class="form-control"
               id="username"
-              placeholder="Ingrese el nombre de usuario"  
-                 
+              placeholder="Ingrese el nombre de usuario" 
+              [ngModel] = "usuarioSelected ? usuarioSelected.username : ''"                  
             />
             <div *ngIf="form.get('username')?.hasError('required') && form.get('username')?.touched" class="text-danger">
               El nombre de usuario es requerido.
@@ -80,30 +79,54 @@
           <!-- Password -->
           <div class="mb-3">
             <label for="password" class="form-label">Escriba su contraseña</label>
-            <input
-              type="password"
+            <div class="input-group">
+              <input
+              [type]="showPassword ? 'text' : 'password'"
               formControlName="password"
               class="form-control"
               id="password"
               placeholder="Ingrese su contraseña"
-            />
+              [ngModel]="usuarioSelected ? usuarioSelected.password : ''"
+              />
+              <button type="button" class="btn btn-outline-secondary" (click)="showPassword = !showPassword">
+              <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+              </button>
+            </div>
             <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="text-danger">
               La contraseña es requerida.
             </div>
           </div>
           <!-- Rol -->
           <div class="mb-3">
-            <label for="rol" class="form-label">Escriba su rol</label>
-            <input
-              type="text"
+            <label for="rol" class="form-label">Seleccione su rol</label>
+            <select
               formControlName="rol"
               class="form-control"
               id="rol"
-              placeholder="Ingrese su rol"              
-            />
+              [ngModel]="usuarioSelected ? usuarioSelected.rol : ''"
+            >
+                <option value="" disabled [selected]="!usuarioSelected || !usuarioSelected.rol">Seleccione un rol</option>
+              <option value="ADMIN">ADMIN</option>              
+              <option value="MEDICO">MEDICO</option>
+              <option value="PACIENTE">PACIENTE</option>
+            </select>
             <div *ngIf="form.get('rol')?.hasError('required') && form.get('rol')?.touched" class="text-danger">
               El rol es requerido.
             </div>
+          </div>
+
+          <!-- Estado -->
+          <div class="mb-3" *ngIf="modoFormulario === 'E'">
+            <label for="activo" class="form-label">Seleccione el estado</label>
+            <select
+              formControlName="activo"
+              class="form-control"
+              id="activo"
+              [ngModel]="usuarioSelected ? usuarioSelected.activo : ''"
+            >              
+              <option value="true">Activo</option>              
+              <option value="false">Inactivo</option>
+            </select>           
           </div>
          </form>
 
