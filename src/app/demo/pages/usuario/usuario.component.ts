@@ -104,6 +104,7 @@ export class UsuarioComponent {
         });
       } else {
         // Modo Edición
+        // TODO logica para actualizar un usuario
       }
     }
   }

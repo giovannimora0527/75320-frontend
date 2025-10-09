@@ -1,1 +1,80 @@
-<p>medico works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-user-md"></i>
+          &nbsp;Mis médicos
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoMedico()">Nuevo Medico</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Tipo de documento</th>
+              <th>#. Documento</th>
+              <th>Nombres</th>
+              <th>Apellidos</th>
+              <th>Registro Profesional</th>
+              <th>Teléfono</th>
+              <th>Especialización</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="medicoList.length === 0">
+            <tr class="text-center">
+              <td colspan="8">
+                <span>No hay registros de médicos</span>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="medicoList.length > 0">
+            <tr *ngFor="let medico of medicoList">
+              <td>{{ medico.id }}</td>
+              <td>{{ medico.tipoDocumento }}</td>
+              <td>{{ medico.numeroDocumento }}</td>
+              <td>{{ medico.nombres }}</td>
+              <td>{{ medico.apellidos }}</td>
+              <td>{{ medico.registroProfesional }}</td>
+              <td>{{ medico.telefono }}</td>
+              <td>{{ medico.especializacion.nombre }}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarMedico(medico)">
+                  <i class="fa fa-edit"></i>
+                  &nbsp;Editar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearMedico" tabindex="-1" aria-labelledby="modalCrearMedicoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearMedicoModalLabel">
+            {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">      
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarMedico()">{{titleBoton}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
