@@ -58,23 +58,146 @@
 
 <!-- Modal -->
 <div class="modal fade" id="modalCrearMedico" tabindex="-1" aria-labelledby="modalCrearMedicoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="modalCrearMedicoModalLabel">
-            {{ titleModal }}
+          {{ titleModal }}
         </h1>
         <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
       </div>
-      <div class="modal-body">      
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <form [formGroup]="form">
+              <!--  Tipo de documento -->
+              <div class="mb-3">
+                <label for="tipoDocumento" class="form-label">Tipo de documento</label>
+                <select
+                  formControlName="tipoDocumento"
+                  class="form-control"
+                  id="tipoDocumento"
+                  [ngModel]="medicoSelected ? medicoSelected.tipoDocumento : ''"
+                >
+                  <option value="" [selected]="!medicoSelected" disabled>Seleccione tipo de documento</option>
+                  <option value="CC">Cédula de ciudadanía</option>
+                  <option value="PA">Pasaporte</option>
+                  <option value="CE">Cédula de extranjería</option>
+                </select>
+                <div *ngIf="form.get('tipoDocumento')?.hasError('required') && form.get('tipoDocumento')?.touched" class="text-danger">
+                  El tipo de documento es requerido.
+                </div>
+              </div>
 
+              <!-- Número de documento -->
+              <div class="mb-3">
+                <label for="numeroDocumento" class="form-label">Número de documento</label>
+                <input
+                  type="text"
+                  formControlName="numeroDocumento"
+                  class="form-control"
+                  id="numeroDocumento"
+                  placeholder="Ingrese el numero del documento del medico"
+                  [ngModel]="medicoSelected ? medicoSelected.numeroDocumento : ''"
+                />
+                <div *ngIf="form.get('numeroDocumento')?.hasError('required') && form.get('numeroDocumento')?.touched" class="text-danger">
+                  El número de documento es requerido.
+                </div>
+              </div>
+
+              <!-- Nombres -->
+              <div class="mb-3">
+                <label for="nombres" class="form-label">Nombres</label>
+                <input
+                  type="text"
+                  formControlName="nombres"
+                  class="form-control"
+                  id="nombres"
+                  placeholder="Ingrese los nombres del medico"
+                  [ngModel]="medicoSelected ? medicoSelected.nombres : ''"
+                />
+                <div *ngIf="form.get('nombres')?.hasError('required') && form.get('nombres')?.touched" class="text-danger">
+                  Los nombres son obligatorios.
+                </div>
+              </div>
+
+              <!-- Apellidos -->
+              <div class="mb-3">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input
+                  type="text"
+                  formControlName="apellidos"
+                  class="form-control"
+                  id="apellidos"
+                  placeholder="Ingrese los apellidos del medico"
+                  [ngModel]="medicoSelected ? medicoSelected.apellidos : ''"
+                />
+                <div *ngIf="form.get('apellidos')?.hasError('required') && form.get('apellidos')?.touched" class="text-danger">
+                  Los apellidos son obligatorios.
+                </div>
+              </div>
+
+              <!-- Registro profesional -->
+              <div class="mb-3">
+                <label for="registroProfesional" class="form-label">N°. Registro Profesional</label>
+                <input
+                  type="text"
+                  formControlName="registroProfesional"
+                  class="form-control"
+                  id="registroProfesional"
+                  placeholder="Ingrese el número de registro profesional o tarjeta profesional del medico"
+                  [ngModel]="medicoSelected ? medicoSelected.registroProfesional : ''"
+                />
+                <div
+                  *ngIf="form.get('registroProfesional')?.hasError('required') && form.get('registroProfesional')?.touched"
+                  class="text-danger"
+                >
+                  El número de registro profesional es obligatorios.
+                </div>
+              </div>
+
+                <!-- Telefono -->
+              <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono o Celular</label>
+                <input
+                  type="text"
+                  formControlName="telefono"
+                  class="form-control"
+                  id="telefono"
+                  placeholder="Ingrese el teléfono del medico"
+                  [ngModel]="medicoSelected ? medicoSelected.telefono : ''"
+                />                
+              </div>
+
+              <!-- Especializacion -->
+              <div class="mb-3">
+                <label for="especializacionId" class="form-label">Especialización</label>
+                <select
+                  formControlName="especializacionId"
+                  class="form-control"
+                  id="especializacionId"
+                  [ngModel]="medicoSelected && medicoSelected.especializacion ? medicoSelected.especializacion.id : ''"
+                >
+                  <option value="" [selected]="!medicoSelected" disabled>Seleccione la especializacion</option>
+                  <option *ngFor="let especializacion of especializacionesList" [value]="especializacion.id">
+                    {{ especializacion.nombre }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="form.get('especializacionId')?.hasError('required') && form.get('especializacionId')?.touched"
+                  class="text-danger"
+                >
+                  La especialización es requerida.
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarMedico()">{{titleBoton}}</button>
+        <button type="button" class="btn btn-primary" (click)="guardarMedico()">{{ titleBoton }}</button>
       </div>
     </div>
   </div>
 </div>
-
-

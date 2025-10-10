@@ -41,7 +41,7 @@ export class UsuarioComponent {
   });
 
   constructor(
-    private usuarioService: UsuarioService,
+    private readonly usuarioService: UsuarioService,
     private readonly formBuilder: FormBuilder
   ) {
     this.listarUsuarios();
