@@ -46,6 +46,46 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
+      {
+        id: 'medicamentos',
+        title: 'Medicamentos',
+        type: 'item',
+        url: '/inicio/medicamentos',
+        icon: 'feather icon-clipboard',
+        classes: 'nav-item'
+      },
+      {
+        id: 'citas',
+        title: 'Citas',
+        type: 'item',
+        url: '/inicio/citas',
+        icon: 'feather icon-calendar',
+        classes: 'nav-item'
+      },
+      {
+        id: 'formulas',
+        title: 'Formulas',
+        type: 'item',
+        url: '/inicio/formulas',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historias',
+        title: 'Historias',
+        type: 'item',
+        url: '/inicio/historias',
+        icon: 'feather icon-book',
+        classes: 'nav-item'
+      },
+      {
+        id: 'especializaciones',
+        title: 'Especializaciones',
+        type: 'item',
+        url: '/inicio/especializaciones',
+        icon: 'feather icon-briefcase',
+        classes: 'nav-item'
+      }
     ]
   },
   
