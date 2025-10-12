@@ -1,0 +1,7 @@
+<div class="gestion-container">
+  <h2>Gestión General</h2>
+  <p>Accede rápidamente a los módulos de gestión:</p>
+  <div class="botones">
+    <button *ngFor="let m of menus" class="btn btn-outline-primary m-2" [routerLink]="m.link">{{m.title}}</button>
+  </div>
+</div>
