@@ -1,29 +1,16 @@
 <div class="container">
   <div class="card">
-    <div class="card-header">
-      <div class="d-flex align-items-center justify-content-between">
-        <h3 class="mb-0">
-          <i class="fa fa-file-medical"></i>
-          &nbsp;Gestión de Fórmulas Médicas
-        </h3>
-
-        <!-- Botón para abrir el modal -->
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          (click)="abrirNuevaFormula()"
-          title="Crear nueva fórmula médica"
-          aria-label="Abrir formulario de nueva fórmula médica">
-          <i class="fa fa-plus"></i>
-          <span class="visually-hidden">Nueva Fórmula Médica</span>
-        </button>
-      </div>
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3><i class="fa fa-file-medical"></i> &nbsp;Gestión de Fórmulas Médicas</h3>
+      <button class="btn btn-outline-primary" (click)="abrirNuevaFormula()">
+        <i class="fa fa-plus"></i> Nueva Fórmula
+      </button>
     </div>
 
     <div class="card-body">
       <div class="table-responsive">
-        <table class="table table-striped table-hover">
-          <thead class="table-light">
+        <table class="table table-striped">
+          <thead>
             <tr>
               <th>Fecha</th>
               <th>Paciente</th>
@@ -33,19 +20,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let formula of formulasMedicas">
-              <td>{{ formula.fecha }}</td>
-              <td>{{ formula.paciente }}</td>
-              <td>{{ formula.medico }}</td>
-              <td>{{ formula.medicamento }}</td>
-              <td>{{ formula.indicaciones }}</td>
+            <tr *ngFor="let f of formulasMedicas">
+              <td>{{ f.fechaCreacionRegistro | date:'short' }}</td>
+              <td>{{ f.cita?.paciente?.nombres || f.cita?.paciente?.nombre }}</td>
+              <td>{{ f.cita?.medico?.nombres || f.cita?.medico?.nombre }}</td>
+              <td>{{ f.medicamento }}</td>
+              <td>{{ f.indicaciones }}</td>
             </tr>
-
-            <!-- Mensaje si no hay fórmulas -->
             <tr *ngIf="formulasMedicas.length === 0">
-              <td colspan="5" class="text-center text-muted">
-                No hay fórmulas médicas registradas.
-              </td>
+              <td colspan="5" class="text-center text-muted">No hay fórmulas registradas</td>
             </tr>
           </tbody>
         </table>
@@ -54,103 +37,75 @@
   </div>
 </div>
 
-<!-- Modal para crear fórmula médica -->
-<div
-  class="modal fade"
-  id="modalCrearFormula"
-  tabindex="-1"
-  aria-labelledby="modalCrearFormulaLabel"
-  aria-hidden="true">
-
+<!-- Modal Crear Fórmula -->
+<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-
       <div class="modal-header">
-        <h5 class="modal-title" id="modalCrearFormulaLabel">
-          Crear Nueva Fórmula Médica
-        </h5>
-
-        <button
-          type="button"
-          class="btn-close"
-          (click)="closeModal()"
-          title="Cerrar ventana"
-          aria-label="Cerrar ventana de creación">
-        </button>
+        <h5 class="modal-title">Crear Nueva Fórmula Médica</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
       </div>
 
       <div class="modal-body">
-        <form [formGroup]="form" (ngSubmit)="guardarFormula()">
-          <div class="mb-3">
-            <label for="fecha" class="form-label">Fecha</label>
-            <input
-              id="fecha"
-              type="date"
-              formControlName="fecha"
-              class="form-control" />
+        <form [formGroup]="form">
+          <div class="row">
+            <!-- FECHA -->
+            <div class="col-md-6 mb-3">
+              <label for="fecha" class="form-label">Fecha</label>
+              <input type="date" formControlName="fecha" class="form-control" />
+            </div>
+
+            <!-- PACIENTE -->
+            <div class="col-md-6 mb-3">
+              <label for="paciente" class="form-label">Paciente</label>
+              <select formControlName="pacienteId" class="form-select">
+                <option value="" disabled selected>Seleccione un paciente</option>
+                <option *ngFor="let p of pacientes" [value]="p.id">
+                  {{ p.nombres ? (p.nombres + ' ' + p.apellidos) : p.nombre }}
+                </option>
+              </select>
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label for="paciente" class="form-label">Paciente</label>
-            <input
-              id="paciente"
-              type="text"
-              formControlName="paciente"
-              class="form-control"
-              placeholder="Nombre del paciente" />
+          <div class="row">
+            <!-- MÉDICO -->
+            <div class="col-md-6 mb-3">
+              <label for="medico" class="form-label">Médico</label>
+              <select formControlName="medicoId" class="form-select">
+                <option value="" disabled selected>Seleccione un médico</option>
+                <option *ngFor="let m of medicos" [value]="m.id">
+                  {{ m.nombres ? (m.nombres + ' ' + m.apellidos) : m.nombre }}
+                </option>
+              </select>
+            </div>
+
+            <!-- MEDICAMENTO -->
+            <div class="col-md-6 mb-3">
+              <label for="medicamento" class="form-label">Medicamento</label>
+              <input type="text" formControlName="medicamento" class="form-control" />
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label for="medico" class="form-label">Médico</label>
-            <input
-              id="medico"
-              type="text"
-              formControlName="medico"
-              class="form-control"
-              placeholder="Nombre del médico" />
-          </div>
-
-          <div class="mb-3">
-            <label for="medicamento" class="form-label">Medicamento</label>
-            <input
-              id="medicamento"
-              type="text"
-              formControlName="medicamento"
-              class="form-control"
-              placeholder="Nombre del medicamento" />
-          </div>
-
+          <!-- INDICACIONES -->
           <div class="mb-3">
             <label for="indicaciones" class="form-label">Indicaciones</label>
-            <textarea
-              id="indicaciones"
-              formControlName="indicaciones"
-              class="form-control"
-              rows="3"
-              placeholder="Indique la dosis y frecuencia"></textarea>
+            <textarea formControlName="indicaciones" class="form-control" rows="3"></textarea>
           </div>
         </form>
       </div>
 
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          (click)="closeModal()"
-          title="Cerrar formulario">
-          Cerrar
-        </button>
-
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="form.invalid"
-          (click)="guardarFormula()"
-          title="Guardar fórmula médica">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarFormula()" [disabled]="form.invalid">
           Guardar
         </button>
       </div>
     </div>
   </div>
 </div>
+
+
+
+
+
 

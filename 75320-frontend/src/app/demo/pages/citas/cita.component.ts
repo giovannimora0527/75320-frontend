@@ -1,77 +1,147 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CitaService } from './service/cita.service';
-import Modal from 'bootstrap/js/dist/modal';
-import Swal from 'sweetalert2';
+import { PacienteService } from '../paciente/service/paciente.service';
+import { MedicoService } from '../medico/service/medico.service';
 
 @Component({
   selector: 'app-cita',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './cita.component.html',
-  styleUrls: ['./cita.component.scss']
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  templateUrl: './cita.component.html'
 })
-export class CitaComponent {
-  modalInstance: Modal | null = null;
-  citas: any[] = []; // ✅ Inicialización correcta
-  form: FormGroup;
+export class CitaComponent implements OnInit {
+  citas: any[] = [];
+  pacientes: any[] = [];
+  medicos: any[] = [];
+  citaForm!: FormGroup;
+  mostrarFormulario: boolean = false;
+  editando: boolean = false;
+  citaSeleccionada: any = null;
 
   constructor(
-    private readonly citaService: CitaService,
-    private readonly fb: FormBuilder
-  ) {
-    this.form = this.fb.group({
-      fecha: ['', Validators.required],
-      paciente: ['', Validators.required],
-      medico: ['', Validators.required],
-      motivo: ['']
-    });
-    this.listarCitas();
+    private fb: FormBuilder,
+    private citaService: CitaService,
+    private pacienteService: PacienteService,
+    private medicoService: MedicoService
+  ) {}
+
+  ngOnInit(): void {
+    this.initForm();
+    this.cargarCitas();
+    this.cargarPacientes();
+    this.cargarMedicos();
   }
 
-  listarCitas() {
+  initForm(): void {
+    this.citaForm = this.fb.group({
+      pacienteId: ['', Validators.required],
+      medicoId: ['', Validators.required],
+      fechaCita: ['', Validators.required],
+      hora: ['', Validators.required],
+      motivo: ['', Validators.required]
+    });
+  }
+
+  cargarCitas(): void {
     this.citaService.getCitas().subscribe({
-      next: (data) => {
-        this.citas = data; // ✅ aquí data debe ser un array
-        console.log('Citas cargadas:', this.citas);
-      },
-      error: (error) => {
-        console.error('Error al listar citas:', error);
-      }
+      next: (data) => (this.citas = Array.isArray(data) ? data : []),
+      error: (err) => console.error('Error al cargar citas:', err)
     });
   }
 
-  abrirNuevaCita() {
-    const modalElement = document.getElementById('modalCrearCita');
-    if (modalElement) {
-      this.modalInstance ??= new Modal(modalElement);
-      this.modalInstance.show();
-    } else {
-      Swal.fire('Error', 'No se encontró el modal de creación de citas.', 'error');
+  cargarPacientes(): void {
+    this.pacienteService.getPacientes().subscribe({
+      next: (data) => (this.pacientes = Array.isArray(data) ? data : []),
+      error: (err) => console.error('Error al cargar pacientes:', err)
+    });
+  }
+
+  cargarMedicos(): void {
+    this.medicoService.getMedicos().subscribe({
+      next: (data) => (this.medicos = Array.isArray(data) ? data : []),
+      error: (err) => console.error('Error al cargar médicos:', err)
+    });
+  }
+
+  nuevaCita(): void {
+    this.mostrarFormulario = true;
+    this.editando = false;
+    this.citaForm.reset();
+  }
+
+  abrirEditarCita(cita: any): void {
+    this.mostrarFormulario = true;
+    this.editando = true;
+    this.citaSeleccionada = cita;
+    this.citaForm.patchValue({
+      pacienteId: cita.paciente?.id || '',
+      medicoId: cita.medico?.id || '',
+      fechaCita: cita.fechaCita,
+      hora: cita.hora,
+      motivo: cita.motivo
+    });
+  }
+
+  guardarCita(): void {
+    if (this.citaForm.invalid) {
+      alert('Complete todos los campos requeridos');
+      return;
     }
-  }
 
-  closeModal() {
-    if (this.modalInstance) this.modalInstance.hide();
-  }
+    // Construir objeto con paciente y medico como objetos {id: ...}
+    const citaData = {
+      paciente: { id: this.citaForm.value.pacienteId },
+      medico: { id: this.citaForm.value.medicoId },
+      fechaCita: this.citaForm.value.fechaCita,
+      hora: this.citaForm.value.hora,
+      motivo: this.citaForm.value.motivo
+    };
 
-  guardarCita() {
-    if (this.form.valid) {
-      this.citaService.guardarCita(this.form.value).subscribe({
+    if (this.editando && this.citaSeleccionada) {
+      this.citaService.editarCita(this.citaSeleccionada.id, citaData).subscribe({
         next: () => {
-          Swal.fire('Éxito', 'Cita guardada correctamente', 'success');
-          this.closeModal();
-          this.listarCitas();
+          alert('✅ Cita actualizada correctamente');
+          this.cargarCitas();
+          this.cancelar();
         },
-        error: (err) => {
-          Swal.fire('Error', 'No se pudo guardar la cita', 'error');
-          console.error(err);
-        }
+        error: (err) => console.error('Error al editar cita:', err)
       });
     } else {
-      Swal.fire('Formulario incompleto', 'Por favor complete los campos obligatorios.', 'warning');
+      this.citaService.crearCita(citaData).subscribe({
+        next: () => {
+          alert('✅ Cita creada correctamente');
+          this.cargarCitas();
+          this.cancelar();
+        },
+        error: (err) => console.error('Error al crear cita:', err)
+      });
     }
   }
+
+  eliminarCita(id: number): void {
+    if (confirm('¿Desea eliminar esta cita?')) {
+      this.citaService.deleteCita(id).subscribe({
+        next: () => {
+          alert('🗑️ Cita eliminada correctamente');
+          this.cargarCitas();
+        },
+        error: (err) => console.error('Error al eliminar cita:', err)
+      });
+    }
+  }
+
+  cancelar(): void {
+    this.mostrarFormulario = false;
+    this.editando = false;
+    this.citaSeleccionada = null;
+    this.citaForm.reset();
+  }
 }
+
+
+
+
+
 

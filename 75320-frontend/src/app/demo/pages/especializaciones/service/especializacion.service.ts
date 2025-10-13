@@ -8,17 +8,21 @@ import { Observable } from 'rxjs';
 })
 export class EspecializacionService {
   urlBase: string = environment.apiUrlAuth;
-  urlApi: string = 'especializacion';
+  urlApi: string = 'especializacion'; // sin 'api/' extra
 
   constructor(private backendService: BackendService) {}
 
+  // Listar especializaciones
   getEspecializaciones(): Observable<any[]> {
-    // 👇 devolvemos siempre un observable de arreglo
+    console.log('📡 GET:', `${this.urlBase}/${this.urlApi}/listar`);
     return this.backendService.get<any[]>(this.urlBase, this.urlApi, 'listar');
   }
 
+  // Crear especialización
   guardarEspecializacion(especializacion: any): Observable<any> {
+    console.log('📤 POST:', `${this.urlBase}/${this.urlApi}/crear`, especializacion);
     return this.backendService.post(this.urlBase, this.urlApi, 'crear', especializacion);
   }
 }
+
 

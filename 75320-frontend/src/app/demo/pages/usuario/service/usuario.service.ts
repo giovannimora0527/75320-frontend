@@ -9,7 +9,8 @@ import { RespuestaRs } from '../models/respuesta';
   providedIn: 'root'
 })
 export class UsuarioService {
-  urlBase: string = environment.apiUrlAuth;
+  // URL base correcta según application.properties
+  urlBase: string = 'http://localhost:8000/clinica/v1';
   urlApi: string = 'usuario';
 
   constructor(private backendService: BackendService) {}
@@ -21,8 +22,6 @@ export class UsuarioService {
   guardarUsuario(usuario: Usuario): Observable<RespuestaRs> {   
     return this.backendService.post(this.urlBase, this.urlApi, 'guardar', usuario);
   }
-
-  actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {   
-    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', usuario);
-  }
 }
+
+

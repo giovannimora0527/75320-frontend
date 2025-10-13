@@ -5,7 +5,7 @@ export class Paciente {
   nombres!: string;
   apellidos!: string;
   telefono!: string;
-  correo!: string;
+  email!: string;
   direccion!: string;
-  fechaNacimiento!: string; // "1995-07-20"
+  fechaNacimiento!: string;
 }

@@ -1,102 +1,94 @@
-<div class="container">
-  <div class="card">
-    <div class="card-header">
-      <div class="d-flex align-items-center justify-content-between">
-        <h3 class="mb-0">
-          <i class="fa fa-user"></i>
-          &nbsp;Gestión de Pacientes
-        </h3>
-        <button 
-          type="button" 
-          class="btn btn-outline-primary" 
-          (click)="abrirNuevoPaciente()"
-          title="Crear nuevo paciente">
-          <i class="fa fa-plus"></i> Nuevo Paciente
-        </button>
-      </div>
-    </div>
+<div class="container mt-4">
+  <h2>Gestión de Pacientes</h2>
+  <button class="btn btn-primary mb-3" (click)="abrirNuevoPaciente()">Nuevo Paciente</button>
 
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Edad</th>
-              <th>Género</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let paciente of pacientes">
-              <td>{{ paciente.id }}</td>
-              <td>{{ paciente.nombre }}</td>
-              <td>{{ paciente.apellido }}</td>
-              <td>{{ paciente.edad }}</td>
-              <td>{{ paciente.genero }}</td>
-              <td>
-                <button 
-                  type="button" 
-                  class="btn btn-sm btn-outline-primary"
-                  title="Editar paciente"
-                  (click)="abrirEditarPaciente(paciente)">
-                  <i class="fa fa-edit"></i>
-                </button>
-              </td>
-            </tr>
+  <table class="table table-bordered table-striped" *ngIf="pacientes.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tipo Documento</th>
+        <th>Número Documento</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th>Dirección</th>
+        <th>Fecha Nacimiento</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let paciente of pacientes">
+        <td>{{ paciente.id }}</td>
+        <td>{{ paciente.tipoDocumento }}</td>
+        <td>{{ paciente.numeroDocumento }}</td>
+        <td>{{ paciente.nombres }}</td>
+        <td>{{ paciente.apellidos }}</td>
+        <td>{{ paciente.telefono }}</td>
+        <td>{{ paciente.email }}</td>
+        <td>{{ paciente.direccion }}</td>
+        <td>{{ paciente.fechaNacimiento || 'N/A' }}</td>
+        <td>
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="abrirEditarPaciente(paciente)" title="Editar paciente">Editar</button>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarPaciente(paciente.id)" title="Eliminar paciente">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-            <!-- Fila cuando no hay pacientes -->
-            <tr *ngIf="pacientes.length === 0">
-              <td colspan="6" class="text-center">No hay pacientes registrados</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal para crear/editar paciente -->
-  <div id="modalCrearPaciente" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ titleModal }}</h5>
-          <button type="button" class="close" (click)="closeModal()">
-            <span>&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="form">
-            <div class="mb-3">
-              <label for="nombre" class="form-label">Nombre</label>
-              <input id="nombre" type="text" formControlName="nombre" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label for="apellido" class="form-label">Apellido</label>
-              <input id="apellido" type="text" formControlName="apellido" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label for="edad" class="form-label">Edad</label>
-              <input id="edad" type="number" formControlName="edad" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label for="genero" class="form-label">Género</label>
-              <select id="genero" formControlName="genero" class="form-control">
-                <option value="">Seleccione</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-              </select>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
-          <button type="button" class="btn btn-primary" (click)="guardarPaciente()">{{ titleBoton }}</button>
-        </div>
-      </div>
-    </div>
+  <div *ngIf="pacientes.length === 0 && !cargando" class="alert alert-warning">
+    No hay pacientes registrados.
   </div>
 </div>
 
+<!-- Modal Paciente -->
+<div class="modal fade" id="modalPaciente" tabindex="-1" aria-labelledby="modalPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="form" (ngSubmit)="guardarPaciente()">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ titleModal }}</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label for="tipoDocumento" class="form-label">Tipo Documento</label>
+            <input type="text" id="tipoDocumento" class="form-control" formControlName="tipoDocumento">
+          </div>
+          <div class="mb-2">
+            <label for="numeroDocumento" class="form-label">Número Documento</label>
+            <input type="text" id="numeroDocumento" class="form-control" formControlName="numeroDocumento">
+          </div>
+          <div class="mb-2">
+            <label for="nombres" class="form-label">Nombres</label>
+            <input type="text" id="nombres" class="form-control" formControlName="nombres">
+          </div>
+          <div class="mb-2">
+            <label for="apellidos" class="form-label">Apellidos</label>
+            <input type="text" id="apellidos" class="form-control" formControlName="apellidos">
+          </div>
+          <div class="mb-2">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="text" id="telefono" class="form-control" formControlName="telefono">
+          </div>
+          <div class="mb-2">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" formControlName="email">
+          </div>
+          <div class="mb-2">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" id="direccion" class="form-control" formControlName="direccion">
+          </div>
+          <div class="mb-2">
+            <label for="fechaNacimiento" class="form-label">Fecha Nacimiento</label>
+            <input type="date" id="fechaNacimiento" class="form-control" formControlName="fechaNacimiento">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">{{ titleBoton }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
