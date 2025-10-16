@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MedicoService } from './service/medico.service';
 import { CommonModule } from '@angular/common';
 import { Medico } from './models/medico';
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 
 import Modal from 'bootstrap/js/dist/modal';
 import Swal from 'sweetalert2';
@@ -12,7 +13,7 @@ import { Especializacion } from './models/especializacion';
 
 @Component({
   selector: 'app-medico',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './medico.component.html',
   styleUrl: './medico.component.scss'
 })
@@ -22,6 +23,7 @@ export class MedicoComponent {
   titleModal: string = '';
   titleBoton: string = '';
   medicoSelected: Medico;
+  titleSpinner: string = "";
 
   medicoList: Medico[] = [];
   especializacionesList: Especializacion[] = [];
@@ -39,11 +41,18 @@ export class MedicoComponent {
   constructor(
     private readonly medicoService: MedicoService,
     private readonly utilService: UtilService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
   ) {
     this.listarMedicos();
     this.listarEspecializaciones();
     this.inicializarFormulario();
+    this.titleSpinner = "Prueba spinner";
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+    }, 5000);
+
   }
 
   listarEspecializaciones() {

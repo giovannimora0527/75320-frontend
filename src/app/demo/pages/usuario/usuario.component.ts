@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Usuario } from './models/usuario';
 import { UsuarioService } from './service/usuario.service';
 import { CommonModule } from '@angular/common';
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import {
   FormBuilder,
   FormControl,
@@ -20,7 +21,7 @@ import { delay, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -33,6 +34,8 @@ export class UsuarioComponent {
   usuarioSelected: Usuario;
   showPassword: boolean = false;
 
+  titleSpinner: string = "";
+
   form: FormGroup = new FormGroup({
     username: new FormControl(''),
     password: new FormControl(''),
@@ -42,10 +45,11 @@ export class UsuarioComponent {
 
   constructor(
     private readonly usuarioService: UsuarioService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
   ) {
     this.listarUsuarios();
-    this.cargarFormulario();
+    this.cargarFormulario();   
   }
 
   cargarFormulario() {
@@ -74,17 +78,27 @@ export class UsuarioComponent {
    * Servicio de listar usuarios.
    */
   listarUsuarios() {
+    this.titleSpinner = "Cargando usuarios...";
+    this.spinner.show();
     console.log('Entro a cargar usuarios');
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
         this.usuarios = data;
+        this.spinner.hide();
         console.log('Usuarios cargados:', this.usuarios);
       },
-      error: (err) => console.error('Error al listar usuarios:', err)
+
+      error: (err) => {
+        this.spinner.hide();
+        console.error('Error al listar usuarios:', err);
+        Swal.fire('Error', 'Ocurrió un error al cargar los usuarios.', 'error');
+      }
     });
   }
 
   guardarUsuario() {
+    this.titleSpinner = this.modoFormulario === 'C' ? "Creando usuario..." : "Actualizando usuario...";
+    this.spinner.show();
     if (this.modoFormulario === 'C') {
       this.form.get('activo').setValue(true);
     }
@@ -93,12 +107,14 @@ export class UsuarioComponent {
         // Modo Creación
         this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
           next: (data) => {
+            this.spinner.hide();
             console.log('Usuario guardado:', data);
             Swal.fire('Creación exitosa', data.message, 'success');
             this.listarUsuarios();
             this.closeModal();
           },
           error: (err) => {
+            this.spinner.hide();
             console.error('Error al guardar usuario:', err);
             Swal.fire('Error', err.error?.message || 'Ocurrió un error al crear el usuario.', 'error');
           }
@@ -110,12 +126,14 @@ export class UsuarioComponent {
         this.usuarioService.actualizarUsuario(usuarioActualizado)
         .subscribe(
           {
-            next: (data) => {             
+            next: (data) => {    
+              this.spinner.hide();         
               Swal.fire('Actualización exitosa', data.message, 'success');
               this.listarUsuarios();
               this.closeModal();
             },
             error: (error) => {
+              this.spinner.hide();
               console.error('Error al actualizar usuario:', error);
               Swal.fire('Error', error.error?.message || 'Ocurrió un error al actualizar el usuario.', 'error');
             } 
@@ -123,6 +141,8 @@ export class UsuarioComponent {
         );
        
       }
+    } else {
+      this.spinner.hide();
     }
   }
 
