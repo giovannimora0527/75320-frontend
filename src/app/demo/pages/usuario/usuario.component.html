@@ -94,6 +94,12 @@
             </div>
             <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="text-danger">
               La contraseña es requerida.
+            </div>           
+            <div *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched" class="text-danger">
+              La contraseña debe tener al menos 8 caracteres.
+            </div>
+            <div *ngIf="form.get('password')?.hasError('maxlength') && form.get('password')?.touched" class="text-danger">
+              La contraseña no puede superar los 16 caracteres.
             </div>
           </div>
           <!-- Rol -->

@@ -55,7 +55,7 @@ export class UsuarioComponent {
   cargarFormulario() {
     this.form = this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator]],
+      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)], [this.passwordAsyncValidator]],
       rol: ['', [Validators.required]],
       activo: ['']
     });
