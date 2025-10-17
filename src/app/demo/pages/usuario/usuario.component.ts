@@ -29,12 +29,25 @@ export class UsuarioComponent {
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
   usuarios: Usuario[] = [];
+  usuariosFiltrados: Usuario[] = [];
   titleModal: string = '';
   titleBoton: string = '';
   usuarioSelected: Usuario;
   showPassword: boolean = false;
 
   titleSpinner: string = "";
+
+  // Propiedades para DataTable
+  filtroTexto: string = '';
+  paginaActual: number = 1;
+  elementosPorPagina: number = 10;
+  totalElementos: number = 0;
+  totalPaginas: number = 0;
+  ordenarPor: string = '';
+  ordenDireccion: 'asc' | 'desc' = 'asc';
+
+  // Opciones de elementos por página
+  opcionesPorPagina: number[] = [5, 10, 25, 50];
 
   form: FormGroup = new FormGroup({
     username: new FormControl(''),
@@ -84,6 +97,7 @@ export class UsuarioComponent {
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
         this.usuarios = data;
+        this.aplicarFiltroYPaginacion();
         this.spinner.hide();
         console.log('Usuarios cargados:', this.usuarios);
       },
@@ -191,5 +205,181 @@ export class UsuarioComponent {
       rol: '',
       activo: ''
     });
+  }
+
+  // ================= MÉTODOS PARA DATATABLE =================
+
+  /**
+   * Aplicar filtro y paginación
+   */
+  aplicarFiltroYPaginacion() {
+    // Aplicar filtro
+    if (this.filtroTexto.trim() === '') {
+      this.usuariosFiltrados = [...this.usuarios];
+    } else {
+      const filtro = this.filtroTexto.toLowerCase().trim();
+      this.usuariosFiltrados = this.usuarios.filter(usuario => 
+        usuario.username?.toLowerCase().includes(filtro) ||
+        usuario.rol?.toLowerCase().includes(filtro) ||
+        usuario.fechaCreacion?.toLowerCase().includes(filtro) ||
+        usuario.id?.toString().includes(filtro)
+      );
+    }
+
+    // Aplicar ordenamiento si está definido
+    if (this.ordenarPor) {
+      this.aplicarOrdenamiento();
+    }
+
+    // Calcular totales
+    this.totalElementos = this.usuariosFiltrados.length;
+    this.totalPaginas = Math.ceil(this.totalElementos / this.elementosPorPagina);
+    
+    // Ajustar página actual si es necesario
+    if (this.paginaActual > this.totalPaginas && this.totalPaginas > 0) {
+      this.paginaActual = this.totalPaginas;
+    }
+    if (this.paginaActual < 1) {
+      this.paginaActual = 1;
+    }
+  }
+
+  /**
+   * Aplicar ordenamiento
+   */
+  aplicarOrdenamiento() {
+    this.usuariosFiltrados.sort((a, b) => {
+      let valorA: string | number | Date;
+      let valorB: string | number | Date;
+
+      switch (this.ordenarPor) {
+        case 'id':
+          valorA = a.id || 0;
+          valorB = b.id || 0;
+          break;
+        case 'username':
+          valorA = (a.username || '').toLowerCase();
+          valorB = (b.username || '').toLowerCase();
+          break;
+        case 'rol':
+          valorA = (a.rol || '').toLowerCase();
+          valorB = (b.rol || '').toLowerCase();
+          break;
+        case 'fechaCreacion':
+          valorA = new Date(a.fechaCreacion || 0);
+          valorB = new Date(b.fechaCreacion || 0);
+          break;
+        case 'activo':
+          valorA = a.activo ? 1 : 0;
+          valorB = b.activo ? 1 : 0;
+          break;
+        default:
+          return 0;
+      }
+
+      if (valorA < valorB) {
+        return this.ordenDireccion === 'asc' ? -1 : 1;
+      }
+      if (valorA > valorB) {
+        return this.ordenDireccion === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+
+  /**
+   * Obtener usuarios de la página actual
+   */
+  get usuariosPaginados(): Usuario[] {
+    const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
+    const fin = inicio + this.elementosPorPagina;
+    return this.usuariosFiltrados.slice(inicio, fin);
+  }
+
+  /**
+   * Buscar usuarios
+   */
+  buscar() {
+    this.paginaActual = 1;
+    this.aplicarFiltroYPaginacion();
+  }
+
+  /**
+   * Limpiar filtro
+   */
+  limpiarFiltro() {
+    this.filtroTexto = '';
+    this.buscar();
+  }
+
+  /**
+   * Ordenar por columna
+   */
+  ordenarPorColumna(columna: string) {
+    if (this.ordenarPor === columna) {
+      this.ordenDireccion = this.ordenDireccion === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.ordenarPor = columna;
+      this.ordenDireccion = 'asc';
+    }
+    this.aplicarFiltroYPaginacion();
+  }
+
+  /**
+   * Ir a página específica
+   */
+  irAPagina(pagina: number) {
+    if (pagina >= 1 && pagina <= this.totalPaginas) {
+      this.paginaActual = pagina;
+    }
+  }
+
+  /**
+   * Cambiar elementos por página
+   */
+  cambiarElementosPorPagina(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.elementosPorPagina = parseInt(target.value);
+    this.paginaActual = 1;
+    this.aplicarFiltroYPaginacion();
+  }
+
+  /**
+   * Obtener páginas para mostrar en paginación
+   */
+  get paginasVisibles(): number[] {
+    const paginas: number[] = [];
+    const maxPaginasVisibles = 5;
+    let inicio = Math.max(1, this.paginaActual - Math.floor(maxPaginasVisibles / 2));
+    const fin = Math.min(this.totalPaginas, inicio + maxPaginasVisibles - 1);
+
+    // Ajustar inicio si estamos cerca del final
+    if (fin - inicio < maxPaginasVisibles - 1) {
+      inicio = Math.max(1, fin - maxPaginasVisibles + 1);
+    }
+
+    for (let i = inicio; i <= fin; i++) {
+      paginas.push(i);
+    }
+    return paginas;
+  }
+
+  /**
+   * Obtener rango de elementos mostrados
+   */
+  get rangoElementos(): string {
+    if (this.totalElementos === 0) {
+      return '0 de 0';
+    }
+    const inicio = (this.paginaActual - 1) * this.elementosPorPagina + 1;
+    const fin = Math.min(this.paginaActual * this.elementosPorPagina, this.totalElementos);
+    return `${inicio}-${fin} de ${this.totalElementos}`;
+  }
+
+  /**
+   * TrackBy function para optimizar el renderizado de la tabla
+   */
+  trackByUsuario(index: number, usuario: Usuario): number | undefined {
+    return usuario.id;
   }
 }

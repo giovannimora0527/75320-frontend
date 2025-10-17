@@ -14,26 +14,135 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="table table-responsive">
+      <!-- Controles del DataTable -->
+      <div class="row mb-3">
+        <!-- Filtro de búsqueda -->
+        <div class="col-md-6">
+          <div class="input-group">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Buscar usuarios..." 
+              [(ngModel)]="filtroTexto" 
+              (keyup.enter)="buscar()"
+              (input)="buscar()">
+            <button class="btn btn-outline-secondary" type="button" (click)="limpiarFiltro()">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Selector de elementos por página -->
+        <div class="col-md-6 text-end">
+          <div class="d-flex align-items-center justify-content-end">
+            <label for="elementsPerPage" class="me-2">Mostrar:</label>
+            <select id="elementsPerPage" class="form-select w-auto" [value]="elementosPorPagina" (change)="cambiarElementosPorPagina($event)">
+              <option *ngFor="let opcion of opcionesPorPagina" [value]="opcion">{{ opcion }}</option>
+            </select>
+            <span class="ms-2">registros</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información de registros -->
+      <div class="row mb-2">
+        <div class="col-md-6">
+          <small class="text-muted">Mostrando {{ rangoElementos }} registros</small>
+        </div>
+        <div class="col-md-6 text-end" *ngIf="totalElementos > 0">
+          <small class="text-muted">Total: {{ totalElementos }} registro{{ totalElementos !== 1 ? 's' : '' }}</small>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-responsive">
         <table class="table table-striped table-hover">
-          <thead>
+          <thead class="table-dark">
             <tr>
-              <th>Id</th>
-              <th>Username</th>
-              <th>Rol</th>
-              <th>Fecha de creación</th>
-              <th>Estado</th>
+              <th>
+                <button type="button" class="btn btn-link text-white text-decoration-none p-0 w-100 text-start d-flex align-items-center justify-content-between" 
+                        (click)="ordenarPorColumna('id')" 
+                        aria-label="Ordenar por ID">
+                  Id
+                  <i class="fa fa-sort" 
+                     [ngClass]="{
+                       'fa-sort-up': ordenarPor === 'id' && ordenDireccion === 'asc',
+                       'fa-sort-down': ordenarPor === 'id' && ordenDireccion === 'desc'
+                     }"></i>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="btn btn-link text-white text-decoration-none p-0 w-100 text-start d-flex align-items-center justify-content-between" 
+                        (click)="ordenarPorColumna('username')" 
+                        aria-label="Ordenar por Username">
+                  Username
+                  <i class="fa fa-sort" 
+                     [ngClass]="{
+                       'fa-sort-up': ordenarPor === 'username' && ordenDireccion === 'asc',
+                       'fa-sort-down': ordenarPor === 'username' && ordenDireccion === 'desc'
+                     }"></i>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="btn btn-link text-white text-decoration-none p-0 w-100 text-start d-flex align-items-center justify-content-between" 
+                        (click)="ordenarPorColumna('rol')" 
+                        aria-label="Ordenar por Rol">
+                  Rol
+                  <i class="fa fa-sort" 
+                     [ngClass]="{
+                       'fa-sort-up': ordenarPor === 'rol' && ordenDireccion === 'asc',
+                       'fa-sort-down': ordenarPor === 'rol' && ordenDireccion === 'desc'
+                     }"></i>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="btn btn-link text-white text-decoration-none p-0 w-100 text-start d-flex align-items-center justify-content-between" 
+                        (click)="ordenarPorColumna('fechaCreacion')" 
+                        aria-label="Ordenar por Fecha de creación">
+                  Fecha de creación
+                  <i class="fa fa-sort" 
+                     [ngClass]="{
+                       'fa-sort-up': ordenarPor === 'fechaCreacion' && ordenDireccion === 'asc',
+                       'fa-sort-down': ordenarPor === 'fechaCreacion' && ordenDireccion === 'desc'
+                     }"></i>
+                </button>
+              </th>
+              <th>
+                <button type="button" class="btn btn-link text-white text-decoration-none p-0 w-100 text-start d-flex align-items-center justify-content-between" 
+                        (click)="ordenarPorColumna('activo')" 
+                        aria-label="Ordenar por Estado">
+                  Estado
+                  <i class="fa fa-sort" 
+                     [ngClass]="{
+                       'fa-sort-up': ordenarPor === 'activo' && ordenDireccion === 'asc',
+                       'fa-sort-down': ordenarPor === 'activo' && ordenDireccion === 'desc'
+                     }"></i>
+                </button>
+              </th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let usuario of usuarios">
+            <tr *ngFor="let usuario of usuariosPaginados; trackBy: trackByUsuario">
               <td>{{ usuario.id }}</td>
               <td>{{ usuario.username }}</td>
-              <td>{{ usuario.rol }}</td>
-              <td>{{ usuario.fechaCreacion }}</td>
               <td>
-                <i class="fa" [ngClass]="usuario.activo === true ? 'fa-check text-success' : 'fa-times text-danger'" aria-hidden="true"></i>
+                <span class="badge" 
+                      [ngClass]="{
+                        'bg-primary': usuario.rol === 'ADMIN',
+                        'bg-success': usuario.rol === 'MEDICO',
+                        'bg-info': usuario.rol === 'PACIENTE'
+                      }">
+                  {{ usuario.rol }}
+                </span>
+              </td>
+              <td>{{ usuario.fechaCreacion | date:'yyyy-MM-dd HH:mm' }}</td>
+              <td>
+                <span class="badge" 
+                      [ngClass]="usuario.activo === true ? 'bg-success' : 'bg-danger'">
+                  <i class="fa" [ngClass]="usuario.activo === true ? 'fa-check' : 'fa-times'" aria-hidden="true"></i>
+                  {{ usuario.activo === true ? 'Activo' : 'Inactivo' }}
+                </span>
               </td>
               <td>
                 <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarUsuario(usuario)">
@@ -42,8 +151,60 @@
                 </button>
               </td>
             </tr>
+            <tr *ngIf="usuariosPaginados.length === 0">
+              <td colspan="6" class="text-center text-muted py-4">
+                <i class="fa fa-search fa-2x mb-2"></i>
+                <div>No se encontraron usuarios que coincidan con la búsqueda</div>
+              </td>
+            </tr>
           </tbody>
         </table>
+      </div>
+
+      <!-- Paginación -->
+      <div class="row mt-3" *ngIf="totalPaginas > 1">
+        <div class="col-12">
+          <nav aria-label="Paginación de usuarios">
+            <ul class="pagination justify-content-center mb-0">
+              <!-- Primera página -->
+              <li class="page-item" [class.disabled]="paginaActual === 1">
+                <button class="page-link" (click)="irAPagina(1)" [disabled]="paginaActual === 1">
+                  <i class="fa fa-angle-double-left"></i>
+                </button>
+              </li>
+              
+              <!-- Página anterior -->
+              <li class="page-item" [class.disabled]="paginaActual === 1">
+                <button class="page-link" (click)="irAPagina(paginaActual - 1)" [disabled]="paginaActual === 1">
+                  <i class="fa fa-angle-left"></i>
+                </button>
+              </li>
+
+              <!-- Páginas numeradas -->
+              <li *ngFor="let pagina of paginasVisibles" 
+                  class="page-item" 
+                  [class.active]="pagina === paginaActual">
+                <button class="page-link" (click)="irAPagina(pagina)">
+                  {{ pagina }}
+                </button>
+              </li>
+
+              <!-- Página siguiente -->
+              <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="irAPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas">
+                  <i class="fa fa-angle-right"></i>
+                </button>
+              </li>
+
+              <!-- Última página -->
+              <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+                <button class="page-link" (click)="irAPagina(totalPaginas)" [disabled]="paginaActual === totalPaginas">
+                  <i class="fa fa-angle-double-right"></i>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
@@ -95,7 +256,7 @@
             <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="text-danger">
               La contraseña es requerida.
             </div>           
-            <div *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched" class="text-danger">
+            <div *ngIf="form.get('password')?.hasError('minlength')" class="text-danger">
               La contraseña debe tener al menos 8 caracteres.
             </div>
             <div *ngIf="form.get('password')?.hasError('maxlength') && form.get('password')?.touched" class="text-danger">
