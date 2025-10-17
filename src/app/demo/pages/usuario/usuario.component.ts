@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { Usuario } from './models/usuario';
 import { UsuarioService } from './service/usuario.service';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,17 @@ import {
   ValidationErrors
 } from '@angular/forms';
 
+// Angular Material imports
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
@@ -21,14 +32,33 @@ import { delay, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    ReactiveFormsModule, 
+    NgxSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatTooltipModule
+  ],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
-export class UsuarioComponent {
+export class UsuarioComponent implements AfterViewInit {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
   usuarios: Usuario[] = [];
+  dataSource = new MatTableDataSource<Usuario>([]);
+  displayedColumns: string[] = ['id', 'username', 'rol', 'fechaCreacion', 'activo', 'acciones'];
   titleModal: string = '';
   titleBoton: string = '';
   usuarioSelected: Usuario;
@@ -50,6 +80,20 @@ export class UsuarioComponent {
   ) {
     this.listarUsuarios();
     this.cargarFormulario();   
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    
+    // Configurar filtro personalizado
+    this.dataSource.filterPredicate = (data: Usuario, filter: string) => {
+      const searchString = filter.toLowerCase();
+      return data.username?.toLowerCase().includes(searchString) ||
+             data.rol?.toLowerCase().includes(searchString) ||
+             data.fechaCreacion?.toLowerCase().includes(searchString) ||
+             data.id?.toString().includes(searchString);
+    };
   }
 
   cargarFormulario() {
@@ -84,6 +128,7 @@ export class UsuarioComponent {
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
         this.usuarios = data;
+        this.dataSource.data = data;
         this.spinner.hide();
         console.log('Usuarios cargados:', this.usuarios);
       },
@@ -191,5 +236,43 @@ export class UsuarioComponent {
       rol: '',
       activo: ''
     });
+  }
+
+  /**
+   * Aplicar filtro a la tabla de Material
+   */
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  /**
+   * Obtener el color del chip según el rol
+   */
+  getRolColor(rol: string): string {
+    switch (rol) {
+      case 'ADMIN': return 'primary';
+      case 'MEDICO': return 'accent';
+      case 'PACIENTE': return 'warn';
+      default: return '';
+    }
+  }
+
+  /**
+   * Obtener el icono según el estado
+   */
+  getEstadoIcon(activo: boolean): string {
+    return activo ? 'check_circle' : 'cancel';
+  }
+
+  /**
+   * Obtener el color del icono según el estado
+   */
+  getEstadoColor(activo: boolean): string {
+    return activo ? 'primary' : 'warn';
   }
 }
