@@ -35,11 +35,6 @@
               <td>{{ medicamento.fechaModificacionRegistro }}</td>
               
             <td>
-                <i 
-                    class="fa" 
-                    [ngClass]="medicamento.activo === true ? 'fa-check text-success' : 'fa-times text-danger'"
-                    aria-hidden="true">
-                </i>
             </td>
               <td>
                 <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarMedicamento(medicamento)">
