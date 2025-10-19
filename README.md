@@ -133,3 +133,4 @@ To report a bug, please submit an [issue](https://github.com/codedthemes/datta-a
 - Dribbble [https://dribbble.com/codedthemes](https://dribbble.com/codedthemes)
 - Facebook [https://www.facebook.com/codedthemes](https://www.facebook.com/codedthemes)
 - Twitter [https://twitter.com/codedthemes](https://twitter.com/codedthemes)
+  
