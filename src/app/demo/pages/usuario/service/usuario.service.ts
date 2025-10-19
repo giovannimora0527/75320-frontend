@@ -22,7 +22,7 @@ export class UsuarioService {
     return this.backendService.post(this.urlBase, this.urlApi, 'guardar', usuario);
   }
 
-  actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {   
+  actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {      
     return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', usuario);
   }
 }

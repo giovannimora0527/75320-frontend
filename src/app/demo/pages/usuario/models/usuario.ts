@@ -4,5 +4,5 @@ export class Usuario {
     password: string;
     rol: string;
     fechaCreacion: string;
-    activo: boolean;    
+    activo: boolean; 
 }

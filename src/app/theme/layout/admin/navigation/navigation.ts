@@ -32,7 +32,7 @@ export const NavigationItems: NavigationItem[] = [
       /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
-        title: 'GESTION MEDICOS',
+        title: 'Gestión de medicos',
         type: 'item',
         url: '/inicio/medico',
         icon: 'feather icon-users',
@@ -40,68 +40,52 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'paciente',
-        title: 'GESTION PACIENTES',
+        title: 'Gestión de pacientes',
         type: 'item',
         url: '/inicio/paciente',
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
-      /*Buen dia, para el desarrollo de 
-      esta tarea es necesario crear los 
-      menus y los componentes faltantes.
-       Medicamentos, Citas, Formulas Medicas,
-        Historias Medicas, Gestión de especializaciones.*/
-
       {
         id: 'medicamento',
-        title: 'GESTION MEDICAMENTOS',
+        title: 'Gestión de medicamentos',
         type: 'item',
-        url: '/inicio/paciente',
-        icon: 'feather icon-crosshair',
+        url: '/inicio/medicamentos',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
-
       {
         id: 'cita',
-        title: 'GESTION CITAS',
+        title: 'Gestión de citas',
         type: 'item',
         url: '/inicio/cita',
-        icon: 'feather icon-calendar',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
-        id: 'formulamedica',
-        title: 'GESTION FORMULA MEDICA',
+        id: 'formulas-medicas',
+        title: 'Gestión de fórmulas médicas',
         type: 'item',
-        url: '/inicio/formulamedica',
-        icon: 'feather icon-file-text',
+        url: '/inicio/formulas-medicas',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
-        id: 'historiamedica',
-        title: 'GESTION HISTORIA MEDICA',
+        id: 'historias-medicas',
+        title: 'Gestión de historias clínicas',
         type: 'item',
-        url: '/inicio/historiamedica',
-        icon: 'feather icon-folder',
+        url: '/inicio/historia-clinica',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
-        id: 'gestionespecializacion',
-        title: 'GESTION ESPECIALIZACION',
+        id: 'especializacion',
+        title: 'Gestión de especializaciones',
         type: 'item',
-        url: '/inicio/gestionespecializacion',
-        icon: 'feather icon-book',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-users',
         classes: 'nav-item'
-      },
-      {
-        id: 'gestion',
-        title: 'Gestión General',
-        type: 'item',
-        url: '/inicio/gestion',
-        icon: 'feather icon-list',
-        classes: 'nav-item'
-      },
-
+      }
     ]
   },
   

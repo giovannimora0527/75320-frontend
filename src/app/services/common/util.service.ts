@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { BackendService } from '../backend.service';
+import { Especializacion } from 'src/app/demo/pages/medico/models/especializacion';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilService {
-  constructor(){}
+  urlBase: string = environment.apiUrlAuth;
 
-  listarEspecializaciones(): Observable<any[]> {
-    // Stub: devuelve lista vacía. Si deseas, conecta con el backend después.
-    return of([]);
+  constructor(private backendService: BackendService) {}
+
+
+  listarEspecializaciones(): Observable<Especializacion[]> {
+    return this.backendService.get(this.urlBase, "especializacion", 'listar'); 
   }
 }
