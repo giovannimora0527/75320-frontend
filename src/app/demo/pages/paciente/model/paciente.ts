@@ -1,6 +1,6 @@
 export class Paciente {
     id!: number;
-    idUsuario!: number;
+    usuarioId!: number;
     tipoDocumento!: string;
     numeroDocumento!: string;
     nombres!: string;
