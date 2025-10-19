@@ -7,21 +7,55 @@
       <div class="row">
         <div class="col-md-4 mb-3">
           <label for="formulaPaciente" class="form-label">Paciente</label>
-          <input id="formulaPaciente" type="text" class="form-control" placeholder="Paciente" [(ngModel)]="form.paciente" name="paciente" required />
+          <input id="formulaPaciente" type="text" class="form-control" placeholder="Nombre del paciente" 
+                 [(ngModel)]="form.paciente" name="paciente" required />
         </div>
         <div class="col-md-4 mb-3">
           <label for="formulaMedico" class="form-label">Médico</label>
-          <input id="formulaMedico" type="text" class="form-control" placeholder="Médico" [(ngModel)]="form.medico" name="medico" required />
+          <input id="formulaMedico" type="text" class="form-control" placeholder="Nombre del médico" 
+                 [(ngModel)]="form.medico" name="medico" required />
         </div>
         <div class="col-md-4 mb-3">
           <label for="formulaFecha" class="form-label">Fecha</label>
-          <input id="formulaFecha" type="date" class="form-control" [(ngModel)]="form.fecha" name="fecha" required />
+          <input id="formulaFecha" type="date" class="form-control" 
+                 [(ngModel)]="form.fecha" name="fecha" required />
         </div>
       </div>
-      <div class="mb-3">
-        <label for="formulaIndicaciones" class="form-label">Indicaciones</label>
-        <textarea id="formulaIndicaciones" class="form-control" rows="3" placeholder="Indicaciones" [(ngModel)]="form.indicaciones" name="indicaciones" required></textarea>
+      
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="formulaEstado" class="form-label">Estado</label>
+          <select id="formulaEstado" class="form-control" [(ngModel)]="form.estado" name="estado">
+            <option value="Activa">Activa</option>
+            <option value="Completada">Completada</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Medicamentos</label>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Agregar medicamento" 
+                   [(ngModel)]="medicamentoInput" name="medicamentoInput" />
+            <button type="button" class="btn btn-outline-secondary" (click)="agregarMedicamento()">
+              Agregar
+            </button>
+          </div>
+          <div *ngIf="form.medicamentos && form.medicamentos.length > 0" class="mt-2">
+            <div *ngFor="let med of form.medicamentos; let i = index" class="badge bg-light text-dark me-2 mb-2">
+              {{ med }}
+              <button type="button" class="btn-close ms-1" (click)="eliminarMedicamento(i)"></button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div class="mb-3">
+        <label for="formulaIndicaciones" class="form-label">Indicaciones Médicas</label>
+        <textarea id="formulaIndicaciones" class="form-control" rows="3" 
+                  placeholder="Indicaciones y dosis..." 
+                  [(ngModel)]="form.indicaciones" name="indicaciones" required></textarea>
+      </div>
+
       <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary">{{ editingIndex === null ? 'Guardar' : 'Actualizar' }}</button>
         <button type="button" class="btn btn-outline-secondary" (click)="reset()">Limpiar</button>
@@ -35,6 +69,7 @@
             <th>Paciente</th>
             <th>Médico</th>
             <th>Fecha</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -44,8 +79,11 @@
             <td>{{ f.medico }}</td>
             <td>{{ f.fecha }}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-link" (click)="edit(i)">Editar</button>
-              <button type="button" class="btn btn-sm btn-link text-danger" (click)="remove(i)">Eliminar</button>
+              <span [class]="getBadgeClass(f.estado)">{{ f.estado }}</span>
+            </td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="edit(i)">Editar</button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(i)">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -53,5 +91,3 @@
     </div>
   </div>
 </div>
-
-

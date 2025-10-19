@@ -1,53 +1,176 @@
-<div class="card">
-  <div class="card-header">
-    <h5>Gestión de Medicamentos</h5>
-  </div>
-  <div class="card-body">
-    <form (ngSubmit)="save()">
-      <div class="row">
-        <div class="col-md-4 mb-3">
-          <label for="medicamentoNombre" class="form-label">Nombre</label>
-          <input id="medicamentoNombre" type="text" class="form-control" placeholder="Ej: Paracetamol" [(ngModel)]="form.nombre" name="nombre" required />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="medicamentoCodigo" class="form-label">Código</label>
-          <input id="medicamentoCodigo" type="text" class="form-control" placeholder="Ej: MED-001" [(ngModel)]="form.codigo" name="codigo" required />
-        </div>
-        <div class="col-md-4 mb-3">
-          <label for="medicamentoPresentacion" class="form-label">Presentación</label>
-          <input id="medicamentoPresentacion" type="text" class="form-control" placeholder="Tabletas / Jarabe" [(ngModel)]="form.presentacion" name="presentacion" required />
-        </div>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-pills"></i>
+          &nbsp;Medicamentos
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoMedicamento()">Nuevo Medicamento</button>
       </div>
-      <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">{{ editingIndex === null ? 'Guardar' : 'Actualizar' }}</button>
-        <button type="button" class="btn btn-outline-secondary" (click)="reset()">Limpiar</button>
+    </div>
+    <div class="card-body">
+      <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Presentación</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let medicamento of medicamentos">
+              <td>{{ medicamento.id }}</td>
+              <td>{{ medicamento.codigo }}</td>
+              <td>{{ medicamento.nombre }}</td>
+              <td>{{ medicamento.presentacion }}</td>
+              <td>${{ medicamento.precio | number }}</td>
+              <td>{{ medicamento.stock }}</td>
+              <td>
+                <i 
+                    class="fa" 
+                    [ngClass]="medicamento.estado === 'Activo' ? 'fa-check text-success' : 'fa-times text-danger'"
+                    aria-hidden="true">
+                </i>
+                {{ medicamento.estado }}
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarMedicamento(medicamento)">
+                  <i class="fa fa-edit"></i>
+                  &nbsp;Editar
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="eliminarMedicamento(medicamento)">
+                  <i class="fa fa-trash"></i>
+                  &nbsp;Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </form>
-    <hr />
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Código</th>
-            <th>Presentación</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let m of medicamentos; let i = index">
-            <td>{{ m.nombre }}</td>
-            <td>{{ m.codigo }}</td>
-            <td>{{ m.presentacion }}</td>
-            <td>
-              <button type="button" class="btn btn-sm btn-link" (click)="edit(i)">Editar</button>
-              <button type="button" class="btn btn-sm btn-link text-danger" (click)="remove(i)">Eliminar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </div>
 
-
+<!-- Modal -->
+<div class="modal fade" id="modalCrearMedicamento" tabindex="-1" aria-labelledby="modalCrearMedicamentoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearMedicamentoModalLabel">
+            {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <form [formGroup]="form">
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="form-control"
+              id="nombre"
+              placeholder="Ingrese el nombre del medicamento"             
+            />
+            <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+              El nombre es requerido.
+            </div>
+          </div>
+          <!-- Código -->
+          <div class="mb-3">
+            <label for="codigo" class="form-label">Código</label>
+            <input
+              type="text"
+              formControlName="codigo"
+              class="form-control"
+              id="codigo"
+              placeholder="Ingrese el código del medicamento"
+            />
+            <div *ngIf="form.get('codigo')?.hasError('required') && form.get('codigo')?.touched" class="text-danger">
+              El código es requerido.
+            </div>
+          </div>
+          <!-- Presentación -->
+          <div class="mb-3">
+            <label for="presentacion" class="form-label">Presentación</label>
+            <input
+              type="text"
+              formControlName="presentacion"
+              class="form-control"
+              id="presentacion"
+              placeholder="Ingrese la presentación"
+            />
+            <div *ngIf="form.get('presentacion')?.hasError('required') && form.get('presentacion')?.touched" class="text-danger">
+              La presentación es requerida.
+            </div>
+          </div>
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea
+              formControlName="descripcion"
+              class="form-control"
+              id="descripcion"
+              placeholder="Ingrese la descripción del medicamento"
+              rows="2">
+            </textarea>
+          </div>
+          <!-- Precio -->
+          <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            <input
+              type="number"
+              formControlName="precio"
+              class="form-control"
+              id="precio"
+              placeholder="Ingrese el precio"
+              min="0"
+            />
+            <div *ngIf="form.get('precio')?.hasError('min') && form.get('precio')?.touched" class="text-danger">
+              El precio debe ser mayor o igual a 0.
+            </div>
+          </div>
+          <!-- Stock -->
+          <div class="mb-3">
+            <label for="stock" class="form-label">Stock</label>
+            <input
+              type="number"
+              formControlName="stock"
+              class="form-control"
+              id="stock"
+              placeholder="Ingrese el stock disponible"
+              min="0"
+            />
+            <div *ngIf="form.get('stock')?.hasError('min') && form.get('stock')?.touched" class="text-danger">
+              El stock debe ser mayor o igual a 0.
+            </div>
+          </div>
+          <!-- Estado -->
+          <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select
+              formControlName="estado"
+              class="form-control"
+              id="estado">
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+         </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarMedicamento()"
+        [disabled]="form.invalid">{{titleBoton}}</button>
+      </div>
+    </div>
+  </div>
+</div>

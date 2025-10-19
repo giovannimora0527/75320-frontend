@@ -7,11 +7,13 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label for="espNombre" class="form-label">Nombre de la especialización</label>
-          <input id="espNombre" type="text" class="form-control" placeholder="Ej: Cardiología" [(ngModel)]="form.nombre" name="nombre" required />
+          <input id="espNombre" type="text" class="form-control" placeholder="Ej: Cardiología" 
+                 [(ngModel)]="form.nombre" name="nombre" required />
         </div>
         <div class="col-md-6 mb-3">
           <label for="espCodigo" class="form-label">Código</label>
-          <input id="espCodigo" type="text" class="form-control" placeholder="Ej: ESP-001" [(ngModel)]="form.codigo" name="codigo" required />
+          <input id="espCodigo" type="text" class="form-control" placeholder="Ej: ESP-001" 
+                 [(ngModel)]="form.codigoEspecializacion" name="codigoEspecializacion" required />
         </div>
       </div>
       <div class="d-flex gap-2">
@@ -32,10 +34,10 @@
         <tbody>
           <tr *ngFor="let e of especializaciones; let i = index">
             <td>{{ e.nombre }}</td>
-            <td>{{ e.codigo }}</td>
+            <td>{{ e.codigoEspecializacion }}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-link" (click)="edit(i)">Editar</button>
-              <button type="button" class="btn btn-sm btn-link text-danger" (click)="remove(i)">Eliminar</button>
+              <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="edit(i)">Editar</button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(i)">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -43,5 +45,3 @@
     </div>
   </div>
 </div>
-
-

@@ -7,21 +7,51 @@
       <div class="row">
         <div class="col-md-4 mb-3">
           <label for="histPaciente" class="form-label">Paciente</label>
-          <input id="histPaciente" type="text" class="form-control" placeholder="Paciente" [(ngModel)]="form.paciente" name="paciente" required />
+          <input id="histPaciente" type="text" class="form-control" placeholder="Nombre del paciente" 
+                 [(ngModel)]="form.paciente" name="paciente" required />
         </div>
         <div class="col-md-4 mb-3">
-          <label for="histDiagnostico" class="form-label">Diagnóstico</label>
-          <input id="histDiagnostico" type="text" class="form-control" placeholder="Diagnóstico" [(ngModel)]="form.diagnostico" name="diagnostico" required />
+          <label for="histMedico" class="form-label">Médico</label>
+          <input id="histMedico" type="text" class="form-control" placeholder="Nombre del médico" 
+                 [(ngModel)]="form.medico" name="medico" required />
         </div>
         <div class="col-md-4 mb-3">
           <label for="histFecha" class="form-label">Fecha</label>
-          <input id="histFecha" type="date" class="form-control" [(ngModel)]="form.fecha" name="fecha" required />
+          <input id="histFecha" type="date" class="form-control" 
+                 [(ngModel)]="form.fecha" name="fecha" required />
         </div>
       </div>
-      <div class="mb-3">
-        <label for="histNotas" class="form-label">Notas</label>
-        <textarea id="histNotas" class="form-control" rows="3" placeholder="Notas" [(ngModel)]="form.notas" name="notas" required></textarea>
+      
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="histDiagnostico" class="form-label">Diagnóstico</label>
+          <input id="histDiagnostico" type="text" class="form-control" placeholder="Diagnóstico principal" 
+                 [(ngModel)]="form.diagnostico" name="diagnostico" required />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="histEstado" class="form-label">Estado</label>
+          <select id="histEstado" class="form-control" [(ngModel)]="form.estado" name="estado">
+            <option value="Activa">Activa</option>
+            <option value="Cerrada">Cerrada</option>
+            <option value="Archivada">Archivada</option>
+          </select>
+        </div>
       </div>
+
+      <div class="mb-3">
+        <label for="histTratamiento" class="form-label">Tratamiento</label>
+        <textarea id="histTratamiento" class="form-control" rows="2" 
+                  placeholder="Tratamiento prescrito..." 
+                  [(ngModel)]="form.tratamiento" name="tratamiento"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="histNotas" class="form-label">Notas y Observaciones</label>
+        <textarea id="histNotas" class="form-control" rows="3" 
+                  placeholder="Notas adicionales, síntomas, evolución..." 
+                  [(ngModel)]="form.notas" name="notas" required></textarea>
+      </div>
+
       <div class="d-flex gap-2">
         <button type="submit" class="btn btn-primary">{{ editingIndex === null ? 'Guardar' : 'Actualizar' }}</button>
         <button type="button" class="btn btn-outline-secondary" (click)="reset()">Limpiar</button>
@@ -34,7 +64,9 @@
           <tr>
             <th>Paciente</th>
             <th>Diagnóstico</th>
+            <th>Médico</th>
             <th>Fecha</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -42,10 +74,14 @@
           <tr *ngFor="let h of historias; let i = index">
             <td>{{ h.paciente }}</td>
             <td>{{ h.diagnostico }}</td>
+            <td>{{ h.medico }}</td>
             <td>{{ h.fecha }}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-link" (click)="edit(i)">Editar</button>
-              <button type="button" class="btn btn-sm btn-link text-danger" (click)="remove(i)">Eliminar</button>
+              <span [class]="getBadgeClass(h.estado)">{{ h.estado }}</span>
+            </td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="edit(i)">Editar</button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(i)">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -53,5 +89,3 @@
     </div>
   </div>
 </div>
-
-
