@@ -1,1 +1,36 @@
-<p>especializacion works!</p>
+<div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Listado de Especializaciones</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Descripcion</th>
+              <th>Codigo Especializacion</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (especializaciones?.length) {
+              @for (m of especializaciones; track m; let i = $index) {
+                <tr>
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ m.nombre }}</td>
+                  <td>{{ m.descripcion }}</td>
+                  <td>{{ m.codigoEspecializacion }}</td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="8" class="text-center p-4">No hay especializaciones para mostrar</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

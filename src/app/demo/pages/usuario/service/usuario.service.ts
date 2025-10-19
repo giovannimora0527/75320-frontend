@@ -22,7 +22,13 @@ export class UsuarioService {
     return this.backendService.post(this.urlBase, this.urlApi, 'guardar', usuario);
   }
 
-  actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {   
-    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', usuario);
+  // CAMBIAR ESTE MÉTODO - Agregar parámetro id
+  actualizarUsuario(id: number, usuario: Usuario): Observable<RespuestaRs> {   
+    return this.backendService.post(this.urlBase, this.urlApi, `actualizar?id=${id}`, usuario);
+  }
+
+  // AGREGAR ESTE MÉTODO si no lo tienes
+  eliminarUsuario(id: number): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.urlApi, `eliminar?id=${id}`, {});
   }
 }

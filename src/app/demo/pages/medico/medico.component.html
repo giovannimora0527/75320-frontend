@@ -19,9 +19,9 @@
         </thead>
         <tbody>
           @if (medicos?.length) {
-            @for (m of medicos; track m) {
+            @for (m of medicos; track m; let i = $index) {
               <tr>
-                <td>{{ m.id }}</td>
+                <td>{{ i + 1 }}</td>
                 <td>{{ m.tipoDocumento }}</td>
                 <td>{{ m.numeroDocumento }}</td>
                 <td>{{ m.nombres }}</td>

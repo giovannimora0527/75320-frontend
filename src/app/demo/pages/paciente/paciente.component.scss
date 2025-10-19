@@ -1,0 +1,60 @@
+// Animaciones suaves
+.table-hover tbody tr {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.01);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  // Mejora visual de las cards
+  .card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .card-header {
+    border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+    padding: 1.25rem 1.5rem;
+  }
+  
+  // Botones con mejor hover
+  .btn {
+    transition: all 0.3s ease;
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  // Loading spinner personalizado
+  .spinner-border {
+    border-width: 0.3rem;
+  }
+  
+  // Badges más modernos
+  .badge {
+    padding: 0.4em 0.8em;
+    font-weight: 500;
+    border-radius: 6px;
+  }
+  
+  // Formulario más espaciado
+  .form-label {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .form-control, .form-select {
+    border-radius: 8px;
+    border: 1.5px solid #dee2e6;
+    padding: 0.6rem 0.75rem;
+    
+    &:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    }
+  }
