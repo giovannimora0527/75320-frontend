@@ -26,6 +26,10 @@ export class PacienteService {
  actualizarPaciente(paciente: Paciente): Observable<RespuestaRs>{
       return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', paciente);
     }
+    
+  eliminarPaciente(paciente: Paciente): Observable<RespuestaRs>{
+      return this.backendService.post(this.urlBase, this.urlApi, 'eliminar', paciente);
+  }
   
   
   
