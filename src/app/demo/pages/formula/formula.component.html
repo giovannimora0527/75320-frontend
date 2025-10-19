@@ -1,1 +1,163 @@
-<p>formula works!</p>
+<ngx-spinner type="pacman" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-file-prescription"></i>
+          &nbsp;Mis Fórmulas
+        </h3>
+        <button mat-raised-button color="primary" (click)="abrirNuevaFormula()">
+          <mat-icon>add</mat-icon>
+          Nueva Fórmula
+        </button>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <!-- Campo de filtro -->
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Buscar fórmulas</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por ID, cita, medicamento o dosis..." #input>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Tabla de Material -->
+      <div class="mat-elevation-8">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <!-- Columna ID -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+            <td mat-cell *matCellDef="let formula"> {{ formula.id }} </td>
+          </ng-container>
+
+          <!-- Columna Cita -->
+          <ng-container matColumnDef="citaId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Cita </th>
+            <td mat-cell *matCellDef="let formula"> {{ formula.citaId }} </td>
+          </ng-container>
+
+          <!-- Columna Medicamento -->
+          <ng-container matColumnDef="medicamentoId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Medicamento </th>
+            <td mat-cell *matCellDef="let formula"> {{ formula.medicamentoId }} </td>
+          </ng-container>
+
+          <!-- Columna Dosis -->
+          <ng-container matColumnDef="dosis">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Dosis </th>
+            <td mat-cell *matCellDef="let formula"> {{ formula.dosis }} </td>
+          </ng-container>
+
+          <!-- Columna Indicaciones -->
+          <ng-container matColumnDef="indicaciones">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Indicaciones </th>
+            <td mat-cell *matCellDef="let formula"> {{ formula.indicaciones }} </td>
+          </ng-container>
+
+          <!-- Columna Fecha de Creación -->
+          <ng-container matColumnDef="fechaCreacionRegistro">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha de Creación </th>
+            <td mat-cell *matCellDef="let formula"> {{ formula.fechaCreacionRegistro | date:'yyyy-MM-dd HH:mm' }} </td>
+          </ng-container>
+
+          <!-- Columna Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let formula">
+              <button mat-icon-button color="primary" (click)="abrirEditarFormula(formula)" matTooltip="Editar fórmula">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Fila cuando no hay datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+              <div class="no-data-message">
+                <mat-icon class="no-data-icon">search_off</mat-icon>
+                <p>No se encontraron fórmulas que coincidan con el filtro "{{ input.value }}"</p>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- Paginador -->
+        <mat-paginator 
+          [pageSizeOptions]="[5, 10, 25, 100]" 
+          [pageSize]="10"
+          showFirstLastButtons
+          aria-label="Seleccionar página de fórmulas">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearFormulaModalLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- 👇 el form maneja ngSubmit -->
+        <form [formGroup]="form" (ngSubmit)="guardarFormula()">
+          <!-- Cita -->
+          <div class="mb-3">
+            <label for="citaId" class="form-label">ID de la Cita</label>
+            <input type="number" formControlName="citaId" class="form-control" id="citaId" placeholder="Ingrese el ID de la cita" />
+            <div *ngIf="form.get('citaId')?.hasError('required') && form.get('citaId')?.touched" class="text-danger">
+              El ID de la cita es requerido.
+            </div>
+          </div>
+
+          <!-- Medicamento -->
+          <div class="mb-3">
+            <label for="medicamentoId" class="form-label">ID del Medicamento</label>
+            <input type="number" formControlName="medicamentoId" class="form-control" id="medicamentoId" placeholder="Ingrese el ID del medicamento" />
+            <div *ngIf="form.get('medicamentoId')?.hasError('required') && form.get('medicamentoId')?.touched" class="text-danger">
+              El ID del medicamento es requerido.
+            </div>
+          </div>
+
+          <!-- Dosis -->
+          <div class="mb-3">
+            <label for="dosis" class="form-label">Dosis</label>
+            <input type="text" formControlName="dosis" class="form-control" id="dosis" placeholder="Ingrese la dosis" />
+            <div *ngIf="form.get('dosis')?.hasError('required') && form.get('dosis')?.touched" class="text-danger">
+              La dosis es requerida.
+            </div>
+          </div>
+
+          <!-- Indicaciones -->
+          <div class="mb-3">
+            <label for="indicaciones" class="form-label">Indicaciones</label>
+            <textarea formControlName="indicaciones" class="form-control" id="indicaciones" placeholder="Ingrese las indicaciones"></textarea>
+            <div *ngIf="form.get('indicaciones')?.hasError('required') && form.get('indicaciones')?.touched" class="text-danger">
+              Las indicaciones son requeridas.
+            </div>
+          </div>
+
+          <!-- Footer dentro del form -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">{{ titleBoton }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
