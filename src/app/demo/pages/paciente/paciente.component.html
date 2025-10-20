@@ -1,1 +1,292 @@
-<p>paciente works!</p>
+<ngx-spinner type="square-jelly-box" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-user-md"></i>
+          &nbsp;Mis pacientes
+        </h3>
+        <button mat-raised-button color="primary" (click)="abrirNuevoPaciente()"> 
+            <mat-icon>add</mat-icon>
+            Nuevo Paciente
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Campo de filtro -->
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Buscar Pacientes</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por nombre, apellido o documento..." #input>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Tabla de Material -->
+      <div class="table-responsive mat-elevation-8">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <!-- Columna ID -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.id }} </td>
+          </ng-container>
+
+          <!-- Columna Usuario Id -->
+          <ng-container matColumnDef="usuarioId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario Id </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.usuarioId }} </td>
+          </ng-container>
+
+          <!-- Columna Tipo de documento -->
+          <ng-container matColumnDef="tipoDocumento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de documento </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.tipoDocumento }} </td>
+          </ng-container>
+
+          <!-- Columna Número de documento -->
+          <ng-container matColumnDef="numeroDocumento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Número de documento </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.numeroDocumento }} </td>
+          </ng-container>
+
+          <!-- Columna Nombres -->
+          <ng-container matColumnDef="nombres">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombres </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.nombres }} </td>
+          </ng-container>
+
+          <!-- Columna Apellidos -->
+          <ng-container matColumnDef="apellidos">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Apellidos </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.apellidos }} </td>
+          </ng-container>
+
+          <!-- Columna Fecha de nacimiento -->
+          <ng-container matColumnDef="fechaNacimiento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha de nacimiento </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.fechaNacimiento | date:'yyyy-MM-dd' }} </td>
+          </ng-container>
+
+          <!-- Columna Genero -->
+          <ng-container matColumnDef="genero">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Genero </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.genero }} </td>
+          </ng-container>
+
+          <!-- Columna Teléfono -->
+          <ng-container matColumnDef="telefono">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Teléfono </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.telefono }} </td>
+          </ng-container>
+
+            <!-- Columna Direccion -->
+          <ng-container matColumnDef="direccion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Direccion </th>
+            <td mat-cell *matCellDef="let paciente"> {{ paciente.direccion }} </td>
+          </ng-container>
+            
+            <!-- Columna Modificaciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let paciente">
+              <button mat-icon-button color="primary" (click)="abrirEditarPaciente(paciente)" matTooltip="Editar paciente">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Fila cuando no hay datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+              <div class="no-data-message">
+                <mat-icon class="no-data-icon">search_off</mat-icon>
+                <p>No se encontraron pacientes que coincidan con el filtro "{{ input.value }}"</p>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+          <!-- Paginador -->
+        <mat-paginator 
+          [pageSizeOptions]="[5, 10, 25, 100]" 
+          [pageSize]="10"
+          showFirstLastButtons
+          aria-label="Seleccionar página de pacientes">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>          
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearPaciente" tabindex="-1" aria-labelledby="modalCrearPacienteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearPacienteModalLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+            <form [formGroup]="form">
+                <!--  Usuario Id -->
+                <div class="mb-3">
+                <label for="usuarioId" class="form-label">Usuario Id</label>
+                <input
+                  type="text"
+                  formControlName="usuarioId"
+                  class="form-control"
+                  id="usuarioId"
+                  placeholder="Ingrese el id de usuario del paciente"
+                  [ngModel]="pacienteSelected ? pacienteSelected.usuarioId: ''"
+                />
+                <div *ngIf="form.get('usuarioId')?.hasError('required') && form.get('usuarioId')?.touched" class="text-danger">
+                  El id de usuario es requerido.
+                </div>
+              </div>
+
+              <!--  Tipo de documento -->
+              <div class="mb-3">
+                <label for="tipoDocumento" class="form-label">Tipo de documento</label>
+                <select
+                  formControlName="tipoDocumento"
+                  class="form-control"
+                  id="tipoDocumento"
+                  [ngModel]="pacienteSelected ? pacienteSelected.tipoDocumento : ''"
+                >
+                  <option value="" [selected]="!pacienteSelected" disabled>Seleccione tipo de documento</option>
+                  <option value="CC">Cédula de ciudadanía</option>
+                  <option value="PA">Pasaporte</option>
+                  <option value="CE">Cédula de extranjería</option>
+                </select>
+                <div *ngIf="form.get('tipoDocumento')?.hasError('required') && form.get('tipoDocumento')?.touched" class="text-danger">
+                  El tipo de documento es requerido.
+                </div>
+              </div>
+
+              <!-- Número de documento -->
+              <div class="mb-3">
+                <label for="numeroDocumento" class="form-label">Número de documento</label>
+                <input
+                  type="text"
+                  formControlName="numeroDocumento"
+                  class="form-control"
+                  id="numeroDocumento"
+                  placeholder="Ingrese el numero del documento del paciente"
+                  [ngModel]="pacienteSelected ? pacienteSelected.numeroDocumento : ''"
+                />
+                <div *ngIf="form.get('numeroDocumento')?.hasError('required') && form.get('numeroDocumento')?.touched" class="text-danger">
+                  El número de documento es requerido.
+                </div>
+              </div>
+
+              <!-- Nombres -->
+              <div class="mb-3">
+                <label for="nombres" class="form-label">Nombres</label>
+                <input
+                  type="text"
+                  formControlName="nombres"
+                  class="form-control"
+                  id="nombres"
+                  placeholder="Ingrese los nombres del paciente"
+                  [ngModel]="pacienteSelected ? pacienteSelected.nombres : ''"
+                />
+                <div *ngIf="form.get('nombres')?.hasError('required') && form.get('nombres')?.touched" class="text-danger">
+                  Los nombres son obligatorios.
+                </div>
+              </div>
+
+              <!-- Apellidos -->
+              <div class="mb-3">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input
+                  type="text"
+                  formControlName="apellidos"
+                  class="form-control"
+                  id="apellidos"
+                  placeholder="Ingrese los apellidos del paciente"
+                  [ngModel]="pacienteSelected ? pacienteSelected.apellidos : ''"
+                />
+                <div *ngIf="form.get('apellidos')?.hasError('required') && form.get('apellidos')?.touched" class="text-danger">
+                  Los apellidos son obligatorios.
+                </div>
+              </div>
+
+              <!-- Fecha de nacimiento -->
+              <div class="mb-3">
+                <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                <input
+                  type="text"
+                  formControlName="fechaNacimiento"
+                  class="form-control"
+                  id="fechaNacimiento"
+                  placeholder="Ingrese la fecha de nacimiento del paciente (AAAA-MM-DD)"
+                  [ngModel]="pacienteSelected ? pacienteSelected.fechaNacimiento : ''"
+                />
+                <div
+                  *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched"
+                  class="text-danger"
+                >
+                  La fecha de nacimiento es obligatoria.
+                </div>
+              </div>
+
+              <!-- Genero -->
+              <div class="mb-3">
+                <label for="genero" class="form-label">Genero</label>
+                <select
+                  formControlName="genero"
+                  class="form-control"
+                  id="genero"
+                  [ngModel]="pacienteSelected ? pacienteSelected.genero : ''"
+                >
+                  <option value="" [selected]="!pacienteSelected" disabled>Seleccione genero</option>
+                  <option value="H">Masculino</option>
+                  <option value="F">Femenino</option>
+                </select>
+                <div *ngIf="form.get('genero')?.hasError('required') && form.get('genero')?.touched" class="text-danger">
+                  El genero es requerido.
+                </div>
+              </div>
+
+                <!-- Telefono -->
+              <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono o Celular</label>
+                <input
+                  type="text"
+                  formControlName="telefono"
+                  class="form-control"
+                  id="telefono"
+                  placeholder="Ingrese el teléfono del paciente"
+                  [ngModel]="pacienteSelected ? pacienteSelected.telefono : ''"
+                />                
+              </div>
+
+              <!-- Direccion -->
+              <div class="mb-3">
+                <label for="direccion" class="form-label">Direccion</label>
+                <input
+                  type="text"
+                  formControlName="direccion"
+                  class="form-control"
+                  id="direccion"
+                  placeholder="Ingrese la direccion del paciente"
+                  [ngModel]="pacienteSelected ? pacienteSelected.direccion : ''"
+                />                
+              </div>
+            </form>
+          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarPaciente()"[disabled]="form.invalid">{{ titleBoton }}</button>
+      </div>
+    </div>
+  </div>
+</div>
