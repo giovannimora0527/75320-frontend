@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { Usuario } from '../models/usuario';
-import { environment } from './../../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 import { RespuestaRs } from '../models/respuesta';
 
 @Injectable({

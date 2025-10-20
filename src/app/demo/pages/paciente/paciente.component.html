@@ -1,34 +1,311 @@
 <p>paciente works!</p>
-<div class="page-header">
-  <h3 class="mb-3">Gestión de Pacientes</h3>
+<!-- Header con botones -->
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h3 class="mb-0">
+      <i class="fas fa-user-injured me-2"></i>
+      Gestión de Pacientes
+    </h3>
+    <button class="btn btn-primary" (click)="nuevoPaciente()" data-bs-toggle="modal" data-bs-target="#modalPaciente">
+      <i class="fas fa-plus me-2"></i>Nuevo Paciente
+    </button>
+  </div>
 </div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Buscar en:</label>
+        <select class="form-select" [(ngModel)]="filtroCampo" (change)="aplicarFiltros()">
+          <option *ngFor="let campo of camposFiltro" [value]="campo.valor">{{ campo.texto }}</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Texto de búsqueda:</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="filtroTexto" 
+          (input)="aplicarFiltros()"
+          placeholder="Escriba para filtrar..."
+        >
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-outline-secondary w-100" (click)="limpiarFiltros()">
+          <i class="fas fa-times me-1"></i>Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla de pacientes -->
 <div class="card">
-  <div class="card-body table-responsive">
-    <table class="table table-hover align-middle">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Documento</th>
-          <th>Nombres</th>
-          <th>Apellidos</th>
-          <th>Teléfono</th>
-          <th>Email</th>
-          <th>Activo</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of pacientes">
-          <td>{{ p.id }}</td>
-          <td>{{ p.tipoDocumento }} {{ p.numeroDocumento }}</td>
-          <td>{{ p.nombres }}</td>
-          <td>{{ p.apellidos }}</td>
-          <td>{{ p.telefono }}</td>
-          <td>{{ p.email }}</td>
-          <td>
-            <span class="badge" [class.bg-success]="p.activo" [class.bg-secondary]="!p.activo">{{ p.activo ? 'Sí' : 'No' }}</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="card-header">
+    <h5 class="mb-0">
+      <i class="fas fa-list me-2"></i>
+      Lista de Pacientes ({{ pacientesFiltrados.length }} de {{ pacientes.length }})
+    </h5>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Documento</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Ocupación</th>
+            <th>Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of pacientesFiltrados; trackBy: trackByFn">
+            <td><span class="badge bg-primary">{{ p.id }}</span></td>
+            <td>
+              <span class="badge bg-info me-1">{{ p.tipoDocumento }}</span>
+              {{ p.numeroDocumento }}
+            </td>
+            <td>{{ p.nombres }}</td>
+            <td>{{ p.apellidos }}</td>
+            <td>{{ p.telefono }}</td>
+            <td>{{ p.email }}</td>
+            <td>{{ p.ocupacion }}</td>
+            <td>
+              <span class="badge" [class.bg-success]="p.activo" [class.bg-danger]="!p.activo">
+                {{ p.activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editarPaciente(p)" data-bs-toggle="modal" data-bs-target="#modalPaciente">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm" [class.btn-outline-success]="!p.activo" [class.btn-outline-warning]="p.activo" (click)="toggleActivo(p)">
+                  <i class="fas" [class.fa-check]="!p.activo" [class.fa-times]="p.activo"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="eliminarPaciente(p)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="pacientesFiltrados.length === 0">
+            <td colspan="9" class="text-center py-4">
+              <i class="fas fa-search fa-2x text-muted mb-2"></i>
+              <p class="text-muted mb-0">No se encontraron pacientes</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para crear/editar paciente -->
+<div class="modal fade" id="modalPaciente" tabindex="-1" aria-labelledby="modalPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalPacienteLabel">
+          <i class="fas fa-user me-2"></i>
+          {{ modoEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cancelarEdicion()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="pacienteForm" (ngSubmit)="guardarPaciente()">
+          <div class="row g-3">
+            <!-- Información Personal -->
+            <div class="col-12">
+              <h6 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fas fa-user me-2"></i>Información Personal
+              </h6>
+            </div>
+            
+            <div class="col-md-3">
+              <label class="form-label">Tipo de Documento *</label>
+              <select class="form-select" formControlName="tipoDocumento" [class.is-invalid]="esCampoInvalido('tipoDocumento')">
+                <option value="">Seleccionar...</option>
+                <option *ngFor="let tipo of tiposDocumento" [value]="tipo">{{ tipo }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('tipoDocumento')">
+                {{ obtenerMensajeError('tipoDocumento') }}
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Número de Documento *</label>
+              <input type="text" class="form-control" formControlName="numeroDocumento" [class.is-invalid]="esCampoInvalido('numeroDocumento')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('numeroDocumento')">
+                {{ obtenerMensajeError('numeroDocumento') }}
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Nombres *</label>
+              <input type="text" class="form-control" formControlName="nombres" [class.is-invalid]="esCampoInvalido('nombres')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('nombres')">
+                {{ obtenerMensajeError('nombres') }}
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Apellidos *</label>
+              <input type="text" class="form-control" formControlName="apellidos" [class.is-invalid]="esCampoInvalido('apellidos')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('apellidos')">
+                {{ obtenerMensajeError('apellidos') }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Fecha de Nacimiento *</label>
+              <input type="date" class="form-control" formControlName="fechaNacimiento" [class.is-invalid]="esCampoInvalido('fechaNacimiento')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('fechaNacimiento')">
+                {{ obtenerMensajeError('fechaNacimiento') }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Género *</label>
+              <select class="form-select" formControlName="genero" [class.is-invalid]="esCampoInvalido('genero')">
+                <option value="">Seleccionar...</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+                <option value="O">Otro</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('genero')">
+                {{ obtenerMensajeError('genero') }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Estado Civil *</label>
+              <select class="form-select" formControlName="estadoCivil" [class.is-invalid]="esCampoInvalido('estadoCivil')">
+                <option value="">Seleccionar...</option>
+                <option *ngFor="let estado of estadosCiviles" [value]="estado">{{ estado }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('estadoCivil')">
+                {{ obtenerMensajeError('estadoCivil') }}
+              </div>
+            </div>
+
+            <!-- Información de Contacto -->
+            <div class="col-12 mt-4">
+              <h6 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fas fa-phone me-2"></i>Información de Contacto
+              </h6>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Teléfono *</label>
+              <input type="tel" class="form-control" formControlName="telefono" [class.is-invalid]="esCampoInvalido('telefono')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('telefono')">
+                {{ obtenerMensajeError('telefono') }}
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-control" formControlName="email" [class.is-invalid]="esCampoInvalido('email')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('email')">
+                {{ obtenerMensajeError('email') }}
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Dirección *</label>
+              <input type="text" class="form-control" formControlName="direccion" [class.is-invalid]="esCampoInvalido('direccion')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('direccion')">
+                {{ obtenerMensajeError('direccion') }}
+              </div>
+            </div>
+
+            <!-- Información Laboral -->
+            <div class="col-12 mt-4">
+              <h6 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fas fa-briefcase me-2"></i>Información Laboral
+              </h6>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Ocupación *</label>
+              <input type="text" class="form-control" formControlName="ocupacion" [class.is-invalid]="esCampoInvalido('ocupacion')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('ocupacion')">
+                {{ obtenerMensajeError('ocupacion') }}
+              </div>
+            </div>
+
+            <!-- Contacto de Emergencia -->
+            <div class="col-12 mt-4">
+              <h6 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>Contacto de Emergencia
+              </h6>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Nombre del Contacto *</label>
+              <input type="text" class="form-control" formControlName="contactoEmergenciaNombre" [class.is-invalid]="esCampoInvalido('contactoEmergenciaNombre')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('contactoEmergenciaNombre')">
+                {{ obtenerMensajeError('contactoEmergenciaNombre') }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Teléfono del Contacto *</label>
+              <input type="tel" class="form-control" formControlName="contactoEmergenciaTelefono" [class.is-invalid]="esCampoInvalido('contactoEmergenciaTelefono')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('contactoEmergenciaTelefono')">
+                {{ obtenerMensajeError('contactoEmergenciaTelefono') }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Relación *</label>
+              <input type="text" class="form-control" formControlName="contactoEmergenciaRelacion" [class.is-invalid]="esCampoInvalido('contactoEmergenciaRelacion')">
+              <div class="invalid-feedback" *ngIf="esCampoInvalido('contactoEmergenciaRelacion')">
+                {{ obtenerMensajeError('contactoEmergenciaRelacion') }}
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="col-12 mt-4">
+              <h6 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fas fa-sticky-note me-2"></i>Observaciones Adicionales
+              </h6>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-control" formControlName="observaciones" rows="3" placeholder="Observaciones médicas o adicionales..."></textarea>
+            </div>
+
+            <!-- Estado -->
+            <div class="col-12">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" formControlName="activo" id="activo">
+                <label class="form-check-label" for="activo">
+                  <strong>Paciente Activo</strong>
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">
+          <i class="fas fa-times me-2"></i>Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="guardarPaciente()" [disabled]="pacienteForm.invalid">
+          <i class="fas fa-save me-2"></i>
+          {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>
