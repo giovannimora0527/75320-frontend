@@ -87,7 +87,6 @@ export class PacienteComponent implements AfterViewInit{
       setTimeout(() => {
         this.spinner.hide();
       }, 3000);
-  
     }
     
     ngAfterViewInit() {
@@ -97,10 +96,16 @@ export class PacienteComponent implements AfterViewInit{
         // Configurar filtro personalizado
         this.dataSource.filterPredicate = (data: Paciente, filter: string) => {
           const searchString = filter.toLowerCase();
-          return data.nombres?.toLowerCase().includes(searchString) ||
-                 data.apellidos?.toLowerCase().includes(searchString) ||
+          return data.id?.toString().includes(searchString) ||
+                 data.usuarioId?.toString().includes(searchString) ||
+                 data.tipoDocumento?.toLowerCase().includes(searchString) ||
                  data.numeroDocumento?.toLowerCase().includes(searchString) ||
-                 data.id?.toString().includes(searchString);
+                 data.nombres?.toLowerCase().includes(searchString) ||
+                 data.apellidos?.toLowerCase().includes(searchString) ||
+                 data.fechaNacimiento?.toString().includes(searchString) ||
+                 data.genero?.toLowerCase().includes(searchString) ||
+                 data.telefono?.toLowerCase().includes(searchString) ||
+                 data.direccion?.toLowerCase().includes(searchString);
         };
       }
 
@@ -123,16 +128,11 @@ export class PacienteComponent implements AfterViewInit{
     }
   
     listarPacientes() {
-      this.titleSpinner = "Cargando pacientes...";
-      this.spinner.show();
-      console.log('Entro a cargar usuarios');
       this.pacienteService.listarPacientes().subscribe({
         next: (data) => {
           console.log(data);
           this.pacientes = data;
           this.dataSource.data = data;
-          this.spinner.hide();
-          console.log('Pacientes cargados:', this.pacientes);
         },
 
         error: (err) => {
@@ -145,54 +145,41 @@ export class PacienteComponent implements AfterViewInit{
   
   
     guardarPaciente() {
-      this.titleSpinner = this.modoFormulario === 'C' ? "Creando paciente..." : "Actualizando paciente...";
-      this.spinner.show();
-      if (this.modoFormulario === 'C') {
-        this.form.get('activo').setValue(true);
-      }
-      if (this.form.valid) {
-            if (this.modoFormulario.includes('C')) {
-              // Modo Creación
-              this.pacienteService.guardarPaciente(this.form.getRawValue()).subscribe({
-                next: (data) => {
-                  this.spinner.hide();
-                  console.log('Paciente guardado:', data);
-                  Swal.fire('Creación exitosa', data.message, 'success');
-                  this.listarPacientes();
-                  this.closeModal();
-                },
-                error: (err) => {
-                  this.spinner.hide();
-                  console.error('Error al guardar paciente:', err);
-                  Swal.fire('Error', err.error?.message || 'Ocurrió un error al crear el paciente.', 'error');
-                }
-              });
-            } else {
-              // Modo Edición
-              const pacienteActualizado = { ...this.pacienteSelected, ...this.form.getRawValue() };
-              console.log(pacienteActualizado);
-              this.pacienteService.actualizarPaciente(pacienteActualizado)
-              .subscribe(
-                {
-                  next: (data) => {    
-                    this.spinner.hide();         
-                    Swal.fire('Actualización exitosa', data.message, 'success');
-                    this.listarPacientes();
-                    this.closeModal();
-                  },
-                  error: (error) => {
-                    this.spinner.hide();
-                    console.error('Error al actualizar paciente:', error);
-                    Swal.fire('Error', error.error?.message || 'Ocurrió un error al actualizar el paciente.', 'error');
-                  } 
-                }
-              );
-             
-            }
-          } else {
-            this.spinner.hide();
-          }
+        if (this.form.invalid) {
+          this.form.markAllAsTouched();
+          Swal.fire('Error', 'Por favor, complete todos los campos obligatorios.', 'error');
+          return;
         }
+    
+        if (this.modoFormulario === 'C') {
+          // Crear paciente
+          this.pacienteService.guardarPaciente(this.form.getRawValue()).subscribe({
+            next: (data) => {          
+              Swal.fire('Éxito', data.message, 'success');
+              this.listarPacientes();
+              this.closeModal();
+            },
+            error: (error) => {
+              console.error('Error creating paciente:', error);
+              Swal.fire("Error", error.error.message, "error");
+            }
+          });
+        } else {
+          // Editar paciente
+          const pacienteActualizado = { ...this.pacienteSelected, ...this.form.getRawValue() };      
+          this.pacienteService.actualizarPaciente(pacienteActualizado).subscribe({
+            next: (data) => { 
+              Swal.fire('Éxito', data.message, 'success');
+              this.listarPacientes();
+              this.closeModal();
+            },
+            error: (error) => {
+              console.error('Error updating paciente:', error);
+              Swal.fire("Error", error.error.message, "error");
+            }
+          });
+        }
+      }
 
     closeModal() {
       if (this.modalInstance) {

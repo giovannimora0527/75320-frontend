@@ -47,11 +47,11 @@ export class MedicoComponent {
     this.listarMedicos();
     this.listarEspecializaciones();
     this.inicializarFormulario();
-    this.titleSpinner = "Prueba spinner";
+    this.titleSpinner = "Cargando Médicos...";
     this.spinner.show();
     setTimeout(() => {
       this.spinner.hide();
-    }, 5000);
+    }, 3000);
 
   }
 

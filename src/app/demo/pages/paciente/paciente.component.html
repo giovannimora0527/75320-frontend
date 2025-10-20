@@ -1,4 +1,4 @@
-<ngx-spinner type="square-jelly-box" size="medium">
+<ngx-spinner type="pacman" size="medium">
   <p style="color: white">{{ titleSpinner }}</p>
 </ngx-spinner>
 
@@ -7,7 +7,7 @@
     <div class="card-header">
       <div class="d-flex align-items-center justify-content-between">
         <h3 class="mb-0">
-          <i class="fa fa-user-md"></i>
+          <i class="fa fa-users"></i>
           &nbsp;Mis pacientes
         </h3>
         <button mat-raised-button color="primary" (click)="abrirNuevoPaciente()"> 
@@ -20,7 +20,7 @@
       <!-- Campo de filtro -->
       <mat-form-field appearance="outline" class="w-100 mb-3">
         <mat-label>Buscar Pacientes</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por nombre, apellido o documento..." #input>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por id, nombre, apellido o documento..." #input>
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
@@ -112,14 +112,14 @@
           </tr>
 
         </table>
-          <!-- Paginador -->
+      </div>
+      <!-- Paginador -->
         <mat-paginator 
           [pageSizeOptions]="[5, 10, 25, 100]" 
-          [pageSize]="10"
+          [pageSize]="25"
           showFirstLastButtons
           aria-label="Seleccionar página de pacientes">
         </mat-paginator>
-      </div>
     </div>
   </div>
 </div>          
