@@ -4,10 +4,10 @@ import { Medicamento } from "../../medicamento/models/medicamento";
 
 export class Formula {
   id!: number;
-  cita!: { id: number };
-  medicamento!: { id: number; nombre?: string };
+  citaId!:  Cita ;
+  medicamentoId!: Medicamento;
   dosis!: string;
   indicaciones!: string;
   fechaCreacionRegistro!: Date;
 }
-
+  

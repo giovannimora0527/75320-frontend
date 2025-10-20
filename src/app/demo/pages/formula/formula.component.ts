@@ -55,7 +55,6 @@ export class FormulaComponent implements AfterViewInit {
   form!: FormGroup;
   titleSpinner: string = '';
 
-  // Angular Material Table
   displayedColumns: string[] = [
     'id',
     'citaId',
@@ -119,8 +118,8 @@ export class FormulaComponent implements AfterViewInit {
     if (this.form.valid) {
       Swal.fire({
         title: this.modoFormulario === 'C'
-          ? '¿Desea crear esta fórmula?'
-          : '¿Desea actualizar esta fórmula?',
+          ? '¿Desea crear esta fórmula médica?'
+          : '¿Desea actualizar esta fórmula médica?',
         showDenyButton: true,
         showCancelButton: true,
         confirmButtonText: this.modoFormulario === 'C' ? 'Sí, crear' : 'Sí, actualizar',
@@ -143,7 +142,15 @@ export class FormulaComponent implements AfterViewInit {
     this.titleSpinner = 'Creando fórmula...';
     this.spinner.show();
 
-    this.formulaService.guardarFormula(this.form.getRawValue()).subscribe({
+    const formValue = this.form.getRawValue();
+    const nuevaFormula: any = {
+      citaId: { id: formValue.citaId },
+      medicamentoId: { id: formValue.medicamentoId },
+      dosis: formValue.dosis,
+      indicaciones: formValue.indicaciones
+    };
+
+    this.formulaService.guardarFormula(nuevaFormula).subscribe({
       next: (data) => {
         this.spinner.hide();
         Swal.fire('Guardado', data[0]?.message || 'Fórmula creada exitosamente.', 'success');
@@ -162,9 +169,13 @@ export class FormulaComponent implements AfterViewInit {
       this.titleSpinner = 'Actualizando fórmula...';
       this.spinner.show();
 
-      const formulaActualizada: Formula = {
-        ...this.formulaSelected,
-        ...this.form.getRawValue()
+      const formValue = this.form.getRawValue();
+      const formulaActualizada: any = {
+        id: this.formulaSelected.id,
+        citaId: { id: formValue.citaId },
+        medicamentoId: { id: formValue.medicamentoId },
+        dosis: formValue.dosis,
+        indicaciones: formValue.indicaciones
       };
 
       this.formulaService.actualizarFormula(formulaActualizada).subscribe({
@@ -190,12 +201,18 @@ export class FormulaComponent implements AfterViewInit {
 
   abrirEditarFormula(formula: Formula) {
     this.formulaSelected = formula;
-    this.form.patchValue(formula);
+    this.form.patchValue({
+      id: formula.id,
+      citaId: formula.citaId,
+      medicamentoId: formula.medicamentoId,
+      dosis: formula.dosis,
+      indicaciones: formula.indicaciones
+    });
     this.openModal('E');
   }
 
   openModal(modo: string) {
-    this.titleModal = modo === 'C' ? 'Crear Fórmula' : 'Editar Fórmula';
+    this.titleModal = modo === 'C' ? 'Crear Fórmula Médica' : 'Editar Fórmula Médica';
     this.titleBoton = modo === 'C' ? 'Guardar Fórmula' : 'Actualizar Fórmula';
     this.modoFormulario = modo;
 

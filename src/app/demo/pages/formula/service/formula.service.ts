@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators'; // 👈 importa map
+import { map } from 'rxjs/operators';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from './../../../../../environments/environment';
 
@@ -21,12 +21,12 @@ export class FormulaService {
       map((data: any[]) =>
         data.map(item => ({
           id: item.id,
-          cita: item.cita,
-          medicamento: item.medicamento,
+          citaId: item.cita,                // 👈 ahora coincide con el modelo
+          medicamentoId: item.medicamento,  // 👈 también coincide
           dosis: item.dosis,
           indicaciones: item.indicaciones,
           fechaCreacionRegistro: item.fechaCreacionRegistro
-        }))
+        })) as Formula[]
       )
     );
   }
@@ -39,5 +39,4 @@ export class FormulaService {
     // el backend usa POST para actualizar con el id en la URL
     return this.backendService.post(this.urlBase, this.urlApi, `actualizar/${formula.id}`, formula);
   }
-
 }
