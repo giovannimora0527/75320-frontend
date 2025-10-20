@@ -10,15 +10,15 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'inicio',
     pathMatch: 'full'
-  },  
+  },
   {
     path: 'inicio',
     component: AdminComponent,
     data: { title: 'Inicio' },
-    children: [      
+    children: [
        { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }} ,
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
-       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }}     
+       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }}
     ]
   },
   { path: '**', redirectTo: 'inicio' }

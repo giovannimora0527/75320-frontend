@@ -1,1 +1,119 @@
-<p>paciente works!</p>
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-user-md"></i>
+          &nbsp;Gestión de Pacientes
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoPaciente()">Nuevo Paciente</button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+          <tr>
+            <th>Id</th>
+            <th>Tipo Documento</th>
+            <th>Número Documento</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Acciones</th>
+          </tr>
+          <tr>
+            <th><input class="form-control" placeholder="Filtrar Id" (keyup)="filtrar($event, 'id')"></th>
+            <th><input class="form-control" placeholder="Filtrar Tipo" (keyup)="filtrar($event, 'tipo_documento')"></th>
+            <th><input class="form-control" placeholder="Filtrar Nº Doc" (keyup)="filtrar($event, 'numero_documento')"></th>
+            <th><input class="form-control" placeholder="Filtrar Nombres" (keyup)="filtrar($event, 'nombres')"></th>
+            <th><input class="form-control" placeholder="Filtrar Apellidos" (keyup)="filtrar($event, 'apellidos')"></th>
+            <th><input class="form-control" placeholder="Filtrar Teléfono" (keyup)="filtrar($event, 'telefono')"></th>
+            <th><input class="form-control" placeholder="Filtrar Dirección" (keyup)="filtrar($event, 'direccion')"></th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let paciente of pacientesFiltrados">
+            <td>{{ paciente.id }}</td>
+            <td>{{ paciente.tipo_documento }}</td>
+            <td>{{ paciente.numero_documento }}</td>
+            <td>{{ paciente.nombres }}</td>
+            <td>{{ paciente.apellidos }}</td>
+            <td>{{ paciente.telefono }}</td>
+            <td>{{ paciente.direccion }}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarPaciente(paciente)">
+                <i class="fa fa-edit"></i> Editar
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear/Editar -->
+<div class="modal fade" id="modalCrearPaciente" tabindex="-1" aria-labelledby="modalCrearPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label>Tipo Documento</label>
+              <input formControlName="tipo_documento" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Número Documento</label>
+              <input formControlName="numero_documento" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Nombres</label>
+              <input formControlName="nombres" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Apellidos</label>
+              <input formControlName="apellidos" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Fecha de Nacimiento</label>
+              <input type="date" formControlName="fecha_nacimiento" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Género</label>
+              <select formControlName="genero" class="form-select">
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Teléfono</label>
+              <input formControlName="telefono" class="form-control" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label>Dirección</label>
+              <input formControlName="direccion" class="form-control" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarPaciente()" [disabled]="form.invalid">
+          {{ titleBoton }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
