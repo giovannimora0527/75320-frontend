@@ -1,30 +1,62 @@
-<div class="container">
-  <div class="card">
-    <div class="card-header">
-    <div class="d-flex align-items-center justify-content-between">
-        <h3 class="mb-0">
-            <i class="fa fa-users"></i>
-            &nbsp;Mis Medicamento
+<!-- Spinner de carga -->
+<ngx-spinner type="ball-8bits" color = "#cc66ff" size="medium">
+  <p style="color: #ffffff">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container-fluid py-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white py-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0 fw-semibold">
+          <i class="fa fa-capsules me-2"></i>
+          Mis Medicamentos
         </h3>
-        <button class="btn btn-outline-primary" (click)="abrirNuevoMedicamento()">Nuevo Medicamento</button>
+        <button class="btn btn-light btn-lg px-4" (click)="abrirNuevoMedicamento()">
+          <i class="fa fa-plus me-2"></i>
+          Nuevo Medicamento
+        </button>
+      </div>
     </div>
-    </div>
-    <div class="card-body">
-      <div class="table table-responsive">
-        <table class="table table-striped table-hover">
-          <thead>
+
+    <div class="card-body p-0">
+      <!-- Filtros -->
+      <div class="bg-light border-bottom px-4 py-3">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="fa fa-search text-muted"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control border-start-0"
+                placeholder="Buscar por nombre o descripción..."
+                [(ngModel)]="filtroMedicamento"
+                (input)="filtrarMedicamentos()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
             <tr>
-              <th>Id</th>
-              <th>Nombre</th>
-              <th>Descripcion</th>
-              <th>Presentacion</th>
-              <th>FechaCompra</th>
-              <th>FechaVence</th>
-              <th>FechaCreacionRegistro</th>
+              <th (click)="ordenarPor('id')"><i class="fa fa-hashtag me-2"></i>ID</th>
+              <th (click)="ordenarPor('nombre')"><i class="fa fa-tag me-2"></i>Nombre</th>
+              <th (click)="ordenarPor('descripcion')"><i class="fa fa-align-left me-2"></i>Descripción</th>
+              <th (click)="ordenarPor('presentacion')"><i class="fa fa-box me-2"></i>Presentación</th>
+              <th (click)="ordenarPor('fechaCompra')"><i class="fa fa-calendar-plus me-2"></i>Compra</th>
+              <th (click)="ordenarPor('fechaVence')"><i class="fa fa-calendar-times me-2"></i>Vencimiento</th>
+              <th><i class="fa fa-clock me-2"></i>Creación</th>
+              <th><i class="fa fa-edit me-2"></i>Modificación</th>
+              <th class="text-center"><i class="fa fa-cogs"></i> Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let medicamento of medicamentos">
+            <tr *ngFor="let medicamento of medicamentosFiltrados">
               <td>{{ medicamento.id }}</td>
               <td>{{ medicamento.nombre }}</td>
               <td>{{ medicamento.descripcion }}</td>
@@ -33,19 +65,13 @@
               <td>{{ medicamento.fechaVence }}</td>
               <td>{{ medicamento.fechaCreacionRegistro }}</td>
               <td>{{ medicamento.fechaModificacionRegistro }}</td>
-              
-            <td>
-                <i 
-                    class="fa" 
-                    [ngClass]="medicamento.activo === true ? 'fa-check text-success' : 'fa-times text-danger'"
-                    aria-hidden="true">
-                </i>
-            </td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarMedicamento(medicamento)">
-                  <i class="fa fa-edit"></i>
-                  &nbsp;Editar
-                </button>                
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-outline-warning"
+                  (click)="abrirEditarMedicamento(medicamento)"
+                >
+                  <i class="fa fa-edit"></i> Editar
+                </button>
               </td>
             </tr>
           </tbody>
@@ -55,19 +81,24 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalCrearMedicamento" tabindex="-1" aria-labelledby="modalCrearMedicamentoModalLabel" aria-hidden="true">
+<!-- Modal para crear/editar medicamento -->
+<div
+  class="modal fade"
+  id="modalCrearMedicamento"
+  tabindex="-1"
+  aria-labelledby="modalCrearMedicamentoModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="modalCrearMedicamentoModalLabel">
-            {{ titleModal }}
+          {{ titleModal }}
         </h1>
         <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-         <form [formGroup]="form">
-          <!--  Nombre de medicamento -->
+        <form [formGroup]="form">
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre del medicamento</label>
             <input
@@ -75,75 +106,63 @@
               formControlName="nombre"
               class="form-control"
               id="nombre"
-              placeholder="Ingrese el nombre del medicamento"             
+              placeholder="Ingrese el nombre"
             />
             <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
-              El nombre del medicamento es requerido.
+              El nombre es requerido.
             </div>
           </div>
-          <!-- descripcion -->
+
           <div class="mb-3">
-            <label for="descripcion" class="form-label">Escriba la descripcion</label>
+            <label for="descripcion" class="form-label">Descripción</label>
             <input
               type="text"
               formControlName="descripcion"
               class="form-control"
               id="descripcion"
-              placeholder="Ingrese su descripcion"
+              placeholder="Ingrese la descripción"
             />
             <div *ngIf="form.get('descripcion')?.hasError('required') && form.get('descripcion')?.touched" class="text-danger">
-              La descripcion es requerida.
+              La descripción es requerida.
             </div>
           </div>
-          <!-- presentacion -->
+
           <div class="mb-3">
-            <label for="rol" class="form-label">Escriba la presentacion</label>
+            <label for="presentacion" class="form-label">Presentación</label>
             <input
               type="text"
               formControlName="presentacion"
               class="form-control"
               id="presentacion"
-              placeholder="Ingrese la presentacion"              
+              placeholder="Ingrese la presentación"
             />
             <div *ngIf="form.get('presentacion')?.hasError('required') && form.get('presentacion')?.touched" class="text-danger">
-              La presentacion es requerido.
+              La presentación es requerida.
             </div>
           </div>
-            <!-- fechaCompra -->
-              <div class="mb-3">
-            <label for="rol" class="form-label">Escriba la fecha de compra</label>
-            <input
-              type="LocalDate'"
-              formControlName="fechaCompra"
-              class="form-control"
-              id="fechaCompra"
-              placeholder="Ingrese la fecha de compra"              
-            />
-            <div *ngIf="form.get('fechaCompra')?.hasError('required') && form.get('fechaCompra')?.touched" class="text-danger">
-              La fecha de compra es requerido.
-            </div>
-          </div>
-            <!-- fechaVencimiento -->
-              <div class="mb-3">
-            <label for="rol" class="form-label">Escriba la fecha de vencimiento</label>
-            <input
-              type="LocalDate'"
-              formControlName="fechaVence"
-              class="form-control"
-              id="FechaVence"
-              placeholder="Ingrese la fecha de vencimiento"              
-            />
-            <div *ngIf="form.get('fechaVence')?.hasError('required') && form.get('fechaVence')?.touched" class="text-danger">
-              La fecha de vencimiento es requerido.
-            </div>
-            </div>
-         </form>
 
+          <div class="mb-3">
+            <label for="fechaCompra" class="form-label">Fecha de compra</label>
+            <input type="date" formControlName="fechaCompra" class="form-control" id="fechaCompra" />
+            <div *ngIf="form.get('fechaCompra')?.hasError('required') && form.get('fechaCompra')?.touched" class="text-danger">
+              La fecha de compra es requerida.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="fechaVence" class="form-label">Fecha de vencimiento</label>
+            <input type="date" formControlName="fechaVence" class="form-control" id="fechaVence" />
+            <div *ngIf="form.get('fechaVence')?.hasError('required') && form.get('fechaVence')?.touched" class="text-danger">
+              La fecha de vencimiento es requerida.
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarMedicamento()"
-        [disabled]="form.invalid">{{titleBoton}}</button>
+        <button type="button" class="btn btn-primary" (click)="guardarMedicamento()" [disabled]="form.invalid">
+          {{ titleBoton }}
+        </button>
       </div>
     </div>
   </div>

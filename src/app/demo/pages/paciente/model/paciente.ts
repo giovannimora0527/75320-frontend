@@ -4,10 +4,9 @@ export class Paciente {
     tipoDocumento!: string;
     numeroDocumento!: string;
     nombres!: string;
-    apellidos!: string;
+    apellidos!: string
     fechaNacimiento!: Date;
     genero!: string;
     telefono!: string;
-    direccion!: Text
-     
+    direccion!: string;
 }

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CitaService } from './cita.service';
+import { FormulaService } from './formula.service';
 
-describe('CitaService', () => {
-  let service: CitaService;
+describe('FormulaService', () => {
+  let service: FormulaService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CitaService);
+    service = TestBed.inject(FormulaService);
   });
 
   it('should be created', () => {

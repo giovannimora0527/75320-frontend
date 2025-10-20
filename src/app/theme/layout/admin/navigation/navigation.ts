@@ -50,8 +50,8 @@ export const NavigationItems: NavigationItem[] = [
         id: 'medicamento',
         title: 'Gestión de medicamentos',
         type: 'item',
-        url: '/inicio/medicamento',
-        icon: 'feather icon-package',
+        url: '/inicio/medicamentos',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
@@ -59,33 +59,33 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de citas',
         type: 'item',
         url: '/inicio/cita',
-        icon: 'feather icon-calendar',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
-        id: 'formulamedica',
-        title: 'Gestión de formulas medicas',
+        id: 'formulas-medicas',
+        title: 'Gestión de fórmulas médicas',
         type: 'item',
-        url: '/inicio/formulamedica',
-        icon: 'feather icon-file-text',
+        url: '/inicio/formulas-medicas',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
-        id: 'historiamedica',
-        title: 'Gestión de historias medicas',
+        id: 'historias-medicas',
+        title: 'Gestión de historias clínicas',
         type: 'item',
-        url: '/inicio/historiamedica',
-        icon: 'feather icon-folder',
+        url: '/inicio/historia-clinica',
+        icon: 'feather icon-users',
         classes: 'nav-item'
       },
       {
-        id: 'gestionespecializacion',
+        id: 'especializacion',
         title: 'Gestión de especializaciones',
         type: 'item',
-        url: '/inicio/gestionespecializacion',
-        icon: 'feather icon-book',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-users',
         classes: 'nav-item'
-      },
+      }
     ]
   },
   

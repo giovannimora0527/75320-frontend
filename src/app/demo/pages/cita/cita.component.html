@@ -1,1 +1,227 @@
-<p>cita works!</p>
+<ngx-spinner type="ball-8bits" color = "#cc66ff" size="medium">
+  <p style="color: #ffffff">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-11">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white py-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0 fw-semibold">
+              <i class="fa fa-calendar-check me-2"></i>
+              Mis citas
+            </h3>
+            <button class="btn btn-light btn-lg px-4">
+              <i class="fa fa-plus me-2"></i>
+              Nueva Cita
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <!-- Filtros y controles superiores -->
+          <div class="bg-light border-bottom px-4 py-3">
+            <div class="row g-3 align-items-center">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <span class="input-group-text bg-white border-end-0">
+                    <i class="fa fa-search text-muted"></i>
+                  </span>
+                  <input type="text" class="form-control border-start-0" placeholder="Buscar por paciente, médico o documento..." />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <select class="form-select">
+                  <option selected>Todos los estados</option>
+                  <option value="programada">Programada</option>
+                  <option value="completada">Completada</option>
+                  <option value="cancelada">Cancelada</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <input type="date" class="form-control" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla responsive mejorada -->
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th scope="col" class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <i class="fa fa-hashtag me-2"></i>
+                      ID Cita
+                    </div>
+                  </th>
+                  <th scope="col" class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <i class="fa fa-id-card me-2"></i>
+                      Documento
+                    </div>
+                  </th>
+                  <th scope="col">
+                    <div class="d-flex align-items-center">
+                      <i class="fa fa-user me-2"></i>
+                      Paciente
+                    </div>
+                  </th>
+                  <th scope="col">
+                    <div class="d-flex align-items-center">
+                      <i class="fa fa-user-md me-2"></i>
+                      Médico
+                    </div>
+                  </th>
+                  <th scope="col">
+                    <div class="d-flex align-items-center">
+                      <i class="fa fa-clock me-2"></i>
+                      Fecha y Hora
+                    </div>
+                  </th>
+                  <th scope="col">
+                    <div class="d-flex align-items-center">
+                      <i class="fa fa-info-circle me-2"></i>
+                      Estado
+                    </div>
+                  </th>
+                  <th scope="col">
+                    <div class="d-flex align-items-center">
+                      <i class="fa fa-comment me-2"></i>
+                      Motivo
+                    </div>
+                  </th>
+                  <th scope="col" class="text-center pe-4">
+                    <i class="fa fa-cogs"></i>
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="citasList.length > 0; else noCitas">
+                  <tr *ngFor="let cita of citasList; let i = index" class="align-middle">                   
+                    <td class="ps-4">
+                      <span class="badge bg-light text-dark border">{{ cita.paciente.numeroDocumento }}</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-circle bg-primary text-white me-3">
+                          {{ (cita.paciente.nombres?.charAt(0) || '') + (cita.paciente.apellidos?.charAt(0) || '') }}
+                        </div>
+                        <div>
+                          <div class="fw-semibold">{{ cita.paciente.nombres }} {{ cita.paciente.apellidos }}</div>
+                          <small class="text-muted">Paciente</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-circle bg-success text-white me-3">
+                          {{ (cita.medico.nombres?.charAt(0) || '') + (cita.medico.apellidos?.charAt(0) || '') }}
+                        </div>
+                        <div>
+                          <div class="fw-semibold">{{ cita.medico.nombres }} {{ cita.medico.apellidos }}</div>
+                          <small class="text-muted">Dr./Dra.</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <div class="fw-semibold">{{ cita.fechaHora | date: 'yyyy-MM-dd' }}</div>
+                        <small class="text-muted">{{ cita.fechaHora | date: 'HH:mm' }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <span
+                        class="badge"
+                        [ngClass]="{
+                          'bg-success': cita.estado === 'completada',
+                          'bg-warning text-dark': cita.estado === 'programada',
+                          'bg-danger': cita.estado === 'cancelada',
+                          'bg-secondary': !cita.estado
+                        }"
+                      >
+                        <i
+                          class="fa"
+                          [ngClass]="{
+                            'fa-check': cita.estado === 'completada',
+                            'fa-clock': cita.estado === 'programada',
+                            'fa-times': cita.estado === 'cancelada'
+                          }"
+                          aria-hidden="true"
+                        ></i>
+                        {{ cita.estado | titlecase }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="text-truncate d-inline-block" style="max-width: 150px" [title]="cita.motivo">
+                        {{ cita.motivo }}
+                      </span>
+                    </td>
+                    <td class="text-center pe-4">
+                      <div class="d-flex justify-content-center gap-1">                        
+                        <button type="button" class="btn btn-outline-warning btn-sm" title="Editar" aria-label="Editar cita">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>                        
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+
+            <!-- Template para cuando no hay citas -->
+            <ng-template #noCitas>
+              <div class="text-center py-5">
+                <div class="mb-4">
+                  <i class="fa fa-calendar-times fa-4x text-muted opacity-50"></i>
+                </div>
+                <h5 class="text-muted mb-3">No hay citas registradas</h5>
+                <p class="text-muted mb-4">Comienza agregando una nueva cita médica</p>
+                <button class="btn btn-primary btn-lg px-4">
+                  <i class="fa fa-plus me-2"></i>
+                  Crear primera cita
+                </button>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Footer con paginación -->
+          <div class="card-footer bg-light border-top">
+            <div class="row align-items-center">
+              <div class="col-md-6">
+                <small class="text-muted">Mostrando {{ citasList.length }} de {{ citasList.length }} citas</small>
+              </div>
+              <div class="col-md-6">
+                <nav aria-label="Navegación de citas">
+                  <ul class="pagination pagination-sm justify-content-end mb-0">
+                    <li class="page-item disabled">
+                      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                        <i class="fa fa-chevron-left"></i>
+                      </a>
+                    </li>
+                    <li class="page-item active">
+                      <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                      <a class="page-link" href="#">
+                        <i class="fa fa-chevron-right"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
