@@ -1,1 +1,233 @@
-<p>paciente works!</p>
+<div class="container">
+    <div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+            <i class="fa fa-users"></i>
+            &nbsp;Mis Pacientes
+        </h3>
+        <button mat-raised-button color="primary" (click)="abrirNuevoPaciente()">
+            Nuevo Paciente
+        </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tipo de Documento</th>
+                <th>Número de Documento</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Fecha Nacimiento</th>
+                <th>Genero</th>
+                <th>Telefono</th>
+                <th>Dirección</th>
+                <th>&nbsp;</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let Paciente of paciente">
+                <td>{{ Paciente.id }}</td>
+                <td>{{ Paciente.tipoDocumento }}</td>
+                <td>{{ Paciente.numeroDocumento }}</td>
+                <td>{{ Paciente.nombres }}</td>
+                <td>{{ Paciente.apellidos }}</td>
+                <td>{{ Paciente.fechaNacimiento }}</td>
+                <td>{{ Paciente.genero }}</td>
+                <td>{{ Paciente.telefono }}</td>
+                <td>{{ Paciente.direccion }}</td>
+                <td></td>
+                <td>
+                <button
+                    class="btn btn-sm btn-outline-primary"
+                    (click)="abrirEditarPaciente(Paciente)"
+                >
+                    <i class="fa fa-edit"></i>
+                    &nbsp;Editar
+                </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div
+    class="modal fade"
+    id="modalListarPaciente"
+    tabindex="-1"
+    aria-labelledby="modalCrearPacienteModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearPacienteModalLabel">
+            {{ titleModal }}
+        </h1>
+        <button
+            type="button"
+            class="btn-close"
+            (click)="closeModal()"
+            aria-label="Close"
+        ></button>
+        </div>
+        <div class="modal-body">
+        <form [formGroup]="form">
+            <div class="mb-3">
+            <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
+            <input
+                type="text"
+                formControlName="tipoDocumento"
+                class="form-control"
+                id="tipoDocumento"
+                placeholder="Ingrese el Tipo de Documento"
+            />
+            <div
+              *ngIf="form.get('tipoDocumento')?.hasError('required') && form.get('tipoDocumento')?.touched"
+                class="text-danger"
+            >
+                El tipo de Documento es requerido.
+            </div>
+            </div>
+            <div class="mb-3">
+            <label for="numeroDocumento" class="form-label">Escriba su Número de Documento</label>
+            <input
+                type="text"
+                formControlName="numeroDocumento"
+                class="form-control"
+                id="numeroDocumento"
+                placeholder="Ingrese su Número de Documento"
+            />
+            <div
+              *ngIf="form.get('numeroDocumento')?.hasError('required') && form.get('numeroDocumento')?.touched"
+                class="text-danger"
+            >
+                El Número de Documento es requerido.
+            </div>
+            </div>
+            <div class="mb-3">
+            <label for="nombres" class="form-label">Escriba sus Nombres</label>
+            <input
+                type="text"
+                formControlName="nombres"
+                class="form-control"
+                id="nombres"
+                placeholder="Ingrese sus Nombres"
+            />
+            <div
+              *ngIf="form.get('nombres')?.hasError('required') && form.get('nombres')?.touched"
+                class="text-danger"
+            >
+                El nombre es requerido.
+            </div>
+            </div>
+            <div class="mb-3">
+            <label for="apellidos" class="form-label">Escriba su apellido</label>
+            <input
+                type="text"
+                formControlName="apellidos"
+                class="form-control"
+                id="apellidos"
+                placeholder="Ingrese sus Aellidos"
+            />
+            <div
+              *ngIf="form.get('apellidos')?.hasError('required') && form.get('apellidos')?.touched"
+                lass="text-danger"
+            >
+                Los apellidos son requeridos.
+            </div>
+            </div>
+            <div class="mb-3">
+            <label for="fechaNacimiento" class="form-label">Escriba su Fecha de Nacimiento</label>
+            <input
+                type="text"
+                formControlName="fechaNacimiento"
+                class="form-control"
+                id="fechaNacimiento"
+                placeholder="Ingrese su Fecha de Nacimiento"
+            />
+            <div
+              *ngIf="form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched"
+                class="text-danger"
+            >
+                La Fecha de Nacimiento es requerida.
+            </div>
+            </div>
+            <div class="mb-3">
+            <label for="genero" class="form-label">Escriba su Genero</label>
+            <input
+                type="text"
+                formControlName="genero"
+                class="form-control"
+                id="genero"
+                placeholder="Ingrese su Genero"
+            />
+            <div
+              *ngIf="form.get('genero')?.hasError('required') && form.get('genero')?.touched"
+                class="text-danger"
+            >
+                El Genero es requerido.
+            </div>
+            </div>
+            <div class="mb-3">
+            <label for="telefono" class="form-label">Escriba su Telefono</label>
+            <input
+                type="text"
+                formControlName="telefono"
+                class="form-control"
+                id="telefono"
+                placeholder="Ingrese su Telefono"
+            />
+            <div
+              *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched"
+                class="text-danger"
+            >
+                El telefono es requerido.
+            </div>
+            </div>
+            <div class="mb-3">
+            <label for="direccion" class="form-label">Escriba su Dirección</label>
+            <input
+                type="text"
+                formControlName="direccion"
+                class="form-control"
+                id="direccion"
+                placeholder="Ingrese su direccion"
+            />
+            <div
+              *ngIf="form.get('direccion')?.hasError('required') && form.get('direccion')?.touched"
+                class="text-danger"
+            >
+                La dirección es requerida.
+            </div>
+            </div>
+        </form>
+        </div>
+        <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeModal()"
+        >
+            Cerrar
+        </button>
+        <button
+            type="button"
+            class="btn btn-primary"
+            (click)="agregarPaciente()"
+            [disabled]="form.invalid"
+        >
+            {{ titleBoton }}
+        </button>
+        </div>
+    </div>
+    </div>
+</div>

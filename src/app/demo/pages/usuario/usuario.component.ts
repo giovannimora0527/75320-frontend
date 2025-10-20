@@ -90,9 +90,9 @@ export class UsuarioComponent implements AfterViewInit {
     this.dataSource.filterPredicate = (data: Usuario, filter: string) => {
       const searchString = filter.toLowerCase();
       return data.username?.toLowerCase().includes(searchString) ||
-             data.rol?.toLowerCase().includes(searchString) ||
-             data.fechaCreacion?.toLowerCase().includes(searchString) ||
-             data.id?.toString().includes(searchString);
+              data.rol?.toLowerCase().includes(searchString) ||
+              data.fechaCreacion?.toLowerCase().includes(searchString) ||
+              data.id?.toString().includes(searchString);
     };
   }
 
@@ -184,7 +184,7 @@ export class UsuarioComponent implements AfterViewInit {
             } 
           }
         );
-       
+        
       }
     } else {
       this.spinner.hide();
