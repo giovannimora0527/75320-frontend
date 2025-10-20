@@ -1,98 +1,102 @@
-<div class="container">
-  <div class="card">
-    <div class="card-header">
-      <div class="d-flex align-items-center justify-content-between">
-        <h3 class="mb-0">
-          <i class="fa fa-user-md"></i>
-          &nbsp;Gestión de Médicos
-        </h3>
-        <button 
-          type="button" 
-          class="btn btn-outline-primary" 
-          (click)="abrirNuevoMedico()"
-          aria-label="Crear nuevo médico">
-          <i class="fa fa-plus"></i> Nuevo Médico
-        </button>
-      </div>
-    </div>
+<div class="container mt-4">
 
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Especialidad</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let medico of medicos">
-              <td>{{ medico.id }}</td>
-              <td>{{ medico.nombre }}</td>
-              <td>{{ medico.apellido }}</td>
-              <td>{{ medico.especialidad }}</td>
-              <td>
-                <button 
-                  type="button" 
-                  class="btn btn-sm btn-outline-primary"
-                  (click)="abrirEditarMedico(medico)"
-                  aria-label="Editar médico">
-                  <i class="fa fa-edit"></i>
-                </button>
-
-                <button 
-                  type="button" 
-                  class="btn btn-sm btn-outline-danger"
-                  (click)="eliminarMedico(medico.id)"
-                  aria-label="Eliminar médico">
-                  <i class="fa fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="medicos.length === 0">
-              <td colspan="5" class="text-center">No hay médicos registrados</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <!-- Encabezado -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person-vcard"></i> Gestión de Médicos</h2>
+    <button class="btn btn-primary" (click)="mostrarFormulario = !mostrarFormulario">
+      {{ mostrarFormulario ? 'Volver a la lista' : 'Nuevo Médico' }}
+    </button>
   </div>
 
-  <!-- Modal Crear/Editar Médico -->
-  <div class="modal fade" id="modalCrearMedico" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ titleModal }}</h5>
-          <button type="button" class="btn-close" (click)="closeModal()" aria-label="Cerrar modal"></button>
+  <!-- 🔹 Formulario de registro -->
+  <div *ngIf="mostrarFormulario" class="card shadow-sm p-4 mb-4">
+    <h4 class="mb-3">Registrar Médico</h4>
+
+    <form [formGroup]="medicoForm" (ngSubmit)="guardarMedico()">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Tipo de Documento *</label>
+          <input type="text" formControlName="tipoDocumento" class="form-control" placeholder="CC, TI, CE">
         </div>
-        <div class="modal-body">
-          <form [formGroup]="form">
-            <div class="mb-3">
-              <label for="nombre">Nombre</label>
-              <input type="text" id="nombre" formControlName="nombre" class="form-control" placeholder="Ingrese nombre">
-            </div>
-            <div class="mb-3">
-              <label for="apellido">Apellido</label>
-              <input type="text" id="apellido" formControlName="apellido" class="form-control" placeholder="Ingrese apellido">
-            </div>
-            <div class="mb-3">
-              <label for="especialidad">Especialidad</label>
-              <input type="text" id="especialidad" formControlName="especialidad" class="form-control" placeholder="Ingrese especialidad">
-            </div>
-          </form>
+        <div class="col-md-4">
+          <label class="form-label">Número de Documento *</label>
+          <input type="text" formControlName="numeroDocumento" class="form-control" placeholder="Ingrese número">
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()" aria-label="Cerrar modal">Cerrar</button>
-          <button type="button" class="btn btn-primary" (click)="guardarMedico()" aria-label="Guardar médico">{{ titleBoton }}</button>
+        <div class="col-md-4">
+          <label class="form-label">Registro Profesional</label>
+          <input type="text" formControlName="registroProfesional" class="form-control" placeholder="Ingrese registro">
         </div>
       </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Nombres *</label>
+          <input type="text" formControlName="nombres" class="form-control" placeholder="Ingrese nombres">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Apellidos *</label>
+          <input type="text" formControlName="apellidos" class="form-control" placeholder="Ingrese apellidos">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Teléfono</label>
+          <input type="text" formControlName="telefono" class="form-control" placeholder="Ingrese teléfono">
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <label class="form-label">Especialización *</label>
+          <select formControlName="especializacionId" class="form-select">
+            <option value="">Seleccione una especialización</option>
+            <option value="1">Cardiología</option>
+            <option value="2">Neurología</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button class="btn btn-success px-4" type="submit" [disabled]="medicoForm.invalid">
+          Guardar Médico
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 🔹 Tabla de médicos -->
+  <div *ngIf="!mostrarFormulario" class="card shadow-sm">
+    <div class="card-body">
+      <h4 class="card-title mb-3">Lista de Médicos</h4>
+      <table class="table table-striped table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Id</th>
+            <th>Nombre completo</th>
+            <th>Documento</th>
+            <th>Especialización</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let medico of medicos">
+            <td>{{ medico.id }}</td>
+            <td>{{ medico.nombres }} {{ medico.apellidos }}</td>
+            <td>{{ medico.numeroDocumento }}</td>
+            <td>{{ medico.especializacion?.nombre }}</td>
+            <td>{{ medico.telefono || '-' }}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm me-2">
+                <i class="bi bi-pencil-square"></i> Editar
+              </button>
+              <button class="btn btn-outline-danger btn-sm">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
-
 
 

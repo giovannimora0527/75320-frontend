@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import Modal from 'bootstrap/js/dist/modal';
@@ -12,12 +12,17 @@ import { EspecializacionService } from './service/especializacion.service';
   templateUrl: './especializaciones.component.html',
   styleUrls: ['./especializaciones.component.scss']
 })
-export class EspecializacionComponent {
+export class EspecializacionComponent implements OnInit {
   modalInstance: Modal | null = null;
   especializaciones: any[] = [];
-  form: FormGroup;
+  form!: FormGroup;
 
-  constructor(private especializacionService: EspecializacionService, private fb: FormBuilder) {
+  constructor(
+    private especializacionService: EspecializacionService,
+    private fb: FormBuilder
+  ) {}
+
+  ngOnInit(): void {
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: ['', Validators.required]
@@ -25,14 +30,27 @@ export class EspecializacionComponent {
     this.listarEspecializaciones();
   }
 
-  listarEspecializaciones() {
+  listarEspecializaciones(): void {
     this.especializacionService.getEspecializaciones().subscribe({
-      next: (data) => (this.especializaciones = data),
-      error: (err) => console.error(err)
+      next: (data: any) => {
+        console.log('📦 Especializaciones desde backend:', data);
+
+        if (Array.isArray(data)) {
+          this.especializaciones = data;
+        } else if (data && typeof data === 'object') {
+          this.especializaciones = data.content || data.data || [];
+        } else {
+          this.especializaciones = [];
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error al listar especializaciones', err);
+        this.especializaciones = [];
+      }
     });
   }
 
-  abrirNuevaEspecializacion() {
+  abrirNuevaEspecializacion(): void {
     this.form.reset();
     const modalElement = document.getElementById('modalCrearEspecializacion');
     if (modalElement) {
@@ -41,20 +59,29 @@ export class EspecializacionComponent {
     }
   }
 
-  closeModal() {
+  closeModal(): void {
     this.modalInstance?.hide();
   }
 
-  guardarEspecializacion() {
-    if (this.form.valid) {
-      this.especializacionService.guardarEspecializacion(this.form.value).subscribe({
-        next: () => {
-          Swal.fire('Éxito', 'Especialización guardada correctamente', 'success');
-          this.listarEspecializaciones();
-          this.closeModal();
-        },
-        error: () => Swal.fire('Error', 'No se pudo guardar', 'error')
-      });
+  guardarEspecializacion(): void {
+    if (this.form.invalid) {
+      Swal.fire('⚠️ Error', 'Complete todos los campos requeridos', 'warning');
+      return;
     }
+
+    const especializacionData = this.form.value;
+
+    this.especializacionService.guardarEspecializacion(especializacionData).subscribe({
+      next: () => {
+        Swal.fire('✅ Éxito', 'Especialización guardada correctamente', 'success');
+        this.listarEspecializaciones();
+        this.closeModal();
+      },
+      error: (err) => {
+        console.error('❌ Error al guardar especialización', err);
+        Swal.fire('❌ Error', 'No se pudo guardar la especialización', 'error');
+      }
+    });
   }
 }
+

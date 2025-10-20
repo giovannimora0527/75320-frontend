@@ -1,30 +1,78 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { BackendService } from 'src/app/services/backend.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedicoService {
+  private urlBase: string = environment.apiUrlAuth;
+  private urlApi: string = 'medicos';
 
-  private baseUrl = 'http://localhost:3000/medicos'; // Cambia por tu API
+  constructor(private backendService: BackendService) {}
 
-  constructor(private http: HttpClient) {}
-
-  getMedicos(): Observable<any[]> {
-    return this.http.get<any[]>(this.baseUrl);
+  /**
+   * ✅ Listar todos los médicos
+   */
+  listarMedicos(): Observable<any> {
+    return this.backendService.get(this.urlBase, this.urlApi, 'listar');
   }
 
-  crearMedico(medico: any): Observable<any> {
-    return this.http.post(this.baseUrl, medico);
+  /**
+   * ✅ Método alternativo para compatibilidad
+   */
+  getMedicos(): Observable<any> {
+    return this.backendService.get(this.urlBase, this.urlApi, 'listar');
   }
 
-  actualizarMedico(medico: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${medico.id}`, medico);
+  /**
+   * ✅ Obtener un médico por su ID
+   */
+  obtenerMedicoPorId(id: number): Observable<any> {
+    return this.backendService.get(this.urlBase, this.urlApi, `obtener/${id}`);
   }
 
+  /**
+   * ✅ Crear un nuevo médico
+   */
+  crearMedico(data: any): Observable<any> {
+    return this.backendService.post(this.urlBase, this.urlApi, 'crear', data);
+  }
+
+  /**
+   * ✅ Guardar médico (compatibilidad)
+   */
+  guardarMedico(data: any): Observable<any> {
+    return this.backendService.post(this.urlBase, this.urlApi, 'crear', data);
+  }
+
+  /**
+   * ✅ Actualizar médico existente
+   */
+  actualizarMedico(id: number, data: any): Observable<any> {
+    return this.backendService.put(this.urlBase, this.urlApi, `actualizar/${id}`, data);
+  }
+
+  /**
+   * ✅ Eliminar médico por ID
+   */
   eliminarMedico(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    return this.backendService.delete(this.urlBase, this.urlApi, `eliminar/${id}`);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

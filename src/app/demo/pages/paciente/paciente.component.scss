@@ -1,0 +1,24 @@
+.container {
+  margin-top: 2rem;
+}
+
+.card {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border: none;
+}
+
+.card-header {
+  background-color: #ffffff;
+  border-bottom: 2px solid #f1f1f1;
+  padding: 1rem 1.5rem;
+}
+
+.card-header h3 {
+  color: #333;
+  font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f2f6ff;
+}
