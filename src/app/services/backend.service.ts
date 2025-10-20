@@ -165,4 +165,17 @@ export class BackendService {
       withCredentials: true,
     });
   }
+
+  // 👇 Agrega esto al final
+  delete<T>(urlApi: string, endpoint: string, id: number): Observable<T> {
+  const tokenRecuperado = localStorage.getItem('token') || '';
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
+  });
+  return this.http.delete<T>(`${urlApi}/${endpoint}/${id}`, { headers });
 }
+
+
+}
+

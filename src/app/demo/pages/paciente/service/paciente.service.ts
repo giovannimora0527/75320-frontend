@@ -1,16 +1,34 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
-import { environment } from 'src/environments/environment';
+import { Paciente } from '../models/paciente';
+import { environment } from './../../../../../environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class PacienteService {
   urlBase: string = environment.apiUrlAuth;
   urlApi: string = 'paciente';
 
-  constructor(private backend: BackendService) {}
+  constructor(private backendService: BackendService) {}
 
-  listar() { return this.backend.get(this.urlBase, this.urlApi, 'listar'); }
-  listarActivos() { return this.backend.get(this.urlBase, this.urlApi, 'listar-activos'); }
+  listarPacientes(): Observable<Paciente[]> {
+    return this.backendService.get(this.urlBase, this.urlApi, 'listar');
+  }
+
+  guardarPaciente(paciente: Paciente): Observable<Paciente> {
+  return this.backendService.post(this.urlBase, this.urlApi, 'crearPaciente', paciente);
+  }
+
+
+  actualizarPaciente(paciente: Paciente): Observable<Paciente> {
+  return this.backendService.put(this.urlBase, this.urlApi, `${paciente.id}`, paciente);
+  }
+
+  eliminarPaciente(id: number): Observable<void> {
+    return this.backendService.delete(this.urlBase, this.urlApi, id);
+  }
+
+
 }
-
-
