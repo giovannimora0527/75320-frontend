@@ -1,0 +1,27 @@
+<div class="page-header">
+  <h3 class="mb-3">Fórmulas Médicas</h3>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Paciente</th>
+          <th>Médico</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of formulas">
+          <td>{{ f.fecha | date:'dd/MM/yyyy' }}</td>
+          <td>{{ f.paciente }}</td>
+          <td>{{ f.medico }}</td>
+          <td>{{ f.descripcion }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
