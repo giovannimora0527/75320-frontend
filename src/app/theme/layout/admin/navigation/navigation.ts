@@ -51,7 +51,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de medicamentos',
         type: 'item',
         url: '/inicio/medicamentos',
-        icon: 'feather icon-users',
+        icon: 'feather icon-droplet',
         classes: 'nav-item'
       },
       {
@@ -59,7 +59,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de citas',
         type: 'item',
         url: '/inicio/cita',
-        icon: 'feather icon-users',
+        icon: 'feather icon-calendar',
         classes: 'nav-item'
       },
       {
@@ -67,7 +67,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de fórmulas médicas',
         type: 'item',
         url: '/inicio/formulas-medicas',
-        icon: 'feather icon-users',
+        icon: 'feather icon-clipboard',
         classes: 'nav-item'
       },
       {
@@ -75,7 +75,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de historias clínicas',
         type: 'item',
         url: '/inicio/historia-clinica',
-        icon: 'feather icon-users',
+        icon: 'feather icon-file-text',
         classes: 'nav-item'
       },
       {
@@ -83,7 +83,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
-        icon: 'feather icon-users',
+        icon: 'feather icon-briefcase',
         classes: 'nav-item'
       }
     ]
