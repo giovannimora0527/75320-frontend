@@ -1,45 +1,115 @@
+<ngx-spinner type="pacman" size="medium">
+   <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
 <div class="container">
-  <div class="card">
-    <div class="card-header">
-    <div class="d-flex align-items-center justify-content-between">
-        <h3 class="mb-0">
-            <i class="fa fa-users"></i>
-            &nbsp;Pacientes
-        </h3>
-    </div>
-    <div class="card-body">
-      <div class="table table-responsive">
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Usuario ID</th>
-              <th>Tipo Documento</th>
-              <th>Numero Documento</th>
-              <th>Nombres</th>
-              <th>Apellidos</th>
-              <th>Fecha Nacimiento</th>
-              <th>Genero</th>
-              <th>Telefono</th>
-              <th>Dirección</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let paciente of paciente">
-              <td>{{ paciente.id }}</td>
-              <td>{{ paciente.usuarioId }}</td>
-              <td>{{ paciente.tipoDocumento }}</td>
-              <td>{{ paciente.numeroDocumento }}</td>
-              <td>{{ paciente.nombres }}</td>
-              <td>{{ paciente.apellidos }}</td>
-              <td>{{ paciente.fechaNacimiento }}</td>
-              <td>{{ paciente.genero }}</td>
-              <td>{{ paciente.telefono }}</td>
-              <td>{{ paciente.direccion }}</td>
-              </tr>
-          </tbody>
-        </table>
+   <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between">
+         <h3 class="mb-0"> <i class="fa fa-users"></i>&nbsp;Pacientes </h3>
+         <button mat-raised-button color="primary" (click)="abrirNuevoPaciente()">
+            <mat-icon>add</mat-icon>
+            Nuevo Paciente 
+         </button>
       </div>
-    </div>
-  </div>
+      <div class="card-body">
+         <mat-form-field appearance="outline" class="w-100 mb-3">
+            <mat-label>Buscar pacientes</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por nombre, documento, etc..." #input> 
+            <mat-icon matSuffix>search</mat-icon>
+         </mat-form-field>
+         <div class="mat-elevation-8">
+            <table mat-table [dataSource]="dataSource" matSort class="w-100">
+               <!-- Columnas --> 
+               <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.id }}</td>
+               </ng-container>
+               <ng-container matColumnDef="usuarioId">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario ID </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.usuarioId }}</td>
+               </ng-container>
+               <ng-container matColumnDef="tipoDocumento">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Documento </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.tipoDocumento }}</td>
+               </ng-container>
+               <ng-container matColumnDef="numeroDocumento">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Nº Documento </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.numeroDocumento }}</td>
+               </ng-container>
+               <ng-container matColumnDef="nombres">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombres </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.nombres }}</td>
+               </ng-container>
+               <ng-container matColumnDef="apellidos">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Apellidos </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.apellidos }}</td>
+               </ng-container>
+               <ng-container matColumnDef="fechaNacimiento">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Nacimiento </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.fechaNacimiento }}</td>
+               </ng-container>
+               <ng-container matColumnDef="genero">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Género </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.genero }}</td>
+               </ng-container>
+               <ng-container matColumnDef="telefono">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Teléfono </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.telefono }}</td>
+               </ng-container>
+               <ng-container matColumnDef="direccion">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Dirección </th>
+                  <td mat-cell *matCellDef="let paciente">{{ paciente.direccion }}</td>
+               </ng-container>
+               <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                  <td mat-cell *matCellDef="let paciente">
+                     <button mat-icon-button color="primary" (click)="abrirEditarPaciente(paciente)" matTooltip="Editar paciente">
+                        <mat-icon>edit</mat-icon>
+                     </button>
+                  </td>
+               </ng-container>
+               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+               <tr class="mat-row" *matNoDataRow>
+                  <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+                     <mat-icon class="no-data-icon">search_off</mat-icon>
+                     <p>No se encontraron pacientes que coincidan con "{{ input.value }}"</p>
+                  </td>
+               </tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator> 
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Modal Crear/Editar Paciente --> 
+<div class="modal fade" id="modalCrearPaciente" tabindex="-1" aria-labelledby="modalCrearPacienteModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h1 class="modal-title fs-5">{{ titleModal }}</h1>
+            <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button> 
+         </div>
+         <div class="modal-body">
+            <form [formGroup]="form">
+               <div class="mb-3"> <label for="usuarioId" class="form-label">Usuario ID</label> <input type="text" formControlName="usuarioId" class="form-control" id="usuarioId" placeholder="Ingrese el ID del usuario"> </div>
+               <div class="mb-3"> <label for="tipoDocumento" class="form-label">Tipo de documento</label> <input type="text" formControlName="tipoDocumento" class="form-control" id="tipoDocumento"> </div>
+               <div class="mb-3"> <label for="numeroDocumento" class="form-label">Número de documento</label> <input type="text" formControlName="numeroDocumento" class="form-control" id="numeroDocumento"> </div>
+               <div class="mb-3"> <label for="nombres" class="form-label">Nombres</label> <input type="text" formControlName="nombres" class="form-control" id="nombres"> </div>
+               <div class="mb-3"> <label for="apellidos" class="form-label">Apellidos</label> <input type="text" formControlName="apellidos" class="form-control" id="apellidos"> </div>
+               <div class="mb-3"> <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label> <input type="date" formControlName="fechaNacimiento" class="form-control" id="fechaNacimiento"> </div>
+               <div class="mb-3">
+                  <label for="genero" class="form-label">Género</label> 
+                  <select formControlName="genero" class="form-control" id="genero">
+                     <option value="" disabled>Seleccione un género</option>
+                     <option value="M">Masculino</option>
+                     <option value="F">Femenino</option>
+                  </select>
+               </div>
+               <div class="mb-3"> <label for="telefono" class="form-label">Teléfono</label> <input type="text" formControlName="telefono" class="form-control" id="telefono"> </div>
+               <div class="mb-3"> <label for="direccion" class="form-label">Dirección</label> <input type="text" formControlName="direccion" class="form-control" id="direccion"> </div>
+            </form>
+         </div>
+         <div class="modal-footer"> <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button> <button type="button" class="btn btn-primary" (click)="guardarPaciente()" [disabled]="form.invalid"> {{ modoFormulario === 'C' ? 'Crear Paciente' : 'Guardar Cambios' }} </button> </div>
+      </div>
+   </div>
 </div>

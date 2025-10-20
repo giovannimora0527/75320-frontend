@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { Paciente } from '../models/paciente';
 import { environment } from './../../../../../environments/environment';
+import { RespuestaRs } from '../models/respuesta';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,10 @@ export class PacienteService {
   }
 
   guardarPaciente(paciente: Paciente): Observable<RespuestaRs> {   
-    return this.backendService.post(this.urlBase, this.urlApi, 'guardar', paciente);
+    return this.backendService.post(this.urlBase, this.urlApi, 'agregar', paciente);
   }
 
-  actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {      
-    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', usuario);
+  actualizarPaciente(paciente: Paciente): Observable<RespuestaRs> {      
+    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', paciente);
   }
 }
