@@ -7,7 +7,7 @@ import { PacienteComponent } from './demo/pages/paciente/paciente.component';
 import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
 import { CitaComponent } from './demo/pages/cita/cita.component';
 import { HistoriaComponent } from './demo/pages/historia/historia.component';
-import { FormulaComponent } from './demo/pages/formula/formula.component';
+import { FormulaComponent } from './demo/pages/formula/receta.component';
 import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
 
 export const routes: Routes = [

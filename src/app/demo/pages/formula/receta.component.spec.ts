@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormulaComponent } from './formula.component';
+import { FormulaComponent } from './receta.component';
 
 describe('FormulaComponent', () => {
   let component: FormulaComponent;
