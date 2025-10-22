@@ -1,0 +1,55 @@
+<ngx-spinner type="pacman" size="medium">
+    <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+    <div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+            <i class="fa fa-user-md"></i>
+            &nbsp;Mis Recetas
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevaReceta()">Nueva Receta</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>ID de Cita</th>
+                <th>Medicamento</th>
+                <th>Dosis</th>
+                <th>Indicaciones</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+          <tbody *ngIf="recetasList.length === 0">
+            <tr class="text-center">
+                <td colspan="8">
+                <span>No hay registros de médicos</span>
+                </td>
+            </tr>
+            </tbody>
+          <tbody *ngIf="recetasList.length > 0">
+            <tr *ngFor="let receta of recetasList">
+                <td>{{ receta.id }}</td>
+                <td>{{ receta.citaid}}</td>
+                <td>{{ receta.medicamentoid}}</td>
+                <td>{{ receta.dosis }}</td>
+                <td>{{ receta.indicaciones }}</td>
+                <td>
+                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarReceta(receta)">
+                    <i class="fa fa-edit"></i>
+                    &nbsp;Editar
+                </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
