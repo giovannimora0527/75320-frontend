@@ -46,6 +46,16 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-users',
         classes: 'nav-item'
       },
+      {
+        id: 'formula',
+        title: 'Gestión de formulas',
+        type: 'item',
+        url: '/inicio/Formula',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      }
+
+
     ]
   },
   

@@ -8,7 +8,7 @@ const routes: Routes = [
       {
         path: 'basic',
         loadComponent: () => import('./basic-elements/basic-elements.component')
-      }
+      },
     ]
   }
 ];
@@ -18,3 +18,5 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class FormElementsRoutingModule {}
+
+

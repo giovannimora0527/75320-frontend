@@ -1,27 +1,88 @@
-<div class="page-header">
-  <h3 class="mb-3">Fórmulas Médicas</h3>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Gestión de Fórmulas Médicas</h2>
+    <button class="btn btn-outline-primary" (click)="abrirNuevaFormula()">Nueva Fórmula</button>
+  </div>
+
+  <div *ngIf="cargando" class="text-center my-3">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <table class="table table-striped table-hover text-center" *ngIf="!cargando">
+    <thead class="table-primary">
+      <tr>
+        <th>ID</th>
+        <th>Cita ID</th>
+        <th>Medicamento ID</th>
+        <th>Dosis</th>
+        <th>Indicaciones</th>
+        <th>Fecha Registro</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let formula of formulas">
+        <td>{{ formula.id }}</td>
+        <td>{{ formula.cita?.id }}</td>
+        <td>{{ formula.medicamento?.id }}</td>
+        <td>{{ formula.dosis }}</td>
+        <td>{{ formula.indicaciones }}</td>
+        <td>{{ formula.fechaRegistro | date:'short' }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-2" (click)="abrirEditarFormula(formula)">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="eliminarFormula(formula)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="formulas.length === 0">
+        <td colspan="7" class="text-muted">No hay fórmulas registradas</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div class="card">
-  <div class="card-body table-responsive">
-    <table class="table table-hover align-middle">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Paciente</th>
-          <th>Médico</th>
-          <th>Descripción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let f of formulas">
-          <td>{{ f.fecha | date:'dd/MM/yyyy' }}</td>
-          <td>{{ f.paciente }}</td>
-          <td>{{ f.medico }}</td>
-          <td>{{ f.descripcion }}</td>
-        </tr>
-      </tbody>
-    </table>
+
+<!-- Modal -->
+<div class="modal fade" id="modalFormula" tabindex="-1" aria-labelledby="modalFormulaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalFormulaLabel">{{ tituloModal }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Cita ID</label>
+            <input type="number" class="form-control" formControlName="citaId" />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Medicamento ID</label>
+            <input type="number" class="form-control" formControlName="medicamentoId" />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Dosis</label>
+            <input type="text" class="form-control" formControlName="dosis" />
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label">Indicaciones</label>
+            <textarea rows="3" class="form-control" formControlName="indicaciones"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button class="btn btn-primary" (click)="guardarFormula()" [disabled]="form.invalid">
+          {{ tituloBoton }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>
-
-
