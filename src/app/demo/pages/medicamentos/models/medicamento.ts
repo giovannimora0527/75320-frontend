@@ -1,12 +1,8 @@
 export interface Medicamento {
-  id: number;
+  id: number | null;
   nombre: string;
+  descripcion: string;
   presentacion: string;
-  concentracion: string;
-  stock: number;
-  activo: boolean;
+  fechaCmpra: string;
+  fechaVence: string;  
 }
-
-
-
-
