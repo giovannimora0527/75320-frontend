@@ -19,7 +19,7 @@ export const routes: Routes = [
     children: [      
        { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }} ,
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
-       { path: 'paciente', component: MedicoComponent, data: { title: 'Paciente' }},
+       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
        { path: 'medicamento', component: PacienteComponent, data: { title: 'Medicamento' }},
        { path: 'cita', component: PacienteComponent, data: { title: 'Cita' }} ,
        { path: 'historiamedica', component: PacienteComponent, data: { title: 'Historia Medica' }},
