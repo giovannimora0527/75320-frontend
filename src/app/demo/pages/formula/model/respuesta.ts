@@ -1,4 +1,11 @@
 export class RecetaRq {
-    message!: string;
+
+    citaid!: number;
+    medicamentoid!: number;
+    dosis!: string;
+    indicaciones!: string;
+
     status!: number;
+    message!: string;
+    
 }

@@ -1,1 +1,187 @@
-<p>medicamento works!</p>
+<ngx-spinner type="pacman" size="medium">
+<p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+<div class="card">
+    <div class="card-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+        <i class="fa fa-user-md"></i>
+        &nbsp;Medicamentos
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoMedicamento()">Nuevo Medicamento</button>
+    </div>
+    </div>
+    <div class="card-body">
+
+    <!-- Campo de Filtro de Angular Material -->
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Buscar Medicamento...</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Escribe para filtrar" #input>
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <!-- Contenedor de la tabla para Material -->
+    <div class="mat-elevation-z4 rounded-3 overflow-hidden">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+        <!-- Columna ID -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
+            <td mat-cell *matCellDef="let med"> {{med.id}} </td>
+        </ng-container>
+
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+            <td mat-cell *matCellDef="let med"> {{med.nombre}} </td>
+        </ng-container>
+
+        <!-- Columna Descripcion -->
+        <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripcion </th>
+            <td mat-cell *matCellDef="let med"> {{med.descripcion}} </td>
+        </ng-container>
+
+        <!-- Columna Presentación -->
+        <ng-container matColumnDef="presentacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Presentación </th>
+            <td mat-cell *matCellDef="let med"> {{med.presentacion}} </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let med">
+            <button mat-icon-button color="primary" matTooltip="Editar Medicamento" (click)="abrirEditarMedicamento(med)">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <!-- Aquí puedes agregar más botones (ej. eliminar) -->
+            </td>
+        </ng-container>
+
+        <!-- Fila de Encabezado -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <!-- Fila de Datos -->
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Fila para cuando no hay datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [colSpan]="displayedColumns.length">
+            No se encontraron medicamentos.
+            </td>
+        </tr>
+        </table>
+
+        <!-- Paginador de Angular Material -->
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                    showFirstLastButtons
+                    aria-label="Seleccionar página de medicamentos">
+        </mat-paginator>
+    </div>
+
+    </div>
+</div>
+</div>
+
+<!-- Modal (Tu código de Modal está casi bien) -->
+<div class="modal fade" id="modalCrearMedicamento" tabindex="-1" aria-labelledby="modalCrearMedicamentoModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearMedicamentoModalLabel">
+        {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+        <div class="col">
+            <form [formGroup]="form">
+
+            <!-- Nombre -->
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input
+                type="text"
+                formControlName="nombre"
+                class="form-control"
+                id="nombre"
+                placeholder="Ingrese el Nombre del Medicamento"
+                
+                />
+                <!-- 
+                NOTA: He quitado [ngModel] porque NO debes usarlo con formControlName.
+                El valor se setea desde el .ts con this.form.setValue(...)
+                -->
+                <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger small">
+                El Nombre es requerido.
+                </div>
+            </div>
+
+            <!-- Descripcion -->
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripcion</label>
+                <input
+                type="text"
+                formControlName="descripcion"
+                class="form-control"
+                id="descripcion"
+                placeholder="Ingrese la Descripcion del Medicamento"
+                
+                />
+                <div *ngIf="form.get('descripcion')?.hasError('required') && form.get('descripcion')?.touched" class="text-danger small">
+                La descripcion es requerida.
+                </div>
+            </div>
+
+            <!-- Presentacion -->
+            <div class="mb-3">
+                <label for="presentacion" class="form-label">Presentación</label>
+                <input
+                type="text"
+                formControlName="presentacion"
+                class="form-control"
+                id="presentacion"
+                placeholder="Ingrese la presentacion del Medicamento"
+                
+                />
+                <div *ngIf="form.get('presentacion')?.hasError('required') && form.get('presentacion')?.touched" class="text-danger small">
+                La Presentación es requerida.
+                </div>
+            </div>
+
+            <!-- FechaCompra -->
+<div class="mb-3">
+    <label for="fechaCompra" class="form-label">Fecha de Compra</label>
+    <div class="col-md-3">
+    <input
+        type="date"
+        id="fechaCompra"
+        class="form-control"
+        formControlName="fechaCompra"
+    />
+    </div>
+
+    <div
+    *ngIf="
+        form.get('fechaCompra')?.hasError('required') &&
+        form.get('fechaCompra')?.touched
+    "
+    class="text-danger small"
+    >
+    La Fecha de Compra es requerida.
+    </div>
+</div>
+            </form>
+        </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarMedicamento()"[disabled]="!form.valid">{{ titleBoton }}</button>
+    </div>
+    </div>
+</div>
+</div>

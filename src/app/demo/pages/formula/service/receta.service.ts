@@ -10,7 +10,10 @@ import { RecetaRq } from '../model/respuesta';
     providedIn: 'root'
 })
 
-export class RecetaService {   
+export class RecetaService {
+    listarCitas() {
+    throw new Error('Method not implemented.');
+    }   
     urlBase: string = environment.apiUrlAuth;
     urlApi: string = 'receta';
 
@@ -19,6 +22,7 @@ export class RecetaService {
     listarRecetas(): Observable<Recetas[]> {
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
     } 
+
     guardarReceta(Recetas: Recetas): Observable<RecetaRq> {   
     return this.backendService.post(this.urlBase, this.urlApi, 'guardar', Recetas);
     }
