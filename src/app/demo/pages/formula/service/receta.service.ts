@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
 import { Receta } from '../models/receta';
-import { RespuestaRs } from '../models/respuesta';
+import { RespuestaRs } from '../../usuario/models/respuesta';
 
 @Injectable({
   providedIn: 'root'

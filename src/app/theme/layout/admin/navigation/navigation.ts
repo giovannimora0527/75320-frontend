@@ -32,7 +32,7 @@ export const NavigationItems: NavigationItem[] = [
       /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
-        title: 'Gestión de medicos',
+        title: 'Gestión de Medicos',
         type: 'item',
         url: '/inicio/medico',
         icon: 'feather icon-users',
@@ -40,7 +40,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'paciente',
-        title: 'Gestión de pacientes',
+        title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
         icon: 'feather icon-users',
@@ -48,7 +48,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'medicamento',
-        title: 'Gestión de medicamentos',
+        title: 'Gestión de Medicamentos',
         type: 'item',
         url: '/inicio/medicamentos',
         icon: 'feather icon-droplet',
@@ -56,7 +56,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'cita',
-        title: 'Gestión de citas',
+        title: 'Gestión de Citas',
         type: 'item',
         url: '/inicio/cita',
         icon: 'feather icon-calendar',
@@ -64,7 +64,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'formulas-medicas',
-        title: 'Gestión de fórmulas médicas',
+        title: 'Gestión de Fórmulas Médicas',
         type: 'item',
         url: '/inicio/formulas-medicas',
         icon: 'feather icon-clipboard',
@@ -72,7 +72,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'historias-medicas',
-        title: 'Gestión de historias clínicas',
+        title: 'Gestión de Historias Clínicas',
         type: 'item',
         url: '/inicio/historia-clinica',
         icon: 'feather icon-file-text',
@@ -80,7 +80,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'especializacion',
-        title: 'Gestión de especializaciones',
+        title: 'Gestión de Especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
         icon: 'feather icon-briefcase',

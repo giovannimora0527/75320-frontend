@@ -3,6 +3,7 @@ import { Receta } from './models/receta';
 import { RecetaService } from './service/receta.service';
 import { CommonModule } from '@angular/common';
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
+import { UtilService } from 'src/app/services/common/util.service';
 import {
   FormBuilder,
   FormControl,
@@ -10,8 +11,7 @@ import {
   Validators,
   AbstractControl,
   FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors
+  ReactiveFormsModule
 } from '@angular/forms';
 
 // Angular Material imports
@@ -27,7 +27,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
-import { delay, map, Observable, of } from 'rxjs';
+import { Medicamento } from './models/medicamento';
 
 @Component({
   selector: 'app-formula',
@@ -64,6 +64,7 @@ export class FormulaComponent implements AfterViewInit{
     titleBoton: string = '';
     recetaSelected: Receta;
     titleSpinner: string = "";
+    medicamentoList: Medicamento[] = [];
   
     form: FormGroup = new FormGroup({
       cita: new FormControl('', Validators.required),
@@ -75,9 +76,11 @@ export class FormulaComponent implements AfterViewInit{
     constructor(
       private readonly recetaService: RecetaService,
       private readonly formBuilder: FormBuilder,
-      private readonly spinner: NgxSpinnerService
+      private readonly spinner: NgxSpinnerService,
+      private readonly utilService: UtilService
     ) {
       this.listarRecetas();
+      this.listarMedicamentos();
       this.cargarFormulario();
       this.titleSpinner = "Cargando Formulas Medicas...";
       this.spinner.show();
@@ -86,6 +89,18 @@ export class FormulaComponent implements AfterViewInit{
       }, 2000);
     }
     
+    listarMedicamentos() {
+      this.utilService.listarMedicamentos().subscribe({
+        next: (data) => {
+          console.log(data);
+          this.medicamentoList = data;
+        },
+        error: (error) => {
+          console.error('Error fetching medicamento:', error);
+        }
+      });
+    }
+
     ngAfterViewInit() {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;

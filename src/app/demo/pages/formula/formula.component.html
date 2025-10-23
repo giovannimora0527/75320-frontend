@@ -7,7 +7,7 @@
     <div class="card-header">
       <div class="d-flex align-items-center justify-content-between">
         <h3 class="mb-0">
-          <i class="fas fa-pills me-2"></i>
+          <i class="fa fa-medkit me-2"></i>
           &nbsp;Mis Formulas Médicas
         </h3>
         <button mat-raised-button color="primary" (click)="abrirNuevaReceta()"> 
@@ -39,14 +39,15 @@
           <ng-container matColumnDef="cita">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> 
               <i class="fa fa-hashtag me-2"></i> Id Cita </th>
-            <td mat-cell *matCellDef="let receta"> {{  receta.cita?.id }} </td>
+            <td mat-cell *matCellDef="let receta"> {{  receta.cita?.paciente?.nombre }} </td>
           </ng-container>
+          
 
           <!-- Columna Medicamento -->
           <ng-container matColumnDef="medicamento">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-              <i class="fa fa-hashtag me-2"></i> Id Medicamento </th>
-            <td mat-cell *matCellDef="let receta"> {{ receta.medicamento?.id }} </td>
+              <i class="fas fa-pills me-2"></i> Medicamento </th>
+            <td mat-cell *matCellDef="let receta"> {{ receta.medicamento?.nombre }} </td>
           </ng-container>
 
           <!-- Columna Dosis -->
@@ -73,7 +74,7 @@
             <!-- Columna Modificaciones -->
           <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef> 
-              <i class="fa fa-cog me-2"></i> Act </th>
+              <i class="fa fa-cog me-2"></i> Edi </th>
             <td mat-cell *matCellDef="let receta">
               <button mat-icon-button color="primary" (click)="abrirEditarReceta(receta)" matTooltip="Editar receta">
                 <mat-icon>edit</mat-icon>
@@ -135,19 +136,25 @@
                 </div>
               </div>
 
-              <!-- Medicamento Id -->
+              <!-- Medicamento -->
               <div class="mb-3">
-                <label for="medicamento" class="form-label"> Medicamento Id </label>
-                <input
-                  type="text"
+                <label for="medicamento" class="form-label">Medicamento</label>
+                <select
                   formControlName="medicamento"
                   class="form-control"
                   id="medicamento"
-                  placeholder="Ingrese el id del medicamento de la receta"
-                  [ngModel]="recetaSelected ? recetaSelected.medicamento: ''"
-                />
-                <div *ngIf="form.get('medicamento')?.hasError('required') && form.get('medicamento')?.touched" class="text-danger">
-                  El id del medicamento es requerido.
+                  [ngModel]="recetaSelected && recetaSelected.medicamento ? recetaSelected.medicamento.id : ''"
+                >
+                  <option value="" [selected]="!recetaSelected" disabled>Seleccione el medicamento</option>
+                  <option *ngFor="let medicamento of medicamentoList" [value]="medicamento.id">
+                    {{ medicamento.nombre }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="form.get('medicamento')?.hasError('required') && form.get('medicamento')?.touched"
+                  class="text-danger"
+                >
+                  El medicamento es requerido.
                 </div>
               </div>
               
