@@ -4,6 +4,7 @@ import { BackendService } from '../backend.service';
 import { Especializacion } from 'src/app/demo/pages/medico/models/especializacion';
 import { Observable } from 'rxjs';
 import { Medicamento } from 'src/app/demo/pages/formula/models/medicamento';
+import { Cita } from 'src/app/demo/pages/formula/models/cita';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +21,9 @@ export class UtilService {
 
   listarMedicamentos(): Observable<Medicamento[]> {
     return this.backendService.get(this.urlBase, "medicamento", 'listar'); 
+  }
+
+  listarCitas(): Observable<Cita[]> {
+    return this.backendService.get(this.urlBase, "cita", 'listar'); 
   }
 }

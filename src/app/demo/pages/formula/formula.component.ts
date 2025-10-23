@@ -28,6 +28,7 @@ import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
 import { Medicamento } from './models/medicamento';
+import { Cita } from './models/cita';
 
 @Component({
   selector: 'app-formula',
@@ -59,12 +60,13 @@ export class FormulaComponent implements AfterViewInit{
     modoFormulario: string = '';
     receta: Receta[] = [];
     dataSource = new MatTableDataSource<Receta>([]);
-    displayedColumns: string[] = ['id','cita', 'medicamento', 'dosis', 'indicaciones', 'fechaCreacionRegistro', 'acciones'];
+    displayedColumns: string[] = ['id','citaPaciente', 'citaMedico', 'medicamento', 'dosis', 'indicaciones', 'fechaCreacionRegistro', 'acciones'];
     titleModal: string = '';
     titleBoton: string = '';
     recetaSelected: Receta;
     titleSpinner: string = "";
     medicamentoList: Medicamento[] = [];
+    citaList: Cita[] = [];
   
     form: FormGroup = new FormGroup({
       cita: new FormControl('', Validators.required),
@@ -81,6 +83,7 @@ export class FormulaComponent implements AfterViewInit{
     ) {
       this.listarRecetas();
       this.listarMedicamentos();
+      this.listarCitas();
       this.cargarFormulario();
       this.titleSpinner = "Cargando Formulas Medicas...";
       this.spinner.show();
@@ -97,6 +100,18 @@ export class FormulaComponent implements AfterViewInit{
         },
         error: (error) => {
           console.error('Error fetching medicamento:', error);
+        }
+      });
+    }
+
+    listarCitas() {
+      this.utilService.listarCitas().subscribe({
+        next: (data) => {
+          console.log(data);
+          this.citaList = data;
+        },
+        error: (error) => {
+          console.error('Error fetching cita:', error);
         }
       });
     }

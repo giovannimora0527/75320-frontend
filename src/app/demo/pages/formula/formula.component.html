@@ -20,7 +20,7 @@
       <!-- Campo de filtro -->
       <mat-form-field appearance="outline" class="w-100 mb-3">
         <mat-label>Buscar Formulas Medicas</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por id, cita, medicamento o dosis..." #input>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por dosis, indicaciones o fecha..." #input>
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
@@ -35,13 +35,19 @@
             <td mat-cell *matCellDef="let receta"> {{ receta.id }} </td>
           </ng-container>
 
-          <!-- Columna cita Id -->
-          <ng-container matColumnDef="cita">
+          <!-- Columna Nombre Paciente - Cita -->
+          <ng-container matColumnDef="citaPaciente">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-              <i class="fa fa-hashtag me-2"></i> Id Cita </th>
-            <td mat-cell *matCellDef="let receta"> {{  receta.cita?.paciente?.nombre }} </td>
+              <i class="fa fa-user me-2"></i> Nombre Paciente </th>
+            <td mat-cell *matCellDef="let receta"> {{  receta.cita?.paciente?.nombres }} </td>
           </ng-container>
           
+          <!-- Columna Nombre Medico - Cita -->
+          <ng-container matColumnDef="citaMedico">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-user-md me-2"></i> Nombre Medico </th>
+            <td mat-cell *matCellDef="let receta"> {{  receta.cita?.medico?.nombres }} </td>
+          </ng-container>
 
           <!-- Columna Medicamento -->
           <ng-container matColumnDef="medicamento">
@@ -53,14 +59,14 @@
           <!-- Columna Dosis -->
           <ng-container matColumnDef="dosis">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-              <i class="fas fa-pills me-2"></i> Dosis </th>
+              <i class="fa fa-plus-square me-2"></i> Dosis </th>
             <td mat-cell *matCellDef="let receta"> {{ receta.dosis }} </td>
           </ng-container>
 
           <!-- Columna Indicaciones -->
           <ng-container matColumnDef="indicaciones">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> 
-              <i class="fa fa-file me-2"></i> Indicaciones </th>
+              <i class="fa fa-clipboard me-2"></i> Indicaciones </th>
             <td mat-cell *matCellDef="let receta"> {{ receta.indicaciones }} </td>
           </ng-container>
 
@@ -122,17 +128,23 @@
             <form [formGroup]="form">
                 <!--  Cita Id -->
                 <div class="mb-3">
-                <label for="cita" class="form-label">Cita Id</label>
-                <input
-                  type="text"
+                <label for="cita" class="form-label">Cita</label>
+                <select
                   formControlName="cita"
                   class="form-control"
                   id="cita"
-                  placeholder="Ingrese el id de cita de la receta"
-                  [ngModel]="recetaSelected ? recetaSelected.cita: ''"
-                />
-                <div *ngIf="form.get('cita')?.hasError('required') && form.get('cita')?.touched" class="text-danger">
-                  El id de cita es requerido.
+                  [ngModel]="recetaSelected && recetaSelected.cita ? recetaSelected.cita.id : ''"
+                >
+                  <option value="" [selected]="!recetaSelected" disabled>Seleccione la cita</option>
+                  <option *ngFor="let cita of citaList" [value]="cita.id">
+                    {{ cita.id }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="form.get('cita')?.hasError('required') && form.get('cita')?.touched"
+                  class="text-danger"
+                >
+                  La cita es requerida.
                 </div>
               </div>
 
@@ -145,7 +157,7 @@
                   id="medicamento"
                   [ngModel]="recetaSelected && recetaSelected.medicamento ? recetaSelected.medicamento.id : ''"
                 >
-                  <option value="" [selected]="!recetaSelected" disabled>Seleccione el medicamento</option>
+                  <option value="" [selected]="!recetaSelected" disabled>Seleccione el Medicamento</option>
                   <option *ngFor="let medicamento of medicamentoList" [value]="medicamento.id">
                     {{ medicamento.nombre }}
                   </option>
