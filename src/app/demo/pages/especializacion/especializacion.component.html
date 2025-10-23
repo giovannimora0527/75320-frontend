@@ -1,1 +1,139 @@
-<p>especializacion works!</p>
+<ngx-spinner type="pacman" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <h3 class="mb-0">
+        <i class="fa fa-stethoscope"></i>&nbsp; Especializaciones
+      </h3>
+      <button mat-raised-button color="primary" (click)="abrirNuevaEspecializacion()">
+        <mat-icon>add</mat-icon>
+        Nueva Especialización
+      </button>
+    </div>
+
+    <div class="card-body">
+      <mat-form-field appearance="outline" class="w-100 mb-3">
+        <mat-label>Buscar especializaciones</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por nombre o código de Especializacion" #input>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="mat-elevation-8">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <!-- ID -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let especializacion">{{ especializacion.id }}</td>
+          </ng-container>
+
+          <!-- Nombre -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+            <td mat-cell *matCellDef="let especializacion">{{ especializacion.nombre }}</td>
+          </ng-container>
+
+          <!-- Descripción -->
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Descripción</th>
+            <td mat-cell *matCellDef="let especializacion">{{ especializacion.descripcion }}</td>
+          </ng-container>
+
+          <!-- Código de especialización  -->
+          <ng-container matColumnDef="codigoEspecializacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+            <td mat-cell *matCellDef="let especializacion">
+              {{ especializacion.codigoEspecializacion }}
+            </td>
+          </ng-container>
+
+          <!-- Acciones -->
+           <ng-container matColumnDef="acciones">
+             <th mat-header-cell *matHeaderCellDef>Acciones</th>
+             <td mat-cell *matCellDef="let especializacion">
+            <button
+               mat-stroked-button
+               color="primary"
+               class="edit-btn"
+               (click)="abrirEdicionEspecializacion(especializacion)"
+               matTooltip="Editar especialización"
+                >
+              <mat-icon>edit</mat-icon>
+                Editar
+            </button>
+            </td>
+          </ng-container>
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Sin datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+              <mat-icon class="no-data-icon">search_off</mat-icon>
+              <p>No se encontraron especializaciones que coincidan con "{{ input.value }}"</p>
+            </td>
+          </tr>
+        </table>
+
+        <mat-paginator
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          [pageSize]="10"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear/Editar Especialización -->
+<div class="modal fade" id="modalCrearEspecializacion" tabindex="-1" aria-labelledby="modalCrearEspecializacionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearEspecializacionModalLabel">{{ titleModal }}</h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" id="nombre" class="form-control" formControlName="nombre" placeholder="Ingrese el nombre">
+            <div *ngIf="form.get('nombre')?.touched && form.get('nombre')?.hasError('required')" class="text-danger">
+              El nombre es obligatorio.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input type="text" id="descripcion" class="form-control" formControlName="descripcion" placeholder="Ingrese la descripción">
+            <div *ngIf="form.get('descripcion')?.touched && form.get('descripcion')?.hasError('required')" class="text-danger">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="codigo_especializacion" class="form-label">Código de especialización</label>
+            <input type="text" id="codigoEspecializacion" class="form-control" formControlName="codigoEspecializacion" placeholder="Código único">
+            <div *ngIf="form.get('codigoEspecializacion')?.touched && form.get('codigoEspecializacion')?.hasError('required')" class="text-danger">
+              El código es obligatorio.
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarEspecializacion()" [disabled]="form.invalid">
+          {{ tittlebotton }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
