@@ -1,1 +1,218 @@
-<p>medicamento works!</p>
+<div class="container-fluid">
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="fa fa-medkit me-2"></i>Listado de Medicamentos
+      </h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light btn-sm" (click)="listarMedicamentos()" [disabled]="isLoading">
+          <i class="fa" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-refresh'"></i> 
+          {{ isLoading ? 'Cargando...' : 'Actualizar' }}
+        </button>
+        <button class="btn btn-success btn-sm" (click)="abrirNuevoMedicamento()">
+          <i class="fa fa-plus"></i> Nuevo Medicamento
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      @if (isLoading) {
+        <div class="d-flex justify-content-center align-items-center py-5">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando medicamentos...</p>
+          </div>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="text-center" style="width: 50px;">#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Presentación</th>
+                <th>Fecha Compra</th>
+                <th>Fecha Vence</th>
+                <th class="text-center" style="width: 150px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (filtrarMedicamentos()?.length) {
+                @for (med of filtrarMedicamentos(); track med.id; let i = $index) {
+                  <tr>
+                    <td class="text-center fw-bold text-muted">{{ i + 1 }}</td>
+                    <td class="fw-semibold">
+                      <i class="fa fa-pills text-muted me-2"></i>
+                      {{ med.nombre }}
+                    </td>
+                    <td>{{ med.descripcion }}</td>
+                    <td>{{ med.presentacion }}</td>
+                    <td>
+                      <i class="fa fa-calendar text-muted me-1"></i>
+                      {{ med.fechaCompra | date:'dd/MM/yyyy' }}
+                    </td>
+                    <td>
+                      <i class="fa fa-clock text-muted me-1"></i>
+                      {{ med.fechaVence | date:'dd/MM/yyyy' }}
+                    </td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm" role="group">
+                        <button 
+                          class="btn btn-outline-primary" 
+                          (click)="abrirEditarMedicamento(med)"
+                          title="Editar medicamento">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button 
+                          class="btn btn-outline-danger" 
+                          (click)="eliminarMedicamento(med)"
+                          title="Eliminar medicamento">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              } @else {
+                <tr>
+                  <td colspan="7" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="fa fa-inbox fa-3x mb-3 d-block"></i>
+                      <h5>No hay medicamentos registrados</h5>
+                      <p class="mb-0">Comienza agregando un nuevo medicamento</p>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    @if (!isLoading && medicamentos?.length) {
+      <div class="card-footer text-muted bg-light">
+        <small>
+          <i class="fa fa-info-circle me-1"></i>
+          Total de medicamentos: <strong>{{ medicamentos.length }}</strong>
+        </small>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalMedicamento" tabindex="-1" aria-labelledby="modalMedicamentoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" [ngClass]="modoFormulario === 'C' ? 'bg-success text-white' : 'bg-warning'">
+        <h5 class="modal-title" id="modalMedicamentoLabel">
+          <i class="fa me-2" [ngClass]="modoFormulario === 'C' ? 'fa-plus' : 'fa-edit'"></i>
+          {{ titleModal }}
+        </h5>
+        <button type="button" class="btn-close" [class.btn-close-white]="modoFormulario === 'C'" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              <i class="fa fa-pills text-muted me-1"></i>Nombre *
+            </label>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="form-control"
+              placeholder="Ingrese el nombre del medicamento"
+              [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+            />
+            <div class="invalid-feedback" *ngIf="form.get('nombre')?.hasError('required')">
+              El nombre es requerido
+            </div>
+            <div class="invalid-feedback" *ngIf="form.get('nombre')?.hasError('minlength')">
+              Debe tener al menos 3 caracteres
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              <i class="fa fa-align-left text-muted me-1"></i>Descripción *
+            </label>
+            <textarea
+              formControlName="descripcion"
+              rows="2"
+              class="form-control"
+              placeholder="Ingrese una descripción"
+              [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched">
+            </textarea>
+            <div class="invalid-feedback">La descripción es requerida</div>
+          </div>
+
+          <!-- Presentación -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              <i class="fa fa-box text-muted me-1"></i>Presentación *
+            </label>
+            <input
+              type="text"
+              formControlName="presentacion"
+              class="form-control"
+              placeholder="Ej: Tabletas, Jarabe, Cápsulas"
+              [class.is-invalid]="form.get('presentacion')?.invalid && form.get('presentacion')?.touched"
+            />
+            <div class="invalid-feedback">La presentación es requerida</div>
+          </div>
+
+          <!-- Fechas -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">
+                <i class="fa fa-calendar-plus text-muted me-1"></i>Fecha de Compra *
+              </label>
+              <input
+                type="date"
+                formControlName="fechaCompra"
+                class="form-control"
+                [class.is-invalid]="form.get('fechaCompra')?.invalid && form.get('fechaCompra')?.touched"
+              />
+              <div class="invalid-feedback">Seleccione la fecha de compra</div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-semibold">
+                <i class="fa fa-calendar-times text-muted me-1"></i>Fecha de Vencimiento *
+              </label>
+              <input
+                type="date"
+                formControlName="fechaVence"
+                class="form-control"
+                [class.is-invalid]="form.get('fechaVence')?.invalid && form.get('fechaVence')?.touched"
+              />
+              <div class="invalid-feedback">Seleccione la fecha de vencimiento</div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          <i class="fa fa-times me-1"></i>Cerrar
+        </button>
+        <button 
+          type="button" 
+          class="btn"
+          [ngClass]="modoFormulario === 'C' ? 'btn-success' : 'btn-warning'"
+          (click)="guardarMedicamento()"
+          [disabled]="form.invalid">
+          <i class="fa me-1" [ngClass]="modoFormulario === 'C' ? 'fa-save' : 'fa-edit'"></i>
+          {{ titleBoton }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
