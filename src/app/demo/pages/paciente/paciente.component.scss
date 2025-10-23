@@ -1,240 +1,107 @@
-// Contenedor principal
-.container-fluid {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
+// Estilos para el DataTable de Material Design
 
-// Cards
+// Card personalizado
 .card {
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(192, 85, 135, 0.581);
-  overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(180, 85, 158, 0.15);
-  }
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: auto;
 }
 
 .card-header {
-  background: linear-gradient(135deg, #ffffff 0%, #5a189c 100%);
-  color: white;
+  background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
   padding: 20px;
-
+  
   h3 {
+    color: white;
     font-weight: 600;
     letter-spacing: 0.5px;
   }
+}
 
-  button {
-    font-weight: 500;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+.card-body {
+  padding: 24px;
+}
 
-    &:hover {
-      background-color: #f8f9fa;
-      color: #5a189c;
-      transform: scale(1.03);
-    }
+// Campo de filtro
+.mat-mdc-form-field {
+  &.w-100 {
+    width: 100%;
+  }
+  
+  &.mb-3 {
+    margin-bottom: 24px;
   }
 }
 
-// Campo de búsqueda
-.input-group {
-  max-width: 500px;
-
-  input.form-control {
-    border-radius: 0 8px 8px 0;
-    border-left: none;
-    transition: box-shadow 0.3s ease;
-    &:focus {
-      box-shadow: 0 0 5px rgba(221, 0, 255, 0.4);
-    }
-  }
-
-  .input-group-text {
-    border-radius: 8px 0 0 8px;
-    border-right: none;
-    background-color: #ffffff;
-  }
-}
-
-// Tabla
-.table {
-  margin-bottom: 0;
-  font-size: 15px;
-
-  thead {
-    background-color: #cc66ff;
+// Tabla de Material
+table {
+  width: 100%;
+  
+  .mat-mdc-header-cell {
+    background-color: #000000;
+    font-weight: 600;
     color: #ffffff;
-
-    th {
-      cursor: pointer;
-      padding: 12px 16px;
-      font-weight: 600;
-      vertical-align: middle;
-      user-select: none;
-      transition: background-color 0.2s ease;
-
-      &:hover {
-        background-color: #495057;
-      }
-
-      i.fa-arrow-up,
-      i.fa-arrow-down {
-        font-size: 0.9rem;
-        margin-left: 6px;
-        color: #ffc107;
-      }
-    }
+    border-bottom: 2px solid #dee2e6;
   }
-
-  tbody {
-    tr {
-      transition: background-color 0.2s ease;
-
-      &:hover {
-        background-color: #f8f9fa;
-      }
-    }
-
-    td {
-      padding: 12px 16px;
-      vertical-align: middle;
-    }
+  
+  .mat-mdc-cell {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
   }
-
-  .badge {
-    font-size: 0.9rem;
-    font-weight: 500;
+  
+  .mat-mdc-row {
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: #d5dbe0;
+    }
   }
 }
 
 // Botones de acción
-.btn-outline-warning {
-  border-radius: 6px;
+.mat-mdc-icon-button {
   transition: all 0.2s ease;
-  border-width: 1.5px;
-
+  
   &:hover {
-    background-color: #ffc107;
-    color: #fff;
-    transform: scale(1.05);
+    transform: scale(1.1);
   }
 }
 
-// Pie de tabla
-.card-footer {
-  background-color: #f8f9fa;
-  border-top: 1px solid #dee2e6;
-
-  small {
-    color: #6c757d;
-  }
-
-  button {
-    border-radius: 8px;
-  }
-}
-
-// Estado "sin pacientes"
-.text-center {
-  .fa-user-slash {
-    opacity: 0.4;
-  }
-
-  h5, p {
-    color: #6c757d;
-  }
-
-  button {
-    border-radius: 8px;
-  }
-}
-
-// Modal
-.modal-content {
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.modal-header {
-  background: linear-gradient(135deg, #5a189c 0%, #ffffff 100%);
-  color: white;
-  border-bottom: none;
-
-  .btn-close-white {
-    filter: brightness(0) invert(1);
-  }
-}
-
-.modal-body {
-  padding: 24px;
-}
-
-.form-label {
-  font-weight: 500;
-}
-
-.form-control, .form-select {
-  border-radius: 8px;
-  border: 1px solid #ced4da;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:focus {
-    border-color: #5a189c;
-    box-shadow: 0 0 4px rgba(90, 24, 156, 0.4);
-  }
-}
-
-// Spinner
-ngx-spinner {
-  z-index: 9999;
-}
-
-// Responsividad
+// Responsivo
 @media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .card-body {
+    padding: 16px;
+  }
+  
   .card-header {
-    text-align: center;
-    flex-direction: column;
-
+    padding: 16px;
+    
     h3 {
       font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
-
-    button {
-      width: 100%;
     }
   }
-
+  
+  // En móvil, ajustar el tamaño de la tabla
   table {
     font-size: 14px;
-
-    th, td {
-      padding: 8px;
+    
+    .mat-mdc-cell, .mat-mdc-header-cell {
+      padding: 8px 12px;
     }
   }
-
-  .input-group {
-    width: 100%;
-  }
 }
 
-// Animación suave al mostrar filas
-@keyframes fadeInRow {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+// Estilos adicionales para mejorar la experiencia
+.mat-sort-header-arrow {
+  color: #007bff;
 }
 
-tbody tr {
-  animation: fadeInRow 0.3s ease-out;
+
+// Efectos hover mejorados
+.mat-mdc-header-cell:hover {
+  background-color: #e9ecef;
 }

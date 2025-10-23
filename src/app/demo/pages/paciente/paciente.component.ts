@@ -1,275 +1,252 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-import Modal from 'bootstrap/js/dist/modal';
-import Swal from 'sweetalert2';
-
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Paciente } from './models/paciente';
 import { PacienteService } from './service/paciente.service';
-import { UtilService } from 'src/app/services/common/util.service';
-import { Paciente } from './model/paciente';
+import { CommonModule } from '@angular/common';
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors
+} from '@angular/forms';
+
+// Angular Material imports
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import Swal from 'sweetalert2';
+// Importa los objetos necesarios de Bootstrap
+import Modal from 'bootstrap/js/dist/modal';
+import { delay, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-paciente',
-  standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgxSpinnerModule
+    CommonModule, 
+    FormsModule, 
+    ReactiveFormsModule, 
+    NgxSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatTooltipModule
   ],
   templateUrl: './paciente.component.html',
-  styleUrls: ['./paciente.component.scss']
+  styleUrl: './paciente.component.scss'
 })
-export class PacienteComponent {
+export class PacienteComponent implements AfterViewInit{
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
   modalInstance: Modal | null = null;
-  modoFormulario: string = '';
-  titleModal: string = '';
-  titleBoton: string = '';
-  pacienteSelected: Paciente = new Paciente();
-  titleSpinner: string = "Pensando... en ti";
-  pacienteList: Paciente[] = [];
-
-  /** 🔍 Listado filtrado y variable del campo de búsqueda */
-  pacienteFiltrado: Paciente[] = [];
-  filtroPaciente: string = '';
-  tipoDocumentoFiltro: string = '';
-
-  /** 🔽 Variables de ordenamiento */
-  criterioOrden: string = '';
-  direccionOrden: 'asc' | 'desc' = 'asc';
-
-  form: FormGroup = new FormGroup({
-    usuarioId: new FormControl(null, Validators.required),
-    tipoDocumento: new FormControl('', Validators.required),
-    numeroDocumento: new FormControl('', Validators.required),
-    nombres: new FormControl('', Validators.required),
-    apellidos: new FormControl('', Validators.required),
-    fechaNacimiento: new FormControl('', Validators.required),
-    genero: new FormControl(''),
-    telefono: new FormControl(''),
-    direccion: new FormControl(''),
-  });
-
-  constructor(
-    private readonly pacienteService: PacienteService,
-    private readonly utilService: UtilService,
-    private readonly formBuilder: FormBuilder,
-    private readonly spinner: NgxSpinnerService,
-  ) {
-    this.inicializarFormulario();
-    this.listarPaciente();
-    this.mostrarSpinnerTemporal();
-  }
-
-  mostrarSpinnerTemporal(): void {
-    this.spinner.show();
-    setTimeout(() => this.spinner.hide(), 2000);
-  }
-
-  inicializarFormulario(): void {
-    this.form = this.formBuilder.group({
-      usuarioId: [null, Validators.required],
-      tipoDocumento: ['', Validators.required],
-      numeroDocumento: ['', Validators.required],
-      nombres: ['', Validators.required],
-      apellidos: ['', Validators.required],
-      fechaNacimiento: ['', Validators.required],
-      genero: [''],
-      telefono: [''],
-      direccion: [''],
+    modoFormulario: string = '';
+    pacientes: Paciente[] = [];
+    dataSource = new MatTableDataSource<Paciente>([]);
+    displayedColumns: string[] = ['id','usuarioId', 'tipoDocumento', 'numeroDocumento', 'nombres', 'apellidos', 'fechaNacimiento', 'genero', 'telefono', 'direccion', 'acciones'];
+    titleModal: string = '';
+    titleBoton: string = '';
+    pacienteSelected: Paciente;
+    titleSpinner: string = "";
+  
+    form: FormGroup = new FormGroup({
+      usuarioId: new FormControl('', Validators.required),
+      tipoDocumento: new FormControl('', Validators.required),
+      numeroDocumento: new FormControl('', Validators.required),
+      nombres: new FormControl('', Validators.required),
+      apellidos: new FormControl('', Validators.required),
+      fechaNacimiento: new FormControl('', Validators.required),
+      genero: new FormControl('', Validators.required),
+      telefono: new FormControl(''),
+      direccion: new FormControl('', Validators.required)
     });
-  }
-
-  listarPaciente(): void {
-    this.pacienteService.getPaciente().subscribe({
-      next: (data) => {
-        this.pacienteList = data || [];
-        this.filtrarPacientes(); 
-      },
-      error: (error) => {
-        console.error('Error al obtener pacientes:', error);
-        Swal.fire('Error', 'No se pudieron cargar los pacientes.', 'error');
-      }
-    });
-  }
-
-  /** Filtrado de pacientes */
-  filtrarPacientes(): void {
-    const filtro = this.filtroPaciente.toLowerCase().trim();
-
-    // 🔹 Si no hay texto en el filtro y no se seleccionó tipo, mostrar todos los pacientes
-    if (!filtro && !this.tipoDocumentoFiltro) {
-      this.pacienteFiltrado = [...this.pacienteList];
-      return;
+  
+    constructor(
+      private readonly pacienteService: PacienteService,
+      private readonly formBuilder: FormBuilder,
+      private readonly spinner: NgxSpinnerService
+    ) {
+      this.listarPacientes();
+      this.cargarFormulario();
+      this.titleSpinner = "Cargando Pacientes...";
+      this.spinner.show();
+      setTimeout(() => {
+        this.spinner.hide();
+      }, 2000);
     }
-
-    // Normalizar a strings para evitar llamar .includes sobre undefined
-    this.pacienteFiltrado = this.pacienteList.filter(p => {
-      const numero = (p.numeroDocumento || '').toLowerCase();
-      const nombres = (p.nombres || '').toLowerCase();
-      const apellidos = (p.apellidos || '').toLowerCase();
-      const telefono = (p.telefono || '').toLowerCase();
-      const direccion = (p.direccion || '').toLowerCase();
-      const genero = (p.genero || '').toLowerCase();
-      const usuarioIdStr = p.usuarioId != null ? p.usuarioId.toString() : '';
-      const matchTexto = (
-        numero.includes(filtro) ||
-        nombres.includes(filtro) ||
-        apellidos.includes(filtro) ||
-        telefono.includes(filtro) ||
-        direccion.includes(filtro) ||
-        genero.includes(filtro) ||
-        usuarioIdStr.includes(filtro) // Soporte de búsqueda por Usuario ID
-      );
-
-      // Si hay filtro por tipo de documento, y no coincide, excluir
-      if (this.tipoDocumentoFiltro) {
-        const tipo = (p.tipoDocumento || '').toUpperCase();
-        if (tipo !== this.tipoDocumentoFiltro) return false;
+    
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        
+        // Configurar filtro personalizado
+        this.dataSource.filterPredicate = (data: Paciente, filter: string) => {
+          const searchString = filter.toLowerCase();
+          return data.id?.toString().includes(searchString) ||
+                 data.usuarioId?.toString().includes(searchString) ||
+                 data.tipoDocumento?.toLowerCase().includes(searchString) ||
+                 data.numeroDocumento?.toLowerCase().includes(searchString) ||
+                 data.nombres?.toLowerCase().includes(searchString) ||
+                 data.apellidos?.toLowerCase().includes(searchString) ||
+                 data.fechaNacimiento?.toString().includes(searchString) ||
+                 data.genero?.toLowerCase().includes(searchString) ||
+                 data.telefono?.toLowerCase().includes(searchString) ||
+                 data.direccion?.toLowerCase().includes(searchString);
+        };
       }
 
-      // Si no hay texto de búsqueda, pero pasó el filtro de tipo (o no existe), incluir
-      if (!filtro) return true;
-
-      return matchTexto;
-    });
-  }
-
-  /** Ordenar tabla por columna */
-  ordenarPor(campo: keyof Paciente | 'usuarioId'): void {
-    if (this.criterioOrden === campo) {
-      this.direccionOrden = this.direccionOrden === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.criterioOrden = campo;
-      this.direccionOrden = 'asc';
+    cargarFormulario() {
+      this.form = this.formBuilder.group({
+        usuarioId: ['', [Validators.required]],
+        tipoDocumento: ['', [Validators.required]],
+        numeroDocumento: ['', [Validators.required]],
+        nombres: ['', [Validators.required]],
+        apellidos: ['', [Validators.required]],
+        fechaNacimiento: ['', [Validators.required]],
+        genero: ['', [Validators.required]],
+        telefono: [''],
+        direccion: ['', [Validators.required]]
+      });
     }
-
-    this.pacienteFiltrado.sort((a: any, b: any) => {
-      const valorA = (a[campo] ?? '').toString().toLowerCase();
-      const valorB = (b[campo] ?? '').toString().toLowerCase();
-
-      if (valorA < valorB) return this.direccionOrden === 'asc' ? -1 : 1;
-      if (valorA > valorB) return this.direccionOrden === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }
-
-  closeModal(): void {
-    this.modalInstance?.hide();
-  }
-
-  openModal(modo: string): void {
-    this.titleModal = modo === 'C' ? 'Crear Paciente' : 'Editar Paciente';
-    this.titleBoton = modo === 'C' ? 'Guardar Paciente' : 'Actualizar Paciente';
-    this.modoFormulario = modo;
-
-    const modalElement = document.getElementById('modalCrearPaciente');
-    if (modalElement) {
-      this.modalInstance ??= new Modal(modalElement);
-      this.modalInstance.show();
+  
+    get f(): { [key: string]: AbstractControl } {
+      return this.form.controls;
     }
-  }
+  
+    listarPacientes() {
+      this.pacienteService.listarPacientes().subscribe({
+        next: (data) => {
+          console.log(data);
+          this.pacientes = data;
+          this.dataSource.data = data;
+        },
 
-  abrirNuevoPaciente(): void {
-    this.pacienteSelected = new Paciente();
-    this.form.reset();
-    this.openModal('C');
-  }
-
-  abrirEditarPaciente(paciente: Paciente): void {
-    this.pacienteSelected = paciente;
-    const usuarioId = (paciente as any)?.usuarioId ?? null;
-    this.form.patchValue({ ...paciente, usuarioId });
-    this.openModal('E');
-  }
-
-  guardarPaciente(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      Swal.fire('Error', 'Por favor, complete todos los campos obligatorios.', 'error');
-      return;
+        error: (err) => {
+          this.spinner.hide();
+          console.error('Error al listar pacientes:', err);
+          Swal.fire('Error', 'Ocurrió un error al cargar los pacientes.', 'error');
+        }
+      });
     }
-
-    const pacienteData = this.form.getRawValue();
-
-    const accion = this.modoFormulario === 'C' ? 'crear' : 'actualizar';
-    const titulo = this.modoFormulario === 'C' ? 'Crear paciente' : 'Actualizar paciente';
-    const texto = this.modoFormulario === 'C'
-      ? '¿Desea crear este paciente?'
-      : '¿Desea actualizar los datos de este paciente?';
-
-    Swal.fire({
-      title: titulo,
-      text: texto,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: this.modoFormulario === 'C' ? 'Sí, crear' : 'Sí, actualizar',
-      cancelButtonText: 'Cancelar'
-    }).then(result => {
-      if (result.isConfirmed) {
+  
+  
+    guardarPaciente() {
+        if (this.form.invalid) {
+          this.form.markAllAsTouched();
+          Swal.fire('Error', 'Por favor, complete todos los campos obligatorios.', 'error');
+          return;
+        }
+    
         if (this.modoFormulario === 'C') {
-          this.crearPaciente(pacienteData);
+          // Crear paciente
+          this.pacienteService.guardarPaciente(this.form.getRawValue()).subscribe({
+            next: (data) => {          
+              Swal.fire('Éxito', data.message, 'success');
+              this.listarPacientes();
+              this.closeModal();
+            },
+            error: (error) => {
+              console.error('Error creating paciente:', error);
+              Swal.fire("Error", error.error.message, "error");
+            }
+          });
         } else {
-          this.actualizarPacienteBackend({ ...this.pacienteSelected, ...pacienteData });
+          // Editar paciente
+          const pacienteActualizado = { ...this.pacienteSelected, ...this.form.getRawValue() };      
+          this.pacienteService.actualizarPaciente(pacienteActualizado).subscribe({
+            next: (data) => { 
+              Swal.fire('Éxito', data.message, 'success');
+              this.listarPacientes();
+              this.closeModal();
+            },
+            error: (error) => {
+              console.error('Error updating paciente:', error);
+              Swal.fire("Error", error.error.message, "error");
+            }
+          });
         }
       }
+
+    closeModal() {
+      if (this.modalInstance) {
+        this.modalInstance.hide();
+        this.limpiarFormulario();
+      }
+    }
+  
+    openModal(modo: string) {
+      this.titleModal = modo === 'C' ? 'Crear Paciente' : 'Editar Paciente';
+      this.titleBoton = modo === 'C' ? 'Guardar Paciente' : 'Actualizar Paciente';
+      this.modoFormulario = modo;
+      const modalElement = document.getElementById('modalCrearPaciente');
+      if (modalElement) {
+        // Verificar si ya existe una instancia del modal
+        this.modalInstance ??= new Modal(modalElement);
+        this.modalInstance.show();
+      }
+    }
+  
+    abrirNuevoPaciente() {
+      this.pacienteSelected = new Paciente();
+      this.limpiarFormulario();
+      // Dejamos el formulario en blanco
+      this.openModal('C');
+    }
+  
+    abrirEditarPaciente(paciente: Paciente) {
+      this.limpiarFormulario();
+      this.pacienteSelected = paciente;
+      this.form.get("usuarioId").setValue(this.pacienteSelected.usuarioId);
+      this.form.get("tipoDocumento").setValue(this.pacienteSelected.tipoDocumento);
+      this.form.get("numeroDocumento").setValue(this.pacienteSelected.numeroDocumento);
+      this.form.get("nombres").setValue(this.pacienteSelected.nombres);
+      this.form.get("apellidos").setValue(this.pacienteSelected.apellidos);
+      this.form.get("fechaNacimiento").setValue(this.pacienteSelected.fechaNacimiento);
+      this.form.get("genero").setValue(this.pacienteSelected.genero);
+      this.form.get("telefono").setValue(this.pacienteSelected.telefono);
+      this.form.get("direccion").setValue(this.pacienteSelected.direccion);
+      this.openModal('E');
+    }
+
+    limpiarFormulario() {
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.form.reset({
+      usuarioId: '',
+      tipoDocumento: '',
+      numeroDocumento: '',
+      nombres: '',
+      apellidos: '',
+      fechaNacimiento: '',
+      genero: '',
+      telefono: '',
+      direccion: '',
     });
   }
 
-  confirmarEliminarPaciente(paciente: Paciente): void {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Se eliminará al paciente ${paciente.nombres} ${paciente.apellidos}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(result => {
-      if (result.isConfirmed) {
-        this.eliminarPaciente(paciente);
-      }
-    });
-  }
+  /**
+   * Aplicar filtro a la tabla de Material
+   */
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
-  private eliminarPaciente(paciente: Paciente): void {
-    this.pacienteService.eliminarPaciente(paciente).subscribe({
-      next: (resp) => {
-        Swal.fire('Eliminado', resp.message || 'Paciente eliminado correctamente.', 'success');
-        this.listarPaciente();
-      },
-      error: (err) => {
-        console.error('Error al eliminar paciente:', err);
-        Swal.fire('Error', err?.error?.message || 'No se pudo eliminar el paciente.', 'error');
-      }
-    });
-  }
-
-  private crearPaciente(pacienteData: any): void {
-    this.pacienteService.guardarPaciente(pacienteData).subscribe({
-      next: (data) => {
-        Swal.fire('Éxito', data.message || 'Paciente creado correctamente.', 'success');
-        this.listarPaciente();
-        this.closeModal();
-      },
-      error: (error) => {
-        console.error('Error al crear paciente:', error);
-        Swal.fire('Error', error?.error?.message || 'Error al crear paciente.', 'error');
-      }
-    });
-  }
-
-  private actualizarPacienteBackend(pacienteActualizado: Paciente): void {
-    this.pacienteService.actualizarPaciente(pacienteActualizado).subscribe({
-      next: (data) => {
-        Swal.fire('Éxito', data.message || 'Paciente actualizado correctamente.', 'success');
-        this.listarPaciente();
-        this.closeModal();
-      },
-      error: (error) => {
-        console.error('Error al actualizar paciente:', error);
-        Swal.fire('Error', error?.error?.message || 'Error al actualizar paciente.', 'error');
-      }
-    });
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }
