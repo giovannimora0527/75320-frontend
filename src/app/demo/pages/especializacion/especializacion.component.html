@@ -1,0 +1,131 @@
+<ngx-spinner type="pacman" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0">
+             <i class="fa fa-user-md"></i>&nbsp;Mis Especializaciones
+            </h3>
+            <button class="btn btn-outline-primary"(click)="abrirNuevaEspecializacion()">Nueva Especializaicon</button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table table-responsive">
+                <table class ="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>nombre</th>
+                            <th>descripcion</th>
+                            <th>codigo_especializacion</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="especializacionList.length===0">
+                        <tr class="text-center">
+                            <td colspan="8">
+                                <span>No hay registros de especializaciones</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="especializacionList.length >0">
+                        <tr *ngFor="let especializacion of especializacionList">
+                            <td>{{ especializacion.id }}</td>
+                            <td>{{ especializacion.nombre }}</td>
+                            <td>{{especializacion.descripcion }}</td>
+                            <td>{{ especializacion.codigoEspecializacion }}</td>
+
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary"(click)="abrirEditarEspecializacion(especializacion)" >
+                                <i class="fa fa-edit"></i>
+                                    &nbsp;Editar
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>       
+    </div>   
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="modalCrearEspecializacion" tabindex="-1" aria-labelledby="modalCrearEspecializacionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearEspecializacionModalLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <form [formGroup]="form">
+
+              <!-- Nombre -->
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input
+                  type="text"
+                  formControlName="nombre"
+                  class="form-control"
+                  id="nombres"
+                  placeholder="Ingrese el nombre de la especializacion"
+                  [ngModel]="especializacionSelected ? especializacionSelected.nombre : ''"
+                />
+                <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger">
+                  El nombre es obligatorio.
+                </div>
+              </div>
+
+              <!-- Descripcion -->
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripcion</label>
+                <input
+                  type="text"
+                  formControlName="descripcion"
+                  class="form-control"
+                  id="descripcion"
+                  placeholder="Ingrese la descripcion de la especializacion"
+                  [ngModel]="especializacionSelected ? especializacionSelected.descripcion : ''"
+                />
+                <div *ngIf="form.get('descripcion')?.hasError('required') && form.get('descripcion')?.touched" class="text-danger">
+                  La descripcion es obligatoria.
+                </div>
+              </div>
+
+                            <!-- codigo -->
+              <div class="mb-3">
+                <label for="codigoEspecializacion" class="form-label">codigo Especializacion</label>
+                <input
+                  type="text"
+                  formControlName="codigoEspecializacion"
+                  class="form-control"
+                  id="codigoEspecializacion"
+                  placeholder="Ingrese la codigoEspecializacion de la especializacion"
+                  [ngModel]="especializacionSelected ? especializacionSelected.codigoEspecializacion : ''"
+                />
+                <div *ngIf="form.get('codigoEspecializacion')?.hasError('required') && form.get('codigoEspecializacion')?.touched" class="text-danger">
+                  El codigo de la especializacion es obligatorio.
+                </div>
+              </div>
+
+
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarEspecializacion()">{{ titleBoton }}</button>
+      </div>
+    </div>
+  </div>
+</div>
