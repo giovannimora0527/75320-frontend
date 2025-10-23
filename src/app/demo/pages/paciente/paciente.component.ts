@@ -86,7 +86,7 @@ export class PacienteComponent implements AfterViewInit{
       this.spinner.show();
       setTimeout(() => {
         this.spinner.hide();
-      }, 3000);
+      }, 2000);
     }
     
     ngAfterViewInit() {
