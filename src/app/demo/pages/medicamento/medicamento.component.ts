@@ -200,7 +200,6 @@ export class MedicamentoComponent implements OnInit, AfterViewInit {
       
       const medicamentoData = this.form.getRawValue();
       medicamentoData.fechaCompra = this.utilService.convertToIsoDate(medicamentoData.fechaCompra);
-      console.log('➡️ Datos enviados al backend:', medicamentoData);
 
         // Modo Creación
         this.medicamentoService.guardarMedicamento(medicamentoData).subscribe({

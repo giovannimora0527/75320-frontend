@@ -50,6 +50,12 @@
             <td mat-cell *matCellDef="let med"> {{med.presentacion}} </td>
         </ng-container>
 
+        <!-- Columna Fecha de Compra -->
+        <ng-container matColumnDef="fechaCompra">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Compra </th>
+            <td mat-cell *matCellDef="let med"> {{med.fechaCompra}} </td>
+        </ng-container>
+
         <!-- Columna Acciones -->
         <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef> Acciones </th>
@@ -57,7 +63,7 @@
             <button mat-icon-button color="primary" matTooltip="Editar Medicamento" (click)="abrirEditarMedicamento(med)">
                 <mat-icon>edit</mat-icon>
             </button>
-            <!-- Aquí puedes agregar más botones (ej. eliminar) -->
+            <!-- Aquí agregar más botones -->
             </td>
         </ng-container>
 
@@ -85,7 +91,7 @@
 </div>
 </div>
 
-<!-- Modal (Tu código de Modal está casi bien) -->
+<!-- Modal -->
 <div class="modal fade" id="modalCrearMedicamento" tabindex="-1" aria-labelledby="modalCrearMedicamentoModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
@@ -111,10 +117,6 @@
                 placeholder="Ingrese el Nombre del Medicamento"
                 
                 />
-                <!-- 
-                NOTA: He quitado [ngModel] porque NO debes usarlo con formControlName.
-                El valor se setea desde el .ts con this.form.setValue(...)
-                -->
                 <div *ngIf="form.get('nombre')?.hasError('required') && form.get('nombre')?.touched" class="text-danger small">
                 El Nombre es requerido.
                 </div>
@@ -153,16 +155,16 @@
             </div>
 
             <!-- FechaCompra -->
-<div class="mb-3">
-    <label for="fechaCompra" class="form-label">Fecha de Compra</label>
-    <div class="col-md-3">
-    <input
-        type="date"
-        id="fechaCompra"
-        class="form-control"
-        formControlName="fechaCompra"
-    />
-    </div>
+                <div class="mb-3">
+                    <label for="fechaCompra" class="form-label">Fecha de Compra</label>
+                    <div class="col-md-3">
+                    <input
+                        type="date"
+                        id="fechaCompra"
+                        class="form-control"
+                        formControlName="fechaCompra"
+                    />
+                    </div>
 
     <div
     *ngIf="
