@@ -1,0 +1,84 @@
+<div class="container mt-3">
+    <div class="card shadow-sm">
+    <div class="card-header">
+        <h3 class="mb-0">
+        <i class="fa fa-user-md"></i>
+        &nbsp;Lista de pacientes
+        </h3>
+        <small>Estos son los pacientes registrados en el sistema.</small>
+        <div class="col-lg-5 text-end">
+        <!-- <button class="btn btn-outline-primary" (click)="abrirNuevoPaciente()">Nuevo paciente</button> -->
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- FILTROS -->
+        <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Id</th>
+                <th>Tipo de documento</th>
+                <th>Número de Documento</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Fecha de nacimiento</th>
+                <th>Acciones</th>
+            </tr>
+
+            <!-- FILTROS DE BÚSQUEDA -->
+            <tr>
+                <th>
+                <input type="text" class="form-control form-control-sm" placeholder="Buscar ID" [(ngModel)]="filtros.id"
+                (input)="aplicarFiltros()" />
+                </th>
+                <th>
+                <input type="text" class="form-control form-control-sm" placeholder="Buscar tipo doc"
+                    [(ngModel)]="filtros.tipoDocumento" (input)="aplicarFiltros()" />
+                </th>
+                <th>
+                <input type="text" class="form-control form-control-sm" placeholder="Buscar número doc"
+                    [(ngModel)]="filtros.numeroDocumento" (input)="aplicarFiltros()" />
+                </th>
+                <th>
+                <input type="text" class="form-control form-control-sm" placeholder="Buscar nombres"
+                    [(ngModel)]="filtros.nombres" (input)="aplicarFiltros()" />
+                </th>
+                <th>
+                <input type="text" class="form-control form-control-sm" placeholder="Buscar apellidos"
+                    [(ngModel)]="filtros.apellidos" (input)="aplicarFiltros()" />
+                </th>
+                <th>
+                <input type="text" class="form-control form-control-sm" placeholder="Buscar fecha"
+                    [(ngModel)]="filtros.fechaNacimiento" (input)="aplicarFiltros()" />
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+
+          <tbody *ngIf="pacienteFiltrado.length > 0">
+            <tr *ngFor="let p of pacienteFiltrado">
+                <td>{{ p.id }}</td>
+                <td>{{ p.tipoDocumento }}</td>
+                <td>{{ p.numeroDocumento }}</td>
+                <td>{{ p.nombres }}</td>
+                <td>{{ p.apellidos }}</td>
+                <td>{{ p.fechaNacimiento | date: 'yyyy-MM-dd' }}</td>
+                <td>
+                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Editar paciente">
+                    <i class="fa fa-edit"></i>
+                </button>
+                </td>
+            </tr>
+            </tbody>
+
+          <tbody *ngIf="pacienteFiltrado.length === 0">
+            <tr>
+                <td colspan="7" class="text-center">No hay pacientes que coincidan con los filtros.</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+  </div>
+</div>
