@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
-import { Recetas } from '../model/recetas';
+import { Receta } from '../model/recetas';
 import { environment } from './../../../../../environments/environment';
 import { RecetaRq } from '../model/respuesta';
 
@@ -19,15 +19,15 @@ export class RecetaService {
 
     constructor(private backendService: BackendService) {}
 
-    listarRecetas(): Observable<Recetas[]> {
+    listarRecetas(): Observable<Receta[]> {
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
     } 
 
-    guardarReceta(Recetas: Recetas): Observable<RecetaRq> {   
-    return this.backendService.post(this.urlBase, this.urlApi, 'guardar', Recetas);
+    guardarReceta(Receta: Receta): Observable<RecetaRq> {   
+    return this.backendService.post(this.urlBase, this.urlApi, 'guardar', Receta);
     }
 
-    actualizarReceta(Recetas: Recetas): Observable<RecetaRq> {      
-    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', Recetas);
+    actualizarReceta(Receta: Receta): Observable<RecetaRq> {      
+    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', Receta);
     }
 }

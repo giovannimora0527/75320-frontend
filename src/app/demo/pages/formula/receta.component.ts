@@ -1,7 +1,7 @@
 import { Component, ViewChild, AfterViewInit} from '@angular/core';
 import { RecetaService } from './service/receta.service';
 import { CommonModule } from '@angular/common';
-import { Recetas } from './model/recetas';
+import { Receta } from './model/recetas';
 import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 import {
   AbstractControl,
@@ -63,14 +63,14 @@ export class FormulaComponent implements AfterViewInit{
     modoFormulario: string = '';
     titleModal: string = '';
     titleBoton: string = '';
-    recetaSelected: Recetas;
+    recetaSelected: Receta;
     titleSpinner: string = "";
   
-    dataSource = new MatTableDataSource<Recetas>([]);
+    dataSource = new MatTableDataSource<Receta>([]);
     dSource = new MatTableDataSource<Medicamentos>([]);
     daSource = new MatTableDataSource<Cita>([]);
     displayedColumns: string[] = ['id', 'citaid', 'medicamentoid', 'dosis', 'indicaciones', 'acciones'];
-    recetasList: Recetas[] = [];
+    recetasList: Receta[] = [];
     medicamentosList: Medicamentos[] = [];
     citaList: Cita[] = [];
   
@@ -102,10 +102,10 @@ export class FormulaComponent implements AfterViewInit{
       this.dataSource.sort = this.sort;
       
       // Configurar filtro personalizado
-      this.dataSource.filterPredicate = (data: Recetas, filter: string) => {
+      this.dataSource.filterPredicate = (data: Receta, filter: string) => {
         const searchString = filter.toLowerCase();
         return data.id?.toString().includes(searchString) ||
-              data.medicamentoId?.toString().includes(searchString) ||
+              data.medicamento?.toString().includes(searchString) ||
               data.dosis?.toLowerCase().includes(searchString) ||
               data.indicaciones?.toLowerCase().includes(searchString) ||
               data.id?.toString().includes(searchString);
@@ -199,16 +199,16 @@ export class FormulaComponent implements AfterViewInit{
 
   abrirNuevaReceta() {
     this.limpiarFormulario(); // <-- AÑADE ESTA LÍNEA
-    this.recetaSelected = new Recetas();
+    this.recetaSelected = new Receta();
     // Dejamos el formulario en blanco
     this.openModal('C');
   }
 
-  abrirEditarReceta(receta: Recetas) {
+  abrirEditarReceta(receta: Receta) {
     this.form.patchValue({
       id: receta.id,
-      citaId: receta.citaId,
-      medicamentoId: receta.medicamentoId,
+      citaId: receta.cita,
+      medicamentoId: receta.medicamento,
       dosis: receta.dosis,
       indicaciones: receta.indicaciones
     });

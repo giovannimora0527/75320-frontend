@@ -34,13 +34,25 @@
         <!-- ID de Cita -->
         <ng-container matColumnDef="citaid">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> ID de Cita </th>
-            <td mat-cell *matCellDef="let med"> {{med.citaId}} </td>
+            <td mat-cell *matCellDef="let med"> {{ med.citaId || med.cita?.id }} </td>
+        </ng-container>
+
+        <!-- Médico -->
+        <ng-container matColumnDef="medico">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Médico </th>
+            <td mat-cell *matCellDef="let med"> {{ med.medico?.nombre + ' ' + med.medico?.apellido }} </td>
+        </ng-container>
+
+        <!-- Paciente -->
+        <ng-container matColumnDef="paciente">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Paciente </th>
+            <td mat-cell *matCellDef="let med"> {{ med.paciente?.nombre }} </td>
         </ng-container>
 
         <!-- Medicamento -->
         <ng-container matColumnDef="medicamentoid">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Medicamento </th>
-            <td mat-cell *matCellDef="let med"> {{med.medicamentoId}} </td>
+            <td mat-cell *matCellDef="let med"> {{med.medicamento?.nombre}} </td>
         </ng-container>
 
         <!-- Dosis -->
