@@ -60,7 +60,7 @@ export class FormulaComponent implements AfterViewInit{
     modoFormulario: string = '';
     receta: Receta[] = [];
     dataSource = new MatTableDataSource<Receta>([]);
-    displayedColumns: string[] = ['id','citaPaciente', 'citaMedico', 'medicamento', 'dosis', 'indicaciones', 'fechaCreacionRegistro', 'acciones'];
+    displayedColumns: string[] = ['id','citaPaciente', 'citaPacienteDocumento', 'citaMedico', 'citaMedicoDocumento', 'medicamento', 'dosis', 'indicaciones', 'fechaCreacionRegistro', 'acciones'];
     titleModal: string = '';
     titleBoton: string = '';
     recetaSelected: Receta;

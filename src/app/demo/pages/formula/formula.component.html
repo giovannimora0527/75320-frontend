@@ -41,12 +41,26 @@
               <i class="fa fa-user me-2"></i> Nombre Paciente </th>
             <td mat-cell *matCellDef="let receta"> {{  receta.cita?.paciente?.nombres }} </td>
           </ng-container>
+
+          <!-- Columna Identidad Paciente - Cita -->
+          <ng-container matColumnDef="citaPacienteDocumento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-id-card me-2"></i> Doc. Paciente </th>
+            <td mat-cell *matCellDef="let receta"> {{  receta.cita?.paciente?.numeroDocumento }} </td>
+          </ng-container>
           
           <!-- Columna Nombre Medico - Cita -->
           <ng-container matColumnDef="citaMedico">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> 
               <i class="fa fa-user-md me-2"></i> Nombre Medico </th>
             <td mat-cell *matCellDef="let receta"> {{  receta.cita?.medico?.nombres }} </td>
+          </ng-container>
+
+          <!-- Columna Identidad Medico - Cita -->
+          <ng-container matColumnDef="citaMedicoDocumento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-id-card me-2"></i> Doc. Medico </th>
+            <td mat-cell *matCellDef="let receta"> {{  receta.cita?.medico?.numeroDocumento }} </td>
           </ng-container>
 
           <!-- Columna Medicamento -->
