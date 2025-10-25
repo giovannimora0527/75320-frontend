@@ -1,4 +1,6 @@
-export class RespuestaRs {
-    message!: string;
-    status!: number;
-}
+export interface RespuestaRs {
+    message: string;
+    success: boolean;
+    status: number;
+  }
+  

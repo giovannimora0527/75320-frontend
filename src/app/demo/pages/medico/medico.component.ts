@@ -1,49 +1,61 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MedicoService } from './service/medico.service';
 import { Medico } from './models/medico';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// Importa los objetos necesarios de Bootstrap
-import Modal from 'bootstrap/js/dist/modal';
- 
+
+interface MedicoResponse {
+  data?: Medico[];
+  content?: Medico[];
+}
 
 @Component({
   selector: 'app-medico',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './medico.component.html',
   styleUrls: ['./medico.component.scss']
 })
-export class MedicoComponent {
-  modalInstance: Modal | null = null;
-  modoFormulario: string = '';
+export class MedicoComponent implements OnInit {
   medicos: Medico[] = [];
-  titleModal: string = '';
-  titleBoton: string = '';
-  medicoSelected: Medico;
-  constructor(private readonly medicoService: MedicoService) {
-    this.cargarMedicos();
+  isLoading = false;
+  searchTerm = '';
+
+  constructor(private medicoService: MedicoService) {}
+
+  ngOnInit(): void {
+    this.listarMedicos();
   }
 
-  cargarMedicos() {
+  listarMedicos() {
+    this.isLoading = true;
     this.medicoService.getMedicos().subscribe({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      next: (data: any) => {
+      next: (data: MedicoResponse | Medico[]) => {
         if (Array.isArray(data)) {
-          this.medicos = data as Medico[];
+          this.medicos = data;
         } else if (data && Array.isArray(data.data)) {
-          this.medicos = data.data as Medico[];
+          this.medicos = data.data;
         } else if (data && Array.isArray(data.content)) {
-          this.medicos = data.content as Medico[];
+          this.medicos = data.content;
         } else {
           this.medicos = [];
         }
+        this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error al listar medicos:', error);
+        console.error('Error al listar médicos:', error);
         this.medicos = [];
+        this.isLoading = false;
       }
     });
   }
 
-  
+  filtrarMedicos() {
+    const termino = this.searchTerm.toLowerCase();
+    return this.medicos.filter(m =>
+      m.nombres?.toLowerCase().includes(termino) ||
+      m.apellidos?.toLowerCase().includes(termino) ||
+      m.especializacion?.nombre?.toLowerCase().includes(termino)
+    );
+  }
 }

@@ -1,18 +1,21 @@
 // Angular import
 import { Component, OnInit, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 // project import
-import { SpinnerComponent } from './theme/shared/components/spinner/spinner.component';
+import { UtilityService } from './services/utility.service';
 
 @Component({
   selector: 'app-root',
-  imports: [SpinnerComponent, RouterModule],
+  standalone: true,
+  imports: [RouterModule, NgxSpinnerModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   private router = inject(Router);
+  private utilityService = inject(UtilityService);
 
   title = 'Clínica Uniminuto';
 

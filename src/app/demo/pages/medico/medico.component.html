@@ -1,43 +1,88 @@
-<div class="card">
-  <div class="card-header">
-    <h5 class="mb-0">Listado de Médicos</h5>
-  </div>
-  <div class="card-body p-0">
-    <div class="table-responsive">
-      <table class="table table-striped mb-0">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Tipo Doc</th>
-            <th>N° Documento</th>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Teléfono</th>
-            <th>Reg. Profesional</th>
-            <th>Especialización</th>
-          </tr>
-        </thead>
-        <tbody>
-          @if (medicos?.length) {
-            @for (m of medicos; track m; let i = $index) {
-              <tr>
-                <td>{{ i + 1 }}</td>
-                <td>{{ m.tipoDocumento }}</td>
-                <td>{{ m.numeroDocumento }}</td>
-                <td>{{ m.nombres }}</td>
-                <td>{{ m.apellidos }}</td>
-                <td>{{ m.telefono }}</td>
-                <td>{{ m.registroProfesional }}</td>
-                <td>{{ m.especializacion?.nombre }}</td>
-              </tr>
-            }
-          } @else {
-            <tr>
-              <td colspan="8" class="text-center p-4">No hay médicos para mostrar</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+<div class="container-fluid">
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="fa fa-user-md me-2"></i>Listado de Médicos
+      </h5>
+      <button class="btn btn-light btn-sm" (click)="listarMedicos()" [disabled]="isLoading">
+        <i class="fa" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-refresh'"></i> 
+        {{ isLoading ? 'Cargando...' : 'Actualizar' }}
+      </button>
     </div>
+
+    <div class="card-body p-0">
+      @if (isLoading) {
+        <div class="d-flex justify-content-center align-items-center py-5">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando médicos...</p>
+          </div>
+        </div>
+      } @else {
+        <div class="p-3">
+          <input
+            type="text"
+            class="form-control mb-3"
+            placeholder="Buscar médicos por nombre, apellido o especialización"
+            [(ngModel)]="searchTerm"
+            (input)="filtrarMedicos()"
+          />
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="text-center" style="width: 50px;">#</th>
+                <th style="width: 100px;">Tipo doc.</th>
+                <th>N° Documento</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Teléfono</th>
+                <th>Registro Profesional</th>
+                <th>Especialización</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (filtrarMedicos()?.length) {
+                @for (med of filtrarMedicos(); track med.id; let i = $index) {
+                  <tr>
+                    <td class="text-center fw-bold text-muted">{{ i + 1 }}</td>
+                    <td class="text-center">{{ med.tipoDocumento }}</td>
+                    <td>{{ med.numeroDocumento }}</td>
+                    <td><i class="fa fa-user text-muted me-1"></i>{{ med.nombres }}</td>
+                    <td>{{ med.apellidos }}</td>
+                    <td>{{ med.telefono }}</td>
+                    <td class="text-center">{{ med.registroProfesional }}</td>
+                    <td>{{ med.especializacion?.nombre }}</td>
+                  </tr>
+                }
+              } @else {
+                <tr>
+                  <td colspan="8" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="fa fa-inbox fa-3x mb-3 d-block"></i>
+                      <h5>No hay médicos registrados</h5>
+                      <p class="mb-0">Intente actualizar la lista o revise la conexión</p>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    @if (!isLoading && medicos?.length) {
+      <div class="card-footer text-muted bg-light">
+        <small>
+          <i class="fa fa-info-circle me-1"></i>
+          Total de médicos: <strong>{{ medicos.length }}</strong>
+        </small>
+      </div>
+    }
   </div>
 </div>

@@ -11,7 +11,7 @@ import Modal from 'bootstrap/js/dist/modal';
   selector: 'app-especializacion',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './especializacion.component.html',
-  styleUrl: './especializacion.component.scss'
+  styleUrls: ['./especializacion.component.scss']
 })
 export class EspecializacionComponent implements OnInit {
 

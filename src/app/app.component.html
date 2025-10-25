@@ -1,1 +1,12 @@
-<router-outlet><app-spinner></app-spinner></router-outlet>
+<ngx-spinner 
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="large"
+  color="#ffd700"
+  type="pacman"
+  [fullScreen]="true"
+>
+  <div class="loading-text">
+    <p style="color: #ffd700; font-size: 20px; margin-top: 50px">Cargando...</p>
+  </div>
+</ngx-spinner>
+<router-outlet></router-outlet>
