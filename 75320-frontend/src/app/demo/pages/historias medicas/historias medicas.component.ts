@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -177,6 +178,18 @@ export class HistoriasMedicasComponent implements OnInit {
       });
     }
   }
+=======
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-historia',
+  imports: [],
+  templateUrl: './historias medicas.component.html',
+  styleUrl: './historias medicas.component.scss'
+})
+export class HistoriaComponent {
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 }
 
 
@@ -190,4 +203,7 @@ export class HistoriasMedicasComponent implements OnInit {
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)

@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+@use 'sass:list';
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 /**  =====================
       Generic-class css start
 ========================== **/
@@ -52,20 +57,35 @@ $i: 0;
 
 /*====== text-color, background color css starts ======*/
 @each $value in $color-name {
+<<<<<<< HEAD
   $i: index($color-name, $value);
   .bg-#{$value} {
     background: nth($color-color, $i);
   }
   .text-#{$value} {
     color: nth($color-color, $i);
+=======
+  $i: list.index($color-name, $value);
+  .bg-#{$value} {
+    background: list.nth($color-color, $i);
+  }
+  .text-#{$value} {
+    color: list.nth($color-color, $i);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
   }
 }
 /*====== text-color css ends ======*/
 /*====== Card top border css starts ======*/
 @each $value in $color-name {
+<<<<<<< HEAD
   $i: index($color-name, $value);
   .card-border-#{$value} {
     border-top: 4px solid nth($color-color, $i);
+=======
+  $i: list.index($color-name, $value);
+  .card-border-#{$value} {
+    border-top: 4px solid list.nth($color-color, $i);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
   }
 }
 /*====== Card top border ends ======*/

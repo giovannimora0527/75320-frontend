@@ -9,8 +9,12 @@ import { RespuestaRs } from '../models/respuesta';
   providedIn: 'root'
 })
 export class UsuarioService {
+<<<<<<< HEAD
   // URL base correcta según application.properties
   urlBase: string = 'http://localhost:8000/clinica/v1';
+=======
+  urlBase: string = environment.apiUrlAuth;
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
   urlApi: string = 'usuario';
 
   constructor(private backendService: BackendService) {}
@@ -22,6 +26,13 @@ export class UsuarioService {
   guardarUsuario(usuario: Usuario): Observable<RespuestaRs> {   
     return this.backendService.post(this.urlBase, this.urlApi, 'guardar', usuario);
   }
+<<<<<<< HEAD
+=======
+
+  actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {      
+    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', usuario);
+  }
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 }
 
 

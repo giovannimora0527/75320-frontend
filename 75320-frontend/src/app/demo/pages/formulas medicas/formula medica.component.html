@@ -1,0 +1,217 @@
+<ngx-spinner type="ball-spin" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="contenedor-clarito">
+  <div class="tarjeta-clarita efecto-clarito">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-medkit me-2"></i>
+          &nbsp;💊 Mis Fórmulas Médicas
+        </h3>
+        <button class="btn-clarito-primario" (click)="abrirNuevaReceta()"> 
+            <mat-icon>add</mat-icon>
+            ✨ Nueva Fórmula Médica
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Campo de filtro -->
+      <mat-form-field appearance="outline" class="form-field-clarito w-100 mb-3">
+        <mat-label>🔍 Buscar Fórmulas Médicas</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por dosis, indicaciones o fecha..." #input>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Tabla de Material -->
+      <div class="table-responsive mat-elevation-8">
+        <table mat-table [dataSource]="dataSource" matSort class="tabla-claritos w-100">
+
+          <!-- Columna ID -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-hashtag me-2"></i> 🔢 ID </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta"> {{ receta.id }} </td>
+          </ng-container>
+
+          <!-- Columna Nombre Paciente - Cita -->
+          <ng-container matColumnDef="citaPaciente">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-user me-2"></i> 👤 Nombre Paciente </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta"> {{  receta.cita?.paciente?.nombres }} </td>
+          </ng-container>
+          
+          <!-- Columna Nombre Medico - Cita -->
+          <ng-container matColumnDef="citaMedico">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-user-md me-2"></i> 👨‍⚕️ Nombre Médico </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta"> {{  receta.cita?.medico?.nombres }} </td>
+          </ng-container>
+
+          <!-- Columna Medicamento -->
+          <ng-container matColumnDef="medicamento">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header> 
+              <i class="fas fa-pills me-2"></i> 💊 Medicamento </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta"> {{ receta.medicamento?.nombre }} </td>
+          </ng-container>
+
+          <!-- Columna Dosis -->
+          <ng-container matColumnDef="dosis">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header> 
+              <i class="fas fa-prescription-bottle me-2"></i> ⚗️ Dosis </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta"> {{ receta.dosis }} </td>
+          </ng-container>
+
+          <!-- Columna Indicaciones -->
+          <ng-container matColumnDef="indicaciones">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-clipboard me-2"></i> 📋 Indicaciones </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta"> {{ receta.indicaciones }} </td>
+          </ng-container>
+
+          <!-- Columna Fecha de Creacion Registro -->
+          <ng-container matColumnDef="fechaCreacionRegistro">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header> 
+              <i class="fa fa-calendar"></i> 📅 Fecha de Creación </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta"> {{ receta.fechaCreacionRegistro | date:'yyyy-MM-dd HH:mm' }} </td>
+          </ng-container>
+            
+            <!-- Columna Modificaciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef> 
+              <i class="fa fa-cog me-2"></i> 🔧 Acciones </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let receta">
+              <button mat-icon-button class="btn-editar-clarito" (click)="abrirEditarReceta(receta)" matTooltip="Editar receta">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Fila cuando no hay datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+              <div class="no-data-message">
+                <mat-icon class="no-data-icon">search_off</mat-icon>
+                <p>No se encontraron Formulas Medicas que coincidan con el filtro "{{ input.value }}"</p>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+      <!-- Paginador -->
+        <mat-paginator 
+          [pageSizeOptions]="[5, 10, 25, 100]" 
+          [pageSize]="10"
+          showFirstLastButtons
+          aria-label="Seleccionar página de recetas">
+        </mat-paginator>
+    </div>
+  </div>
+</div>          
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearReceta" tabindex="-1" aria-labelledby="modalCrearRecetaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearRecetaModalLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+            <form [formGroup]="form">
+                <!--  Cita Id -->
+                <div class="mb-3">
+                <label for="cita" class="form-label">Cita</label>
+                <select
+                  formControlName="cita"
+                  class="form-control"
+                  id="cita"
+                  [ngModel]="recetaSelected && recetaSelected.cita ? recetaSelected.cita.id : ''"
+                >
+                  <option value="" [selected]="!recetaSelected" disabled>Seleccione la cita</option>
+                  <option *ngFor="let cita of citaList" [value]="cita.id">
+                    {{ cita.id }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="form.get('cita')?.hasError('required') && form.get('cita')?.touched"
+                  class="text-danger"
+                >
+                  La cita es requerida.
+                </div>
+              </div>
+
+              <!-- Medicamento -->
+              <div class="mb-3">
+                <label for="medicamento" class="form-label">Medicamento</label>
+                <select
+                  formControlName="medicamento"
+                  class="form-control"
+                  id="medicamento"
+                  [ngModel]="recetaSelected && recetaSelected.medicamento ? recetaSelected.medicamento.id : ''"
+                >
+                  <option value="" [selected]="!recetaSelected" disabled>Seleccione el Medicamento</option>
+                  <option *ngFor="let medicamento of medicamentoList" [value]="medicamento.id">
+                    {{ medicamento.nombre }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="form.get('medicamento')?.hasError('required') && form.get('medicamento')?.touched"
+                  class="text-danger"
+                >
+                  El medicamento es requerido.
+                </div>
+              </div>
+              
+              <!-- Dosis -->
+              <div class="mb-3">
+                <label for="dosis" class="form-label">Dosis</label>
+                <input
+                  type="text"
+                  formControlName="dosis"
+                  class="form-control"
+                  id="dosis"
+                  placeholder="Ingrese la dosis del medicamento de la receta"
+                  [ngModel]="recetaSelected ? recetaSelected.dosis : ''"
+                />
+                <div *ngIf="form.get('dosis')?.hasError('required') && form.get('dosis')?.touched" class="text-danger">
+                  La dosis es requerida.
+                </div>
+              </div>
+
+              <!-- Indicaciones -->
+              <div class="mb-3">
+                <label for="indicaciones" class="form-label">Indicaciones</label>
+                <input
+                  type="text"
+                  formControlName="indicaciones"
+                  class="form-control"
+                  id="indicaciones"
+                  placeholder="Ingrese las indicaciones del medicamento de la receta"
+                  [ngModel]="recetaSelected ? recetaSelected.dosis : ''"
+                />
+                <div *ngIf="form.get('indicaciones')?.hasError('required') && form.get('indicaciones')?.touched" class="text-danger">
+                  La indicacion es requerida.
+                </div>
+              </div>
+            </form>
+          </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarReceta()"[disabled]="form.invalid">{{ titleBoton }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+

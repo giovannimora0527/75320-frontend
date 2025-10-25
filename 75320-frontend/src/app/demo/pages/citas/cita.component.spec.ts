@@ -1,4 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 import { CitaComponent } from './cita.component';
 
 describe('CitaComponent', () => {
@@ -20,3 +24,7 @@ describe('CitaComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)

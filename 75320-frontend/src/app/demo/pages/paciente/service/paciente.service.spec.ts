@@ -1,9 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+<<<<<<< HEAD
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+=======
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 import { PacienteService } from './paciente.service';
 
 describe('PacienteService', () => {
   let service: PacienteService;
+<<<<<<< HEAD
   let httpMock: HttpTestingController;
 
   const dummyPacientes = [
@@ -23,11 +28,18 @@ describe('PacienteService', () => {
 
   afterEach(() => {
     httpMock.verify();
+=======
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(PacienteService);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+<<<<<<< HEAD
 
   it('should fetch pacientes', () => {
     service.getPacientes().subscribe(pacientes => {
@@ -75,4 +87,6 @@ describe('PacienteService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush({});
   });
+=======
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 });

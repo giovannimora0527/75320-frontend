@@ -2,11 +2,17 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
+<<<<<<< HEAD
+=======
+import { Medico } from '../models/medico';
+import { RespuestaRs } from '../../usuario/models/respuesta';
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedicoService {
+<<<<<<< HEAD
   private urlBase: string = environment.apiUrlAuth;
   private urlApi: string = 'medicos';
 
@@ -59,6 +65,27 @@ export class MedicoService {
    */
   eliminarMedico(id: number): Observable<any> {
     return this.backendService.delete(this.urlBase, this.urlApi, `eliminar/${id}`);
+=======
+  urlBase: string = environment.apiUrlAuth;
+  urlApi: string = 'medico';
+
+  constructor(private backendService: BackendService) {}
+
+  getMedicos(): Observable<Medico[]> {
+    return this.backendService.get(this.urlBase, this.urlApi, 'listar');
+  }
+
+  listarMedicos(): Observable<Medico[]> {
+    return this.getMedicos();
+  }
+
+  guardarMedico(medico: Medico): Observable<RespuestaRs>{
+    return this.backendService.post(this.urlBase, this.urlApi, 'guardar', medico);
+  }
+
+  actualizarMedico(medico: Medico): Observable<RespuestaRs>{
+    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', medico);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
   }
 }
 

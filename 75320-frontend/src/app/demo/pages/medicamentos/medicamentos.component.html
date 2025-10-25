@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="container mt-4">
   <h2>Gestión de Medicamentos</h2>
 
@@ -100,4 +101,244 @@
   </table>
 </div>
 
+=======
+<ngx-spinner type="ball-spin" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="contenedor-clarito">
+  <div class="tarjeta-clarita efecto-clarito">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fas fa-pills me-2"></i>
+          &nbsp;💊 Mi Inventario de Medicamentos
+        </h3>
+        <button class="btn-clarito-primario" (click)="abrirNuevoMedicamento()"> 
+          <mat-icon>add</mat-icon>
+          ✨ Nuevo Medicamento
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Campo de filtro -->
+      <mat-form-field appearance="outline" class="form-field-clarito w-100 mb-3">
+        <mat-label>🔍 Buscar Medicamentos</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por id, nombre, descripcion..." #input>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Tabla de Material -->
+      <div class="table-responsive mat-elevation-8">
+        <table mat-table [dataSource]="dataSource" matSort class="tabla-claritos w-100">
+
+          <!-- Columna ID -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-hashtag me-2"></i>🔢 ID
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento"> {{ medicamento.id }} </td>
+          </ng-container>
+
+          <!-- Columna Nombre -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-capsules me-2"></i>💊 Nombre
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento"> {{ medicamento.nombre }} </td>
+          </ng-container>
+
+          <!-- Columna Descripción -->
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-align-left me-2"></i>📝 Descripción
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento"> {{ medicamento.descripcion }} </td>
+          </ng-container>
+
+          <!-- Columna Presentación -->
+          <ng-container matColumnDef="presentacion">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fas fa-prescription-bottle me-2"></i>📦 Presentación
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento"> {{ medicamento.presentacion }} </td>
+          </ng-container>
+
+          <!-- Columna Fecha de Compra -->
+          <ng-container matColumnDef="fechaCompra">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-calendar me-2"></i>📅 Fecha de Compra
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento"> {{ medicamento.fechaCompra | date:'yyyy-MM-dd' }} </td>
+          </ng-container>
+
+          <!-- Columna Fecha de Vencimiento -->
+          <ng-container matColumnDef="fechaVence">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-calendar-times me-2"></i>⏰ Fecha de Vencimiento
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento"> {{ medicamento.fechaVence | date:'yyyy-MM-dd' }} </td>
+          </ng-container>
+
+          <!-- Columna Fecha de Creación -->
+          <ng-container matColumnDef="fechaCreacionRegistro">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-calendar-plus me-2"></i>🆕 Fecha de Creación
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento">
+              {{ medicamento.fechaCreacionRegistro | date:'yyyy-MM-dd HH:mm' }}
+            </td>
+          </ng-container>
+
+          <!-- Columna Fecha de Modificación -->
+          <ng-container matColumnDef="fechaModificacionRegistro">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+                <i class="fa fa-calendar-check me-2"></i>✏️ Fecha de Modificación
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento">
+                <ng-container *ngIf="medicamento.fechaModificacionRegistro; else sinModificacion">
+                    {{ medicamento.fechaModificacionRegistro | date:'yyyy-MM-dd HH:mm' }}
+                </ng-container>
+                <ng-template #sinModificacion>
+                    <span class="text-muted">—</span>
+                </ng-template>
+            </td>
+          </ng-container>
+
+          <!-- Columna Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef>
+              <i class="fa fa-cog me-2"></i>🔧 Acciones
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let medicamento">
+              <button
+                mat-icon-button
+                class="btn-editar-clarito"
+                (click)="abrirEditarMedicamento(medicamento)"
+                matTooltip="Editar medicamento">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Filas -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Fila cuando no hay datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+              <div class="no-data-message">
+                <mat-icon class="no-data-icon">search_off</mat-icon>
+                <p>No se encontraron medicamentos que coincidan con el filtro "{{ input.value }}"</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Paginador -->
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageSize]="10"
+        showFirstLastButtons
+        aria-label="Seleccionar página de medicamentos">
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCrearMedicamento" tabindex="-1" aria-labelledby="modalCrearMedicamentoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearMedicamentoModalLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="form-control"
+              id="nombre"
+              placeholder="Ingrese el nombre del medicamento"
+              [ngModel]="medicamentoSelected?.nombre || ''" />
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input
+              type="text"
+              formControlName="descripcion"
+              class="form-control"
+              id="descripcion"
+              placeholder="Ingrese la descripción del medicamento"
+              [ngModel]="medicamentoSelected?.descripcion || ''" />
+          </div>
+
+          <!-- Presentación -->
+          <div class="mb-3">
+            <label for="presentacion" class="form-label">Presentación</label>
+            <input
+              type="text"
+              formControlName="presentacion"
+              class="form-control"
+              id="presentacion"
+              placeholder="Ingrese la presentación del medicamento"
+              [ngModel]="medicamentoSelected?.presentacion || ''" />
+          </div>
+
+          <!--  Fecha de Compra con calendario -->
+          <div class="mb-3">
+            <label for="fechaCompra" class="form-label">Fecha de Compra</label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput [matDatepicker]="pickerCompra" formControlName="fechaCompra" placeholder="Seleccione la fecha de compra">
+              <mat-datepicker-toggle matSuffix [for]="pickerCompra"></mat-datepicker-toggle>
+              <mat-datepicker #pickerCompra></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!--  Fecha de Vencimiento con calendario -->
+          <div class="mb-3">
+            <label for="fechaVence" class="form-label">Fecha de Vencimiento</label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput [matDatepicker]="pickerVence" formControlName="fechaVence" placeholder="Seleccione la fecha de vencimiento">
+              <mat-datepicker-toggle matSuffix [for]="pickerVence"></mat-datepicker-toggle>
+              <mat-datepicker #pickerVence></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <!-- Fecha de Modificación (solo visible al editar) -->
+          <div class="mb-3" *ngIf="modoFormulario === 'E'">
+            <label for="fechaModificacionRegistro" class="form-label">Fecha de Modificación</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fechaModificacionRegistro"
+              formControlName="fechaModificacionRegistro"
+              readonly />
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarMedicamento()" [disabled]="form.invalid">
+          {{ titleBoton }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 

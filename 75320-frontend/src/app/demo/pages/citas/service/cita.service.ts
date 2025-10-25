@@ -2,11 +2,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
+<<<<<<< HEAD
+=======
+import { Cita } from '../models/cita';
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 
 @Injectable({
   providedIn: 'root'
 })
 export class CitaService {
+<<<<<<< HEAD
   private urlBase: string = environment.apiUrlAuth;
   private urlApi: string = 'citas';
 
@@ -31,6 +36,17 @@ export class CitaService {
   deleteCita(id: number): Observable<any> {
     return this.backendService.delete(this.urlBase, this.urlApi, `eliminar/${id}`);
   }
+=======
+  urlBase: string = environment.apiUrlAuth;
+  urlApi: string = 'cita';
+
+  constructor(private backendService: BackendService) {
+  }
+
+  listarCitas(): Observable<Cita[]>{
+    return this.backendService.get(this.urlBase, this.urlApi, 'listar');
+  }
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 }
 
 
@@ -39,4 +55,7 @@ export class CitaService {
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)

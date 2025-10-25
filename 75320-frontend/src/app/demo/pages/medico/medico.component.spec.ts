@@ -21,3 +21,7 @@ describe('MedicoComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)

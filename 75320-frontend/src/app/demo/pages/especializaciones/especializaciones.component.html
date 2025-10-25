@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="container">
   <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
@@ -38,10 +39,115 @@
           </tbody>
         </table>
       </div>
+=======
+<ngx-spinner type="ball-spin" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="contenedor-clarito">
+  <div class="tarjeta-clarita efecto-clarito">
+    <div class="card-header">
+      <div class="d-flex align-items-center justify-content-between">
+        <h3 class="mb-0">
+          <i class="fa fa-user-md me-2"></i>
+          &nbsp;🏥 Gestión de Especializaciones
+        </h3>
+        <button class="btn-clarito-primario" (click)="abrirNuevaEspecializacion()"> 
+          <mat-icon>add</mat-icon>
+          ✨ Nueva Especialización
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- Campo de filtro -->
+      <mat-form-field appearance="outline" class="form-field-clarito w-100 mb-3">
+        <mat-label>🔍 Buscar Especializaciones</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar por id, nombre, descripción o código..." #input>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Tabla de Material -->
+      <div class="table-responsive mat-elevation-8">
+        <table mat-table [dataSource]="dataSource" matSort class="tabla-claritos w-100">
+
+          <!-- Columna ID -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-hashtag me-2"></i>🔢 ID
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let especializacion"> {{ especializacion.id }} </td>
+          </ng-container>
+
+          <!-- Columna Nombre -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-graduation-cap me-2"></i>🎓 Nombre
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let especializacion"> {{ especializacion.nombre }} </td>
+          </ng-container>
+
+          <!-- Columna Descripción -->
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-align-left me-2"></i>📝 Descripción
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let especializacion"> {{ especializacion.descripcion }} </td>
+          </ng-container>
+
+          <!-- Columna Código -->
+          <ng-container matColumnDef="codigoEspecializacion">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef mat-sort-header>
+              <i class="fa fa-code me-2"></i>🏷️ Código
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let especializacion"> {{ especializacion.codigoEspecializacion }} </td>
+          </ng-container>
+
+          <!-- Columna Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell class="header-clarito" *matHeaderCellDef>
+              <i class="fa fa-cog me-2"></i>🔧 Acciones
+            </th>
+            <td mat-cell class="cell-clarito" *matCellDef="let especializacion">
+              <button
+                mat-icon-button
+                class="btn-editar-clarito"
+                (click)="abrirEditarEspecializacion(especializacion)"
+                matTooltip="Editar especialización">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Filas -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Fila cuando no hay datos -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center" [attr.colspan]="displayedColumns.length">
+              <div class="no-data-message">
+                <mat-icon class="no-data-icon">search_off</mat-icon>
+                <p>No se encontraron especializaciones que coincidan con el filtro "{{ input.value }}"</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Paginador -->
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        [pageSize]="10"
+        showFirstLastButtons
+        aria-label="Seleccionar página de especializaciones">
+      </mat-paginator>
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
     </div>
   </div>
 </div>
 
+<<<<<<< HEAD
 <!-- Modal de creación -->
 <div class="modal fade" id="modalCrearEspecializacion" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -66,6 +172,64 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
         <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="guardarEspecializacion()">Guardar</button>
+=======
+<!-- Modal -->
+<div class="modal fade" id="modalCrearEspecializacion" tabindex="-1" aria-labelledby="modalCrearEspecializacionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCrearEspecializacionModalLabel">
+          {{ titleModal }}
+        </h1>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              type="text"
+              formControlName="nombre"
+              class="form-control"
+              id="nombre"
+              placeholder="Ingrese el nombre de la especialización"
+              [ngModel]="especializacionSelected?.nombre || ''" />
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input
+              type="text"
+              formControlName="descripcion"
+              class="form-control"
+              id="descripcion"
+              placeholder="Ingrese la descripción de la especialización"
+              [ngModel]="especializacionSelected?.descripcion || ''" />
+          </div>
+
+          <!-- Código -->
+          <div class="mb-3">
+            <label for="codigoEspecializacion" class="form-label">Código de Especialización</label>
+            <input
+              type="text"
+              formControlName="codigoEspecializacion"
+              class="form-control"
+              id="codigoEspecializacion"
+              placeholder="Ingrese el código de la especialización"
+              [ngModel]="especializacionSelected?.codigoEspecializacion || ''" />
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarEspecializacion()" [disabled]="form.invalid">
+          {{ titleBoton }}
+        </button>
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
       </div>
     </div>
   </div>

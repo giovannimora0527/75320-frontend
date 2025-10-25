@@ -1,0 +1,1 @@
+export { FormulaMedicaComponent } from './formulas medicas.component';

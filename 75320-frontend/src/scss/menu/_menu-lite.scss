@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+@use 'sass:color';
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 // new logo start
 
 .b-brand {
@@ -382,7 +387,11 @@
           }
 
           &.notification:hover {
+<<<<<<< HEAD
             background: transparentize($primary-color, 0.9);
+=======
+            background: color.scale($primary-color, $alpha: -90%);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
           }
 
           p {
@@ -474,7 +483,11 @@
           &:active,
           &:focus,
           &:hover {
+<<<<<<< HEAD
             background: transparentize($primary-color, 0.9);
+=======
+            background: color.scale($primary-color, $alpha: -90%);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 
             > a {
               background: transparent;
@@ -825,7 +838,11 @@
   color: $menu-dark-text-color;
 
   .pcoded-submenu {
+<<<<<<< HEAD
     background: darken($header-dark-background, 3%);
+=======
+    background: color.adjust($header-dark-background, $lightness: -3%);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
     padding: 15px 0;
   }
 
@@ -936,7 +953,11 @@
               left: calc(calc(#{$Menu-collapsed-width} / 2) - 3px);
               width: 2px;
               height: calc(100% - 5px);
+<<<<<<< HEAD
               background: transparentize($menu-dark-text-color, 0.9);
+=======
+              background: color.scale($menu-dark-text-color, $alpha: -90%);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
             }
 
             li {
@@ -1101,7 +1122,11 @@
         }
 
         > a {
+<<<<<<< HEAD
           background: darken($menu-dark-background, 6%);
+=======
+          background: color.adjust($menu-dark-background, $lightness: -6%);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
           color: $white;
         }
       }

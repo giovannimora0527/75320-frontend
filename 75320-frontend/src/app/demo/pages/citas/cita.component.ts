@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -137,6 +138,42 @@ export class CitaComponent implements OnInit {
     this.editando = false;
     this.citaSeleccionada = null;
     this.citaForm.reset();
+=======
+import { Component } from '@angular/core';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { CitaService } from './service/cita.service';
+import { Cita } from './models/cita';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-cita',
+  imports: [CommonModule, NgxSpinnerModule],
+  templateUrl: './cita.component.html',
+  styleUrl: './cita.component.scss'
+})
+export class CitaComponent {
+  titleSpinner: string = '';
+  citasList: Cita[] = [];
+
+  constructor(
+    private readonly spinner: NgxSpinnerService,
+    private readonly citaService: CitaService
+  ) {
+    this.listarCitas();
+  }
+
+  listarCitas() {
+    this.citaService.listarCitas().subscribe(
+      {
+        next: (data) => {          
+          this.citasList = data;        
+        },
+        error: (error) => {
+          console.error('Error al listar las citas:', error); 
+        }
+      }
+    );
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
   }
 }
 

@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+@use 'sass:color';
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 body {
   font-family: $theme-font-family;
   font-size: $theme-font-size;
@@ -306,7 +311,11 @@ p.text-muted {
     &:active,
     &:focus,
     &:hover {
+<<<<<<< HEAD
       background: transparentize($primary-color, 0.9);
+=======
+      background: color.scale($primary-color, $alpha: -90%);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 
       > a {
         background: transparent;

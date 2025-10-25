@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+@use 'sass:color';
+@use 'sass:map';
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 // =======================================
 //     List of variables for layout
 // =======================================
@@ -7,6 +13,7 @@ $Menu-width: 264px;
 $Menu-collapsed-width: 80px;
 
 // color list for build layouts
+<<<<<<< HEAD
 // temp variables
 $theme-color: linear-gradient(-135deg, #1de9b6 0%, #1dc4e9 100%);
 $theme-color2: linear-gradient(-135deg, #899fd4 0%, #a389d4 100%);
@@ -65,6 +72,66 @@ $theme-font-color: #888;
 $theme-heading-color: #111;
 
 $layout-6-bg-color: #23b7e5;
+=======
+// temp variables - COLORES CLARITOS PASTELES ✨
+$theme-color: linear-gradient(-135deg, #FFE4E6 0%, #FFF0F5 100%);
+$theme-color2: linear-gradient(-135deg, #E8F4FD 0%, #F0F8FF 100%);
+$primary-color: #87CEEB;        // Azul cielo suave
+$warning-color: #FFD700;        // Amarillo dorado suave  
+$danger-color: #FFB6C1;         // Rosa claro
+$success-color: #98FB98;        // Verde menta claro
+$purple-color: #DDA0DD;         // Lavanda suave
+$info-color: #B0E0E6;           // Azul polvo
+$secondary-color: #D3D3D3;      // Gris claro
+$default-color: #F5F5F5;        // Gris muy claro
+$light-color: #FAFAFA;          // Blanco hueso
+$dark-color: #696969;           // Gris medio suave
+$inverse-color: $dark-color;
+$theme-border: #E6E6FA;         // Lavanda muy claro
+$white: #fff;
+
+// header - COLORES CLARITOS ✨
+$brand-background: #F0F8FF;      // Azul claro muy suave
+$header-dark-background: #F0F8FF;
+$header-dark-text-color: #696969; // Gris suave para el texto
+$header-light-background: #FAFAFA;
+$header-light-text-color: #696969;
+
+// Menu - COLORES CLARITOS ✨  
+$menu-caption-color: #696969;     // Gris suave
+$menu-dark-background: #F8F8FF;   // Blanco fantasma
+$menu-dark-text-color: #9370DB;   // Violeta medio
+$menu-light-background: #FAFAFA;  // Blanco hueso
+$menu-light-text-color: #696969;  // Gris suave
+$menu-active-color: #87CEEB;      // Azul cielo suave
+
+// dark layout colors - MAS CLAROS ✨
+$dark-layout: #F5F5F5;           // Gris muy claro
+$dark-layout-font: #696969;      // Gris medio suave
+
+// Menu icon - ICONOS PASTELES ✨
+$menu-icon-color: $primary-color, #FFB6C1, #98FB98, #DDA0DD, #B0E0E6, $warning-color;
+// Header background
+$color-header-name: blue, red, purple, lightblue, dark;
+$color-header-color: $primary-color, #ff5252, #9575cd, #23b7e5, color.adjust($dark-layout, $lightness: 7%);
+// Menu background
+$color-menu-name: blue, red, purple, lightblue, dark;
+$color-menu-color: $primary-color, #FFB6C1, #DDA0DD, #B0E0E6, color.adjust($dark-layout, $lightness: 7%);
+// Active background color
+$color-active-name: blue, red, purple, lightblue, dark;
+$color-active-color: $primary-color, #FFB6C1, #DDA0DD, #B0E0E6, color.adjust($dark-layout, $lightness: 7%);
+// Menu title color
+$color-title-name: blue, red, purple, lightblue, dark;
+$color-title-color: $primary-color, #FFB6C1, #DDA0DD, #B0E0E6, color.adjust($dark-layout, $lightness: 7%);
+
+$theme-font-family: 'Open Sans', sans-serif;
+$theme-font-size: 14px;
+$theme-background: #FAFAFA;      // Fondo muy claro ✨
+$theme-font-color: #696969;      // Texto gris suave ✨
+$theme-heading-color: #9370DB;   // Títulos en violeta suave ✨
+
+$layout-6-bg-color: #B0E0E6;     // Azul polvo claro ✨
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 
 $color-name: c-blue, c-red, c-green, c-yellow, c-purple;
 $color-color: $primary-color, $danger-color, $success-color, $warning-color, $purple-color;
@@ -74,7 +141,11 @@ $form-bg: #f0f3f6;
 
 $theme-colors: () !default;
 
+<<<<<<< HEAD
 $theme-colors: map-merge(
+=======
+$theme-colors: map.merge(
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
   (
     'primary': $primary-color,
     'secondary': $secondary-color,

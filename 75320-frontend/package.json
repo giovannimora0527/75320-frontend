@@ -22,6 +22,10 @@
     "@angular/core": "19.0.5",
     "@angular/forms": "19.0.5",
     "@angular/localize": "19.0.5",
+<<<<<<< HEAD
+=======
+    "@angular/material": "^19.0.4",
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
     "@angular/platform-browser": "19.0.5",
     "@angular/platform-browser-dynamic": "19.0.5",
     "@angular/router": "19.0.5",
@@ -34,6 +38,10 @@
     "mysql2": "^3.15.1",
     "ngx-bootstrap": "^19.0.2",
     "ngx-scrollbar": "16.1.1",
+<<<<<<< HEAD
+=======
+    "ngx-spinner": "^19.0.0",
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
     "primeicons": "^7.0.0",
     "primeng": "^19.0.0",
     "rxjs": "~7.8.1",
@@ -48,6 +56,10 @@
     "@angular/compiler-cli": "19.0.5",
     "@eslint/eslintrc": "3.2.0",
     "@eslint/js": "9.17.0",
+<<<<<<< HEAD
+=======
+    "@types/bootstrap": "^5.2.10",
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
     "@types/jasmine": "~5.1.5",
     "@types/lodash": "4.17.13",
     "@types/node": "22.10.2",

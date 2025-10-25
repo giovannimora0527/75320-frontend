@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+@use 'sass:color';
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 // Button variants
 //
 // Easily pump out default styles, as well as :hover, :focus, :active,
@@ -5,10 +10,17 @@
 @mixin button-variant(
   $background,
   $border,
+<<<<<<< HEAD
   $hover-background: darken($background, 7.5%),
   $hover-border: darken($border, 10%),
   $active-background: darken($background, 10%),
   $active-border: darken($border, 12.5%)
+=======
+  $hover-background: color.adjust($background, $lightness: -7.5%),
+  $hover-border: color.adjust($border, $lightness: -10%),
+  $active-background: color.adjust($background, $lightness: -10%),
+  $active-border: color.adjust($border, $lightness: -12.5%)
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
 ) {
   color: color-yiq($background);
   background-color: $border;

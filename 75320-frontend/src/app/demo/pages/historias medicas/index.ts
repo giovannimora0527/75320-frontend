@@ -1,0 +1,1 @@
+export { HistoriaComponent } from './historias medicas.component';
