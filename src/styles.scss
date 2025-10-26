@@ -19,6 +19,37 @@
 /* third party modules style*/
 @import 'scss/plugins/plugins';
 
+/* Material Design Styles - Simplified */
+// Solo incluir los estilos precompilados de Material
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Global Material Design overrides
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-table {
+  background: white;
+}
+
+// Fix para iconos de Material
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
 @import 'scss/custom';
 /* Ajusta el z-index del modal y su backdrop */
 .modal {
