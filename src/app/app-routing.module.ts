@@ -5,11 +5,16 @@ import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { MedicoComponent } from './demo/pages/medico/medico.component';
 import { PacienteComponent } from './demo/pages/paciente/paciente.component';
 import { MedicamentosComponent } from './demo/pages/medicamentos/medicamentos.component';
+<<<<<<< Updated upstream
 import { CitasComponent } from './demo/pages/citas/citas.component';
 import { FormulasComponent } from './demo/pages/formulas/formulas.component';
 import { HistoriasComponent } from './demo/pages/historias/historias.component';
 import { EspecializacionesComponent } from './demo/pages/especializaciones/especializaciones.component';
 import { LandingComponent } from './demo/pages/landing/landing.component';
+=======
+import { EspecializacionComponent } from './demo/pages/especializaciones/especializaciones.component';
+
+>>>>>>> Stashed changes
 
 export const routes: Routes = [
   {
@@ -26,11 +31,17 @@ export const routes: Routes = [
        { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }} ,
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
        { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
+<<<<<<< Updated upstream
        { path: 'medicamentos', component: MedicamentosComponent, data: { title: 'Medicamentos' }},
        { path: 'citas', component: CitasComponent, data: { title: 'Citas' }},
        { path: 'formulas', component: FormulasComponent, data: { title: 'Fórmulas Médicas' }},
        { path: 'historias', component: HistoriasComponent, data: { title: 'Historias Médicas' }},
        { path: 'especializaciones', component: EspecializacionesComponent, data: { title: 'Especializaciones' }}     
+=======
+       { path: 'Formula', component: FormulasComponent, data: { title: 'Formula' }},
+       { path: 'medicamento', component: MedicamentosComponent, data: { title: 'Medicamento' }},
+       { path: 'especialidad', component: EspecializacionComponent, data: { title: 'especialidad' }},     
+>>>>>>> Stashed changes
     ]
   },
   { path: '**', redirectTo: 'inicio' }

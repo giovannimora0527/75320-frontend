@@ -79,6 +79,7 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
+<<<<<<< Updated upstream
         id: 'especializaciones',
         title: 'Especializaciones',
         type: 'item',
@@ -86,6 +87,17 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-layers',
         classes: 'nav-item'
       },
+=======
+        id: 'especialidad',
+        title: 'Gestión de especialidades',
+        type: 'item',
+        url: '/inicio/especialidad',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      }
+
+
+>>>>>>> Stashed changes
     ]
   },
   
