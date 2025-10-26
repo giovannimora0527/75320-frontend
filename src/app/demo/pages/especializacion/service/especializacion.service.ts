@@ -16,4 +16,16 @@ export class EspecializacionService {
   getEspecializaciones() {
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
   }
+
+  guardarEspecializacion(especializacion: Especializacion) {
+    return this.backendService.post(this.urlBase, this.urlApi, 'guardar', especializacion);
+  }
+
+  actualizarEspecializacion(id: number, especializacion: Especializacion) {
+    return this.backendService.post(this.urlBase, this.urlApi, `actualizar?id=${id}`, especializacion);
+  }
+
+  eliminarEspecializacion(id: number) {
+    return this.backendService.post(this.urlBase, this.urlApi, `eliminar?id=${id}`, {});
+  }
 }

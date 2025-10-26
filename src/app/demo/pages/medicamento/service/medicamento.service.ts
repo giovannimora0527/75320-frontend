@@ -37,4 +37,8 @@ export class MedicamentoService {
   buscarPorNombre(nombre: string): Observable<Medicamento[]> {
     return this.backendService.get(this.urlBase, this.urlApi, `buscar-nombre/${nombre}`);
   }
+
+  actualizarCantidad(id: number, cantidadADescontar: number): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.urlApi, `actualizar-cantidad/${id}`, { cantidad: cantidadADescontar });
+  }
 }

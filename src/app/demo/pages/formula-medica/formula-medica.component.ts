@@ -10,6 +10,7 @@ import { Cita } from '../cita/models/cita';
 import Modal from 'bootstrap/js/dist/modal';
 import { RespuestaRs } from 'src/app/models/respuesta';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { timeout } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -25,6 +26,7 @@ export class FormulaMedicaComponent implements OnInit {
   medicamentos: Medicamento[] = [];
   citas: Cita[] = [];
   mensaje: string = '';
+  isLoadingFormulas = false;
 
   modoEdicion = false;
   formulaEditando: FormulaMedica | null = null;
@@ -48,37 +50,74 @@ export class FormulaMedicaComponent implements OnInit {
     this.form = this.fb.group({
       citaId: ['', Validators.required],
       medicamentoId: ['', Validators.required],
+      cantidadRecetada: [1, [Validators.required, Validators.min(1)]],
       dosis: ['', Validators.required],
       indicaciones: ['', Validators.required],
     });
   }
 
   cargarListas() {
+    // Cargar medicamentos con fallback de 6s si no hay respuesta
+    const medsFallback = setTimeout(() => {
+      try { this.spinner.hide('pacmanSpinner'); } catch { /* noop */ }
+      Swal.fire('Advertencia', 'No se recibió respuesta del servidor al cargar medicamentos. Intente nuevamente más tarde.', 'warning');
+    }, 6000);
+
     this.medicamentoService.listarMedicamentos().subscribe({
-      next: data => this.medicamentos = data,
-      error: () => Swal.fire('Error', 'No se pudieron cargar los medicamentos', 'error')
+      next: data => {
+        clearTimeout(medsFallback);
+        this.medicamentos = data;
+      },
+      error: (err) => {
+        clearTimeout(medsFallback);
+        Swal.fire('Error', 'No se pudieron cargar los medicamentos', 'error');
+      }
     });
+
+    // Cargar citas con su propio fallback (silencioso)
+    const citasFallback = setTimeout(() => {
+      try { this.spinner.hide('pacmanSpinner'); } catch { /* noop */ }
+      console.warn('No se recibió respuesta para cargar citas en 6s');
+    }, 6000);
+
     this.citaService.listarCitas().subscribe({
-      next: data => this.citas = data,
-      error: () => Swal.fire('Error', 'No se pudieron cargar las citas', 'error')
+      next: data => {
+        clearTimeout(citasFallback);
+        this.citas = data;
+      },
+      error: () => {
+        clearTimeout(citasFallback);
+        Swal.fire('Error', 'No se pudieron cargar las citas', 'error');
+      }
     });
   }
 
   listarFormulas() {
+    // Mostrar spinner y usar timeout de 6s para cancelar la petición si no responde
+    this.isLoadingFormulas = true;
     this.spinner.show('pacmanSpinner');
-    this.formulaService.listarFormulas().subscribe({
+
+    this.formulaService.listarFormulas().pipe(
+      timeout(6000)
+    ).subscribe({
       next: data => {
+        this.isLoadingFormulas = false;
         // Agregar retraso de 1 segundo antes de ocultar el spinner
         setTimeout(() => {
           this.formulas = data;
           this.spinner.hide('pacmanSpinner');
         }, 1000); // 1000 ms = 1 segundo
       },
-      error: () => {
+      error: (err) => {
+        this.isLoadingFormulas = false;
         // Ocultar el spinner incluso en caso de error, con retraso
         setTimeout(() => {
-          this.spinner.hide('pacmanSpinner');
-          Swal.fire('Error', 'No se pudieron cargar las fórmulas', 'error');
+          try { this.spinner.hide('pacmanSpinner'); } catch { /* noop */ }
+          if (err && err.name === 'TimeoutError') {
+            Swal.fire('Advertencia', 'No se recibió respuesta del servidor al cargar fórmulas. Intente nuevamente más tarde.', 'warning');
+          } else {
+            Swal.fire('Error', 'No se pudieron cargar las fórmulas', 'error');
+          }
         }, 1000);
       }
     });
@@ -100,6 +139,7 @@ export class FormulaMedicaComponent implements OnInit {
     this.form.patchValue({
       citaId: formula.citaId,
       medicamentoId: formula.medicamentoId,
+      cantidadRecetada: formula.cantidadRecetada,
       dosis: formula.dosis,
       indicaciones: formula.indicaciones
     });
@@ -119,6 +159,7 @@ export class FormulaMedicaComponent implements OnInit {
     const payload: FormulaMedica = {
       citaId: Number(raw.citaId),
       medicamentoId: Number(raw.medicamentoId),
+      cantidadRecetada: Number(raw.cantidadRecetada),
       dosis: raw.dosis?.trim(),
       indicaciones: raw.indicaciones?.trim(),
     };
@@ -128,65 +169,70 @@ export class FormulaMedicaComponent implements OnInit {
       return;
     }
 
-    this.spinner.show('pacmanSpinner');
-
-    if (this.modoEdicion && this.formulaEditando) {
-      this.formulaService.actualizarFormula(this.formulaEditando.id!, payload).subscribe({
-        next: (resp: RespuestaRs) => {
-          // Agregar retraso de 1 segundo antes de ocultar el spinner
-          setTimeout(() => {
-            this.spinner.hide('pacmanSpinner');
-            this.listarFormulas();
-            this.form.reset();
-            this.modalInstance?.hide();
-            this.modoEdicion = false;
-            this.formulaEditando = null;
-            this.mensaje = '';
-            Swal.fire({
-              title: '¡Éxito!',
-              text: resp.message || 'Fórmula actualizada correctamente',
-              icon: 'success',
-              timer: 2000,
-              showConfirmButton: false
-            });
-          }, 1000);
-        },
-        error: (err) => {
-          // Ocultar el spinner incluso en caso de error, con retraso
-          setTimeout(() => {
-            this.spinner.hide('pacmanSpinner');
-            Swal.fire('Error', err.error?.message || 'Error al actualizar la fórmula médica', 'error');
-          }, 1000);
-        }
-      });
+    // Validar disponibilidad de medicamento
+    const medicamentoSeleccionado = this.medicamentos.find(m => m.id === Number(raw.medicamentoId));
+    if (!medicamentoSeleccionado) {
+      this.mensaje = 'El medicamento seleccionado no existe.';
       return;
     }
 
-    this.formulaService.guardarFormula(payload).subscribe({
-      next: (resp: RespuestaRs) => {
-        // Agregar retraso de 1 segundo antes de ocultar el spinner
+    if (medicamentoSeleccionado.cantidad < raw.cantidadRecetada) {
+      this.mensaje = `Solo hay ${medicamentoSeleccionado.cantidad} unidades disponibles del medicamento seleccionado.`;
+      return;
+    }
+
+    this.spinner.show('pacmanSpinner');
+
+    const guardarFormula = (formula: FormulaMedica) => {
+      return new Promise<RespuestaRs>((resolve, reject) => {
+        if (this.modoEdicion && this.formulaEditando) {
+          this.formulaService.actualizarFormula(this.formulaEditando.id!, formula).subscribe({
+            next: (resp) => resolve(resp),
+            error: (err) => reject(err)
+          });
+        } else {
+          this.formulaService.guardarFormula(formula).subscribe({
+            next: (resp) => resolve(resp),
+            error: (err) => reject(err)
+          });
+        }
+      });
+    };
+
+    const actualizarCantidadMedicamento = () => {
+      return new Promise<void>((resolve, reject) => {
+        this.medicamentoService.actualizarCantidad(Number(payload.medicamentoId), payload.cantidadRecetada).subscribe({
+          next: () => resolve(),
+          error: (err) => reject(err)
+        });
+      });
+    };
+
+    // Ejecutar operaciones
+    guardarFormula(payload).then(respFormula => {
+      return actualizarCantidadMedicamento().then(() => {
         setTimeout(() => {
           this.spinner.hide('pacmanSpinner');
           this.listarFormulas();
           this.form.reset();
           this.modalInstance?.hide();
+          this.modoEdicion = false;
+          this.formulaEditando = null;
           this.mensaje = '';
           Swal.fire({
             title: '¡Éxito!',
-            text: resp.message || 'Fórmula guardada correctamente',
+            text: respFormula.message || 'Fórmula guardada correctamente',
             icon: 'success',
             timer: 2000,
             showConfirmButton: false
           });
         }, 1000);
-      },
-      error: (err) => {
-        // Ocultar el spinner incluso en caso de error, con retraso
-        setTimeout(() => {
-          this.spinner.hide('pacmanSpinner');
-          Swal.fire('Error', err.error?.message || 'Error al guardar la fórmula médica', 'error');
-        }, 1000);
-      }
+      });
+    }).catch(err => {
+      setTimeout(() => {
+        this.spinner.hide('pacmanSpinner');
+        Swal.fire('Error', err.error?.message || 'Error al procesar la operación', 'error');
+      }, 1000);
     });
   }
 

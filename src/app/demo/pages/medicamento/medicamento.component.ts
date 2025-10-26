@@ -27,6 +27,7 @@ export class MedicamentoComponent {
     nombre: new FormControl(''),
     descripcion: new FormControl(''),
     presentacion: new FormControl(''),
+    cantidad: new FormControl(''),
     fechaCompra: new FormControl(''),
     fechaVence: new FormControl('')
   });
@@ -44,6 +45,7 @@ export class MedicamentoComponent {
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       descripcion: ['', [Validators.required]],
       presentacion: ['', [Validators.required]],
+      cantidad: [0, [Validators.required, Validators.min(0)]],
       fechaCompra: ['', [Validators.required]],
       fechaVence: ['', [Validators.required]]
     });
@@ -102,6 +104,7 @@ export class MedicamentoComponent {
       nombre: medicamento.nombre,
       descripcion: medicamento.descripcion,
       presentacion: medicamento.presentacion,
+      cantidad: medicamento.cantidad,
       fechaCompra: medicamento.fechaCompra,
       fechaVence: medicamento.fechaVence
     });

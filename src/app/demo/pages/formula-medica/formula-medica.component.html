@@ -13,11 +13,20 @@
 
     <!-- Cuerpo de la card -->
     <div class="card-body p-0">
-      <!-- Spinner de carga si no hay fórmulas -->
-      <div *ngIf="!formulas?.length" class="d-flex justify-content-center align-items-center py-5">
+      <!-- Estado cuando se está cargando -->
+      <div *ngIf="isLoadingFormulas" class="d-flex justify-content-center align-items-center py-5">
         <div class="text-center">
           <ngx-spinner name="tableSpinner" bdColor="rgba(0,0,0,0.5)" size="medium" color="#fff" type="pacman" [fullScreen]="false"></ngx-spinner>
           <p class="mt-3 text-muted">Cargando fórmulas médicas...</p>
+        </div>
+      </div>
+
+      <!-- Estado cuando no hay fórmulas después de cargar -->
+      <div *ngIf="!isLoadingFormulas && !formulas?.length" class="d-flex justify-content-center align-items-center py-5">
+        <div class="text-center text-muted">
+          <i class="fa fa-inbox fa-3x mb-3 d-block"></i>
+          <h5>No hay recetas creadas</h5>
+          <p class="mb-0">Comienza agregando una nueva fórmula médica</p>
         </div>
       </div>
 
@@ -30,6 +39,7 @@
               <th>Cita</th>
               <th>Medicamento</th>
               <th>Dosis</th>
+              <th class="text-center">Cantidad</th>
               <th>Indicaciones</th>
               <th>Fecha</th>
               <th class="text-center" style="width:150px;">Acciones</th>
@@ -47,6 +57,9 @@
                 {{ f.medicamentoId }}
               </td>
               <td>{{ f.dosis }}</td>
+              <td class="text-center">
+                <span class="badge bg-primary">{{ f.cantidadRecetada }}</span>
+              </td>
               <td>{{ f.indicaciones }}</td>
               <td>
                 <i class="fa fa-clock text-muted me-1"></i>
@@ -130,6 +143,27 @@
             <input type="text" class="form-control" formControlName="dosis" [class.is-invalid]="form.get('dosis')?.invalid && form.get('dosis')?.touched" />
             <div *ngIf="form.get('dosis')?.invalid && form.get('dosis')?.touched" class="invalid-feedback">
               Por favor, ingrese la dosis.
+            </div>
+          </div>
+
+          <!-- Cantidad -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              <i class="fa fa-cubes text-muted me-1"></i> Cantidad a Recetar *
+            </label>
+            <input 
+              type="number" 
+              class="form-control" 
+              formControlName="cantidadRecetada" 
+              [class.is-invalid]="form.get('cantidadRecetada')?.invalid && form.get('cantidadRecetada')?.touched" 
+              min="1" />
+            <div *ngIf="form.get('cantidadRecetada')?.invalid && form.get('cantidadRecetada')?.touched" class="invalid-feedback">
+              <div *ngIf="form.get('cantidadRecetada')?.errors?.['required']">
+                Por favor, ingrese la cantidad a recetar.
+              </div>
+              <div *ngIf="form.get('cantidadRecetada')?.errors?.['min']">
+                La cantidad debe ser mayor a 0.
+              </div>
             </div>
           </div>
 

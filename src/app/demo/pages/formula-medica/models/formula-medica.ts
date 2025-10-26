@@ -6,6 +6,7 @@ export interface FormulaMedica {
   citaId?: number;
   medicamentoId?: number;
   dosis: string;
+  cantidadRecetada: number;
   indicaciones: string;
   fechaHora?: string;
 

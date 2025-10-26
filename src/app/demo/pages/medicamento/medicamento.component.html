@@ -34,6 +34,7 @@
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Presentación</th>
+                <th class="text-center">Cantidad</th>
                 <th>Fecha Compra</th>
                 <th>Fecha Vence</th>
                 <th class="text-center" style="width: 150px;">Acciones</th>
@@ -50,6 +51,9 @@
                     </td>
                     <td>{{ med.descripcion }}</td>
                     <td>{{ med.presentacion }}</td>
+                    <td class="text-center">
+                      <span class="badge bg-info">{{ med.cantidad }}</span>
+                    </td>
                     <td>
                       <i class="fa fa-calendar text-muted me-1"></i>
                       {{ med.fechaCompra | date:'dd/MM/yyyy' }}
@@ -166,6 +170,27 @@
               [class.is-invalid]="form.get('presentacion')?.invalid && form.get('presentacion')?.touched"
             />
             <div class="invalid-feedback">La presentación es requerida</div>
+          </div>
+
+          <!-- Cantidad -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">
+              <i class="fa fa-cubes text-muted me-1"></i>Cantidad *
+            </label>
+            <input
+              type="number"
+              formControlName="cantidad"
+              class="form-control"
+              placeholder="Ingrese la cantidad disponible"
+              min="0"
+              [class.is-invalid]="form.get('cantidad')?.invalid && form.get('cantidad')?.touched"
+            />
+            <div class="invalid-feedback" *ngIf="form.get('cantidad')?.hasError('required')">
+              La cantidad es requerida
+            </div>
+            <div class="invalid-feedback" *ngIf="form.get('cantidad')?.hasError('min')">
+              La cantidad no puede ser negativa
+            </div>
           </div>
 
           <!-- Fechas -->
