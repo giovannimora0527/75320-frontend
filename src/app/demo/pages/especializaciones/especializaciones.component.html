@@ -1,23 +1,118 @@
-<div class="page-header">
-  <h3 class="mb-3">Gestión de Especializaciones</h3>
-</div>
-<div class="card">
-  <div class="card-body table-responsive">
-    <table class="table table-hover align-middle">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Descripción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let e of especializaciones">
-          <td>{{ e.nombre }}</td>
-          <td>{{ e.descripcion }}</td>
-        </tr>
-      </tbody>
-    </table>
+<!-- Spinner de carga -->
+<div *ngIf="isLoading" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-50" style="z-index: 9999;">
+  <div class="spinner-border text-primary" role="status" style="width: 4rem; height: 4rem;">
+    <span class="visually-hidden">Cargando...</span>
   </div>
 </div>
 
+<!-- Header -->
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0">Gestión de Especializaciones Médicas</h3>
+  <button class="btn btn-primary" (click)="abrirModal()">
+    <i class="bi bi-plus-circle me-2"></i>Nueva Especialización
+  </button>
+</div>
 
+<!-- Tabla -->
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="especializaciones.length === 0 && !isLoading">
+            <td colspan="5" class="text-center text-muted py-4">
+              <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+              No hay especializaciones registradas
+            </td>
+          </tr>
+          <tr *ngFor="let esp of especializaciones">
+            <td><strong>{{ esp.id }}</strong></td>
+            <td>{{ esp.codigoEspecializacion }}</td>
+            <td>{{ esp.nombre }}</td>
+            <td>{{ esp.descripcion }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-primary me-2" (click)="abrirModal(esp)" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" (click)="eliminarEspecializacion(esp.id!)" title="Eliminar">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="especializacionModal" tabindex="-1" aria-labelledby="especializacionModalLabel" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditing ? 'Editar Especialización' : 'Nueva Especialización' }}</h5>
+        <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
+      </div>
+
+      <form [formGroup]="especializacionForm" (ngSubmit)="guardarEspecializacion()">
+        <div class="modal-body">
+          <!-- Código -->
+          <div class="mb-3">
+            <label for="codigoEspecializacion" class="form-label">Código <span class="text-danger">*</span></label>
+            <input type="text" id="codigoEspecializacion" class="form-control"
+                   formControlName="codigoEspecializacion" placeholder="Ej: CARD01"
+                   [class.is-invalid]="codigoEspecializacion?.invalid && codigoEspecializacion?.touched">
+            <div class="invalid-feedback" *ngIf="codigoEspecializacion?.invalid && codigoEspecializacion?.touched">
+              <span *ngIf="codigoEspecializacion?.errors?.['required']">El código es requerido</span>
+              <span *ngIf="codigoEspecializacion?.errors?.['minlength']">Debe tener al menos 2 caracteres</span>
+              <span *ngIf="codigoEspecializacion?.errors?.['maxlength']">No puede exceder 10 caracteres</span>
+            </div>
+          </div>
+
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+            <input type="text" id="nombre" class="form-control"
+                   formControlName="nombre" placeholder="Ej: Cardiología"
+                   [class.is-invalid]="nombre?.invalid && nombre?.touched">
+            <div class="invalid-feedback" *ngIf="nombre?.invalid && nombre?.touched">
+              <span *ngIf="nombre?.errors?.['required']">El nombre es requerido</span>
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
+            <textarea id="descripcion" class="form-control" rows="4"
+                      formControlName="descripcion"
+                      placeholder="Describe el área de especialización..."
+                      [class.is-invalid]="descripcion?.invalid && descripcion?.touched"></textarea>
+            <div class="invalid-feedback" *ngIf="descripcion?.invalid && descripcion?.touched">
+              <span *ngIf="descripcion?.errors?.['required']">La descripción es requerida</span>
+            </div>
+            <small class="form-text text-muted">
+              {{ descripcion?.value?.length || 0 }} / 500 caracteres
+            </small>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="especializacionForm.invalid || isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            {{ isEditing ? 'Actualizar' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

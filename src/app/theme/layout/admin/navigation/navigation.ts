@@ -62,6 +62,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/medicamento',
         icon: 'feather icon-file-text',
         classes: 'nav-item'
+      },
+      {
+        id: 'especialidad',
+        title: 'Gestión de especialidades',
+        type: 'item',
+        url: '/inicio/especialidad',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
       }
 
 

@@ -1,9 +1,7 @@
 export interface Especializacion {
-  id: number;
+  id?: number;
+  codigoEspecializacion: string;
   nombre: string;
   descripcion: string;
 }
-
-
-
 

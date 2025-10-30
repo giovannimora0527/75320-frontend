@@ -6,6 +6,7 @@ import { MedicoComponent } from './demo/pages/medico/medico.component';
 import { PacienteComponent } from './demo/pages/paciente/paciente.component';
 import { FormulasComponent } from './demo/pages/formulas/formulas.component';
 import { MedicamentosComponent } from './demo/pages/medicamentos/medicamentos.component';
+import { EspecializacionComponent } from './demo/pages/especializaciones/especializaciones.component';
 
 
 export const routes: Routes = [
@@ -23,7 +24,8 @@ export const routes: Routes = [
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
        { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
        { path: 'Formula', component: FormulasComponent, data: { title: 'Formula' }},
-       { path: 'medicamento', component: MedicamentosComponent, data: { title: 'Medicamento' }}     
+       { path: 'medicamento', component: MedicamentosComponent, data: { title: 'Medicamento' }},
+       { path: 'especialidad', component: EspecializacionComponent, data: { title: 'especialidad' }},     
     ]
   },
   { path: '**', redirectTo: 'inicio' }
