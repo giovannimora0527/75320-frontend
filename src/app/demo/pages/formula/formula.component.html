@@ -1,1 +1,71 @@
-<p>formula works!</p>
+<ngx-spinner type="pacman" size="medium">
+  <p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">
+          <i class="fa fa-pills"></i>
+          &nbsp;Mis fórmulas médicas
+        </h3>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoFormula()">Nueva fórmula</button>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <input class="form-control" placeholder="Busca en la tabla por el dato que desees"
+         [(ngModel)]="busqueda" 
+         (keyup)="filtrarFormulas()">
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col">
+        <div class="table table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Tipo y Número de documento</th>
+                <th>Nombre completo del paciente</th>
+                <th>Fecha y hora de la cita</th>
+                <th>Medicamento recetado</th>
+                <th>Presentación</th>
+                <th>Dosis</th>
+                <th>Indicaciones</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="formulaListFiltered.length > 0">
+              <tr *ngFor="let formula of formulaListFiltered">
+                <td>{{ formula.cita.paciente.tipoDocumento }} {{ formula.cita.paciente.numeroDocumento }}</td>
+                <td>{{ formula.cita.paciente.nombres }} {{ formula.cita.paciente.apellidos }}</td>
+                <td>{{ formula.cita.fechaHora | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ formula.medicamento.nombre }}</td>
+                <td>{{ formula.medicamento.presentacion }}</td>
+                <td>{{ formula.dosis }}</td>
+                <td>{{ formula.indicaciones }}</td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarFormula(formula)">
+                    <i class="fa fa-edit"></i>
+                    &nbsp;Editar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="formulaListFiltered.length === 0">
+              <tr class="text-center">
+                <td colspan="8">
+                  <span>No hay registros de fórmulas médicas</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

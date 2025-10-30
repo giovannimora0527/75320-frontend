@@ -146,7 +146,7 @@ export class UsuarioComponent implements AfterViewInit {
     this.spinner.show();
     if (this.modoFormulario === 'C') {
       this.form.get('activo').setValue(true);
-    }
+    }    
     if (this.form.valid) {
       if (this.modoFormulario.includes('C')) {
         // Modo Creación
