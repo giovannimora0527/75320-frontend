@@ -1,0 +1,145 @@
+// Estilos para el componente de fórmulas médicas
+
+// Contador de caracteres
+.form-text {
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+  
+  &.text-warning {
+    font-weight: 500;
+    
+    .fa-exclamation-triangle {
+      animation: pulse 1.5s infinite;
+    }
+  }
+  
+  &.text-danger {
+    font-weight: 600;
+    
+    .fa-ban {
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+}
+
+// Textarea con estados visuales
+.form-control {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  
+  &.border-warning {
+    border-color: #ffc107 !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25) !important;
+  }
+  
+  &.border-danger {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+  
+  &:focus {
+    &.border-warning {
+      box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.4) !important;
+    }
+    
+    &.border-danger {
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.4) !important;
+    }
+  }
+}
+
+// Animaciones
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+// Indicador de límite alcanzado
+.text-muted {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+// Mejoras generales del formulario
+.card {
+  .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    
+    h3 {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// Estilos para la tabla
+.table {
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.1);
+    transition: background-color 0.2s ease;
+  }
+}
+
+// Modal mejorado
+.modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px 15px 0 0;
+  
+  .modal-title {
+    font-weight: 600;
+  }
+  
+  .btn-close {
+    filter: brightness(0) invert(1);
+  }
+}
+
+// Botones mejorados
+.btn {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Campo de búsqueda
+.form-control {
+  &[placeholder*="Busca"] {
+    border-radius: 25px;
+    padding-left: 20px;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .modal-dialog {
+    margin: 10px;
+  }
+  
+  .table {
+    font-size: 0.875rem;
+  }
+}

@@ -2,24 +2,18 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
-import { Cita } from '../model/cita';
-import { HttpParams } from '@angular/common/http';
+import { Medicamento } from '../models/medicamento';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CitaService {
+export class MedicamentoService {
   urlBase: string = environment.apiUrlAuth;
-  urlApi: string = 'cita';
+  urlApi: string = 'medicamento';
 
   constructor(private backendService: BackendService) {}
 
-  listarCitas(): Observable<Cita[]> {
+  listarMedicamentos(): Observable<Medicamento[]> {
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
-  }
-
-  listarCitasPorPaciente(pacienteId: number): Observable<Cita[]> {
-    const params = new HttpParams().set('pacienteId', pacienteId);
-    return this.backendService.get(this.urlBase, this.urlApi, 'listar-x-paciente', params);
   }
 }
