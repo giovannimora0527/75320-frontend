@@ -1,5 +1,5 @@
-<ngx-spinner type="pacman" size="medium">
-  <p style="color: white">{{ titleSpinner }}</p>
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{ titleSpinner }}</p>
 </ngx-spinner>
 
 <div class="container">
@@ -7,162 +7,167 @@
     <div class="card-header">
       <div class="d-flex justify-content-between align-items-center">
         <h3 class="mb-0">
-          <i class="fa fa-pills"></i>
-          &nbsp;Mis fórmulas médicas
+            <i class="fa fa-truck"></i>
+          &nbsp;Lista de formulas
         </h3>
-        <button class="btn btn-outline-primary" (click)="abrirNuevoFormula()">Nueva fórmula</button>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoFormula()">
+          <i class="fa fa-plus"></i>
+          Nuevaformula
+        </button>
       </div>
     </div>
-  </div>
-  <div class="card-body">
-    <div class="row">
-      <div class="col">
-        <input
-          class="form-control"
-          placeholder="Busca en la tabla por el dato que desees"
-          [(ngModel)]="busqueda"
-          (keyup)="filtrarFormulas()"
-        />
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <input
+            class="form-control"
+            placeholder="Filtre por el valor que desee de la tabla"
+            [(ngModel)]="busqueda"
+            (keyup)="filtrarFormula()"
+          />
+        </div>
       </div>
-    </div>
-    <br />
-    <div class="row">
-      <div class="col">
-        <div class="table table-responsive">
-          <table class="table table-striped table-hover">
-            <thead>
-              <tr>
-                <th>Tipo y Número de documento</th>
-                <th>Nombre completo del paciente</th>
-                <th>Fecha y hora de la cita</th>
-                <th>Medicamento recetado</th>
-                <th>Presentación</th>
-                <th>Dosis</th>
-                <th>Indicaciones</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody *ngIf="formulaListFiltered.length > 0">
-              <tr *ngFor="let formula of formulaListFiltered">
-                <td>{{ formula.cita.paciente.tipoDocumento }} {{ formula.cita.paciente.numeroDocumento }}</td>
-                <td>{{ formula.cita.paciente.nombres }} {{ formula.cita.paciente.apellidos }}</td>
-                <td>{{ formula.cita.fechaHora | date: 'yyyy-MM-dd HH:mm' }}</td>
-                <td>{{ formula.medicamento.nombre }}</td>
-                <td>{{ formula.medicamento.presentacion }}</td>
-                <td>{{ formula.dosis }}</td>
-                <td>{{ formula.indicaciones }}</td>
-                <td>
-                  <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarFormula(formula)">
-                    <i class="fa fa-edit"></i>
-                    &nbsp;Editar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-            <tbody *ngIf="formulaListFiltered.length === 0">
-              <tr class="text-center">
-                <td colspan="8">
-                  <span>No hay registros de fórmulas médicas</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <br />
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Tipo y # de documento del paciente</th>
+                  <th>Nombre completo</th>
+                  <th>Fecha y Hora de la cita</th>
+                  <th>Medicamento</th>
+                  <th>Dosis</th>
+                  <th>Indicaciones</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="formulaFiltered && formulaFiltered.length > 0">
+                <tr *ngFor="let formula of formulaFiltered">
+                  <td>{{ formula.cita.paciente.tipoDocumento }} - {{ formula.cita.paciente.numeroDocumento }}</td>
+                  <td>{{ formula.cita.paciente.nombres }} {{ formula.cita.paciente.apellidos }}</td>
+                  <td>{{ formula.cita.fechaHora | date: 'yyyy-MM-dd HH:mm' }}</td>
+                  <td>{{ formula.medicamento.nombre }}</td>
+                  <td>{{ formula.dosis }}</td>
+                  <td>{{ formula.indicaciones }}</td>
+                  <td>
+                    <button type="button" class="btn btn btn-outline-primary" title="Editar formula" (click)="abrirEditarFormula(formula)">
+                      <i class="fa fa-edit"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="formulaList && formulaList.length === 0">
+                <tr>
+                  <td colspan="7" class="text-center">No hay formulas disponibles.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+<div class="modal fade" id="modalCrearFormula" tabindex="-1" aria-labelledby="modalCrearFormulaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="modalCrearFormulaModalLabel">
+        <h1 class="modal-title fs-5" id="modalCrearFormulaLabel">
           {{ titleModal }}
         </h1>
-        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col col-md-6">
-            <div class="mb-3">
-              <label for="documentoPaciente" class="form-label">Documento de identidad del paciente</label>
-              <div class="input-group">
-                <input class="form-control" placeholder="Escriba el documento de identidad del paciente" [(ngModel)]="documentoPaciente" />
-                <button class="btn btn-outline-primary" type="button" (click)="buscarPaciente()">Buscar</button>
+            <div class="row">
+              <div class="col">
+                <input class="form-control" type="text" placeholder="Busque por el documento del paciente" 
+                       [(ngModel)]="documentoPacienteBuscar">
               </div>
-            </div>
-          </div>  
-        </div>
-        <div class="row">
-          <div class="col col-md-6">
-            <label for="citaPaciente">Seleccione la cita del paciente</label>
-            <select class="form-select" id="citaPaciente" [(ngModel)]="citaSelected"
-            >
-              <option disabled [ngValue]="null">-- Seleccione una cita --</option>
-              <option *ngFor="let cita of citasList" [ngValue]="cita" >
-                {{ cita.paciente.nombres }} {{ cita.paciente.apellidos }} - {{ cita.fechaHora | date: 'yyyy-MM-dd HH:mm' }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <br />
-        <form [formGroup]="form">
-          <!--  Campos de la formula medica -->
-          <div class="row">
-            <div class="col col-md-6">
-              <div class="mb-3">
-                <label for="medicamentoId" class="form-label">Medicamento recetado</label>
-                <select class="form-select" 
-                id="medicamentoId" formControlName="medicamentoId">
-                  <option disabled selected>-- Seleccione un medicamento --</option>
-                  <option *ngFor="let medicamento of medicamentoList" [value]="medicamento.id">{{ medicamento.nombre }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col col-md-6">
-              <div class="mb-3">
-                <label for="dosis" class="form-label">Dosis</label>
-                <input type="text" class="form-control" 
-                id="dosis" placeholder="Ingrese la dosis" 
-                formControlName="dosis"/>
+              <div class="col-auto">
+                <button class="btn btn-outline-primary" (click)="buscarPacientePorDocumento()">Buscar</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="row">
-            <div class="col col-md-12">
-              <div class="mb-3">
-                <label for="indicaciones" class="form-label">Indicaciones</label>
-                <textarea
-                  class="form-control"
-                  id="indicaciones"
-                  placeholder="Ingrese las indicaciones (máximo 500 caracteres)"
-                  rows="4"
-                  [value]="indicaciones"
-                  (input)="onIndicacionesChange($event)"
-                  formControlName="indicaciones"
-                  [class.is-invalid]="f['indicaciones']?.invalid && f['indicaciones']?.touched"
-                  [class.border-warning]="contadorCaracteres > 450"
-                  [class.border-danger]="contadorCaracteres >= 500"
-                ></textarea>
-                <div class="d-flex justify-content-between align-items-center">
-                  <div
-                    class="form-text text-muted"
-                    [class.text-warning]="contadorCaracteres > 450"
-                    [class.text-danger]="contadorCaracteres >= 500"
-                  >
-                    {{ contadorCaracteres }}/{{ LIMITE_CARACTERES }} caracteres
-                    <span *ngIf="contadorCaracteres > 450" class="ms-2">
-                      <i class="fa fa-exclamation-triangle" *ngIf="contadorCaracteres > 450 && contadorCaracteres < 500"></i>
-                      <i class="fa fa-ban" *ngIf="contadorCaracteres >= 500"></i>
-                    </span>
-                  </div>
-                  <small class="text-muted" *ngIf="contadorCaracteres >= 500">Límite alcanzado</small>
-                </div>
-                <div *ngIf="f['indicaciones']?.hasError('required') && f['indicaciones']?.touched" class="invalid-feedback">
-                  Las indicaciones son requeridas.
+        <form [formGroup]="form">          
+          <div class="row mt-3">
+            <div class="col col-md-6">
+              <label for="citasPaciente">Citas del paciente</label>
+              <select 
+                id="citasPaciente" 
+                class="form-select"
+                formControlName="citaId"
+                [class.is-invalid]="f['citaId'].invalid && (f['citaId'].dirty || f['citaId'].touched)">
+                <option disabled selected>Seleccione de la cita</option>
+                <option *ngFor="let cita of citasPaciente" [value]="cita.id">{{cita.fechaHora}}: {{cita.paciente.nombres}} {{cita.paciente.apellidos}}</option>
+              </select>
+              <div *ngIf="f['citaId'].invalid && (f['citaId'].dirty || f['citaId'].touched)" class="invalid-feedback">
+                <div *ngIf="f['citaId'].errors?.['required']">La cita es requerida.</div>
+              </div>
+            </div>
+          </div>          
+          
+          <div class="row mt-3">
+            <div class="col col-md-6">
+              <label for="medicamentos">Listado de medicamentos</label>
+              <select 
+                id="medicamentos" 
+                class="form-select"
+                formControlName="medicamentoId"
+                [class.is-invalid]="f['medicamentoId'].invalid && (f['medicamentoId'].dirty || f['medicamentoId'].touched)">
+                <option disabled selected>Seleccione el medicamento</option>
+              </select>
+              <div *ngIf="f['medicamentoId'].invalid && (f['medicamentoId'].dirty || f['medicamentoId'].touched)" class="invalid-feedback">
+                <div *ngIf="f['medicamentoId'].errors?.['required']">El medicamento es requerido.</div>
+              </div>
+            </div>
+            <div class="col col-md-6">
+              <label for="dosis">Dosis</label>
+              <input 
+                class="form-control" 
+                type="text" 
+                id="dosis" 
+                placeholder="Ingrese la dosis"
+                formControlName="dosis"
+                [class.is-invalid]="f['dosis'].invalid && (f['dosis'].dirty || f['dosis'].touched)">
+              <div *ngIf="f['dosis'].invalid && (f['dosis'].dirty || f['dosis'].touched)" class="invalid-feedback">
+                <div *ngIf="f['dosis'].errors?.['required']">La dosis es requerida.</div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col">
+              <label for="indicaciones">Indicaciones</label>
+              <textarea 
+                class="form-control" 
+                id="indicaciones" 
+                rows="3" 
+                placeholder="Ingrese las indicaciones"
+                formControlName="indicaciones"
+                maxlength="500"
+                (input)="onIndicacionesChange($event)"
+                (keyup)="onIndicacionesChange($event)"
+                (paste)="onIndicacionesChange($event)"
+                [class.is-invalid]="f['indicaciones'].invalid && (f['indicaciones'].dirty || f['indicaciones'].touched)">
+              </textarea>
+              <div class="d-flex justify-content-between mt-1">
+                <small class="form-text text-muted">
+                  Máximo 500 caracteres
+                </small>
+                <small class="form-text" [ngClass]="{'text-danger': contadorIndicaciones > maxCaracteresIndicaciones, 'text-muted': contadorIndicaciones <= maxCaracteresIndicaciones}">
+                  {{ contadorIndicaciones }}/{{ maxCaracteresIndicaciones }}
+                </small>
+              </div>
+              <div *ngIf="f['indicaciones'].invalid && (f['indicaciones'].dirty || f['indicaciones'].touched)" class="invalid-feedback">
+                <div *ngIf="f['indicaciones'].errors?.['required']">Las indicaciones son requeridas.</div>
+                <div *ngIf="f['indicaciones'].errors?.['maxlength']">
+                  Las indicaciones no pueden exceder {{ maxCaracteresIndicaciones }} caracteres.
                 </div>
               </div>
             </div>
@@ -170,7 +175,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         <button type="button" class="btn btn-primary" (click)="guardarFormula()">{{ titleBoton }}</button>
       </div>
     </div>

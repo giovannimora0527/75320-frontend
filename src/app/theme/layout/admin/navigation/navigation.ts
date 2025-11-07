@@ -29,10 +29,9 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-user',
         classes: 'nav-item'
       },
-      /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
-        title: 'Gestión de medicos',
+        title: 'Gestión de Medicos',
         type: 'item',
         url: '/inicio/medico',
         icon: 'feather icon-users',
@@ -40,18 +39,18 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'paciente',
-        title: 'Gestión de pacientes',
+        title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'medicamento',
         title: 'Gestión de medicamentos',
         type: 'item',
-        url: '/inicio/medicamentos',
-        icon: 'feather icon-users',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
@@ -59,23 +58,23 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de citas',
         type: 'item',
         url: '/inicio/cita',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'formulas-medicas',
-        title: 'Gestión de fórmulas médicas',
+        id: 'formula',
+        title: 'Gestión de formulas medicas',
         type: 'item',
-        url: '/inicio/formulas-medicas',
-        icon: 'feather icon-users',
+        url: '/inicio/formula-medica',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'historias-medicas',
-        title: 'Gestión de historias clínicas',
+        id: 'historia',
+        title: 'Gestión de historias clinicas',
         type: 'item',
         url: '/inicio/historia-clinica',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
@@ -83,10 +82,10 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       }
     ]
   },
-  
+  /* ---------- Nuevos menus aqui -------------  */
 ];

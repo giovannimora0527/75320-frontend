@@ -1,25 +1,21 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
-import { Cita } from '../model/cita';
-import { HttpParams } from '@angular/common/http';
+import { Cita } from '../models/cita';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CitaService {
-  urlBase: string = environment.apiUrlAuth;
-  urlApi: string = 'cita';
+  urlBase = environment.apiUrl;
+  endpoint: string = 'cita';
 
-  constructor(private backendService: BackendService) {}
+  constructor(private readonly backendService: BackendService) {}
 
-  listarCitas(): Observable<Cita[]> {
-    return this.backendService.get(this.urlBase, this.urlApi, 'listar');
-  }
-
-  listarCitasPorPaciente(pacienteId: number): Observable<Cita[]> {
-    const params = new HttpParams().set('pacienteId', pacienteId);
-    return this.backendService.get(this.urlBase, this.urlApi, 'listar-x-paciente', params);
+  buscarCitaPorPacienteId(pacienteId: number): Observable<Cita[]> {
+    const params: HttpParams = new HttpParams().set('pacienteIds', pacienteId.toString());
+    return this.backendService.get(this.urlBase, this.endpoint, 'listar-citas-paciente', params);
   }
 }
