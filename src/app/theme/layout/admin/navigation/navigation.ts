@@ -29,7 +29,6 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-user',
         classes: 'nav-item'
       },
-      /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
         title: 'Gestión de Medicos',
@@ -43,7 +42,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
@@ -71,22 +70,22 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item'
       },
       {
-        id: 'formula_medica',
+        id: 'formula-medica',
         title: 'Formulas Medicas',
         type: 'item',
-        url: '/inicio/formula_medica',
+        url: '/inicio/formula-medica',
         icon: 'feather icon-file-text',
         classes: 'nav-item'
       },
       {
-        id: 'historia_medica',
+        id: 'historia-medica',
         title: 'Historias Medicas',
         type: 'item',
-        url: '/inicio/historia_medica',
+        url: '/inicio/historia-medica',
         icon: 'feather icon-book',
         classes: 'nav-item'
-      },
+      }
     ]
   },
-  
+  /* ---------- Nuevos menus aqui -------------  */
 ];

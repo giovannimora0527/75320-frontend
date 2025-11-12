@@ -1,3 +1,7 @@
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{titleSpinner}}</p>
+</ngx-spinner>
+
 <div class="container-fluid">
   <div class="card mb-3 shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -5,9 +9,8 @@
         <i class="fa fa-users me-2"></i>Listado de Usuarios
       </h5>
       <div class="d-flex gap-2">
-        <button class="btn btn-light btn-sm" (click)="listarUsuarios()" [disabled]="isLoading">
-          <i class="fa" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-refresh'"></i> 
-          {{ isLoading ? 'Cargando...' : 'Actualizar' }}
+        <button class="btn btn-light btn-sm" (click)="listarUsuarios()">
+          <i class="fa fa-refresh"></i> Actualizar
         </button>
         <button class="btn btn-success btn-sm" (click)="abrirNuevoUsuario()">
           <i class="fa fa-plus"></i> Nuevo Usuario
@@ -146,34 +149,50 @@
             </div>
           </div>
 
-          <!-- Password -->
+          <!-- Email -->
           <div class="mb-3">
-            <label for="password" class="form-label fw-semibold">
-              <i class="fa fa-lock text-muted me-1"></i>Contraseña {{ modoFormulario === 'E' ? '(dejar en blanco para mantener la actual)' : '*' }}
+            <label for="email" class="form-label fw-semibold">
+              <i class="fa fa-envelope text-muted me-1"></i>Correo electrónico *
             </label>
             <input
-              type="password"
-              formControlName="password"
+              type="email"
+              formControlName="email"
               class="form-control"
-              [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
-              id="password"
-              placeholder="Ingrese su contraseña"
+              [class.is-invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+              id="email"
+              placeholder="Ingrese el correo electrónico"
             />
-            <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('required')">
-              La contraseña es requerida
+            <div class="invalid-feedback" *ngIf="form.get('email')?.hasError('required')">
+              El correo electrónico es requerido
             </div>
-            <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('minlength')">
-              Debe tener al menos 8 caracteres
+            <div class="invalid-feedback" *ngIf="form.get('email')?.hasError('email')">
+              El correo electrónico debe tener un formato válido
             </div>
-            <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('passwordProhibida')">
-              Esta contraseña es muy común y está prohibida
-            </div>
-            @if (form.get('password')?.pending) {
-              <small class="text-info">
-                <i class="fa fa-spinner fa-spin me-1"></i>Validando contraseña...
-              </small>
-            }
           </div>
+
+          <!-- Password (Opcional - solo en creación) -->
+          @if (modoFormulario === 'C') {
+            <div class="mb-3">
+              <label for="password" class="form-label fw-semibold">
+                <i class="fa fa-lock text-muted me-1"></i>Contraseña (Opcional)
+              </label>
+              <input
+                type="password"
+                formControlName="password"
+                class="form-control"
+                [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+                id="password"
+                placeholder="Dejar vacío para generar automáticamente (mínimo 8 caracteres)"
+              />
+              <small class="form-text text-muted">
+                <i class="fa fa-info-circle me-1"></i>
+                Si dejas este campo vacío, se generará una contraseña aleatoria de 8 caracteres automáticamente.
+              </small>
+              <div class="invalid-feedback" *ngIf="form.get('password')?.hasError('minlength')">
+                La contraseña debe tener al menos 8 caracteres
+              </div>
+            </div>
+          }
 
           <!-- Rol -->
           <div class="mb-3">

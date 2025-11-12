@@ -18,7 +18,6 @@ import Modal from 'bootstrap/js/dist/modal';
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './cita.component.html',
   styleUrls: ['./cita.component.scss']
-
 })
 export class CitaComponent {
   citas: Cita[] = [];
@@ -78,7 +77,7 @@ export class CitaComponent {
   }
 
   listarMedicos() {
-    this.medicoService.getMedicos().subscribe({
+    this.medicoService.listarMedicos().subscribe({
       next: data => this.medicos = data as Medico[],
       error: err => console.error(err)
     });
@@ -137,7 +136,7 @@ export class CitaComponent {
     if (this.modoFormulario === 'C') {
       this.citaService.guardarCita(citaData).subscribe({
         next: (res: RespuestaRs) => {
-          Swal.fire('Creación exitosa', res.message, 'success');
+          Swal.fire('Creación exitosa', res.message || 'Cita creada exitosamente', 'success');
           this.listarCitas();
           this.closeModal();
         },
@@ -146,7 +145,7 @@ export class CitaComponent {
     } else if (this.modoFormulario === 'E' && this.citaSelected?.id) {
       this.citaService.actualizarCita(this.citaSelected.id, citaData).subscribe({
         next: (res: RespuestaRs) => {
-          Swal.fire('Actualización exitosa', res.message, 'success');
+          Swal.fire('Actualización exitosa', res.message || 'Cita actualizada exitosamente', 'success');
           this.listarCitas();
           this.closeModal();
         },
@@ -167,7 +166,7 @@ export class CitaComponent {
       if (result.isConfirmed) {
         this.citaService.eliminarCita(cita.id).subscribe({
           next: (res: RespuestaRs) => {
-            Swal.fire('Eliminado', res.message, 'success');
+            Swal.fire('Eliminado', res.message || 'Cita eliminada exitosamente', 'success');
             this.listarCitas();
           },
           error: err => Swal.fire('Error', err.error?.message || 'Ocurrió un error', 'error')

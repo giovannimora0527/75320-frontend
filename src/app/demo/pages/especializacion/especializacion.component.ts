@@ -230,5 +230,4 @@ export class EspecializacionComponent implements OnInit {
       }
     });
   }
-
 }

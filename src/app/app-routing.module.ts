@@ -9,29 +9,35 @@ import { CitaComponent } from './demo/pages/cita/cita.component';
 import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
 import { FormulaMedicaComponent } from './demo/pages/formula-medica/formula-medica.component';
 import { HistoriaMedicaComponent } from './demo/pages/historia-medica/historia-medica.component';
+import { LoginComponent } from './demo/pages/login/login.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'inicio',
+    redirectTo: 'login',
     pathMatch: 'full'
   },  
+  {
+    path: 'login',
+    data: { title: 'Login' },
+    component: LoginComponent,
+  },
   {
     path: 'inicio',
     component: AdminComponent,
     data: { title: 'Inicio' },
     children: [      
-       { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }} ,
+       { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }},
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
        { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
-       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion ' }},     
-       { path: 'cita', component: CitaComponent, data: { title: 'Especializacion ' }},     
-       { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Especializacion ' }},     
-       { path: 'formula_medica', component: FormulaMedicaComponent, data: { title: 'Especializacion ' }},     
-       { path: 'historia_medica', component: HistoriaMedicaComponent, data: { title: 'Especializacion ' }}     
+       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},     
+       { path: 'cita', component: CitaComponent, data: { title: 'Cita' }},     
+       { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamento' }},     
+       { path: 'formula-medica', component: FormulaMedicaComponent, data: { title: 'Formula Medica' }},     
+       { path: 'historia-medica', component: HistoriaMedicaComponent, data: { title: 'Historia Medica' }}
     ]
   },
-  { path: '**', redirectTo: 'inicio' }
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({

@@ -1,25 +1,19 @@
 import { Component } from '@angular/core';
-import { Usuario } from './models/usuario';
 import { UsuarioService } from './service/usuario.service';
+import { Usuario } from './models/usuario';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors
-} from '@angular/forms';
+
+// Import library module
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 import Swal from 'sweetalert2';
 import Modal from 'bootstrap/js/dist/modal';
-import { delay, map, Observable, of } from 'rxjs';
+
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -30,41 +24,28 @@ export class UsuarioComponent {
   titleModal: string = '';
   titleBoton: string = '';
   usuarioSelected: Usuario | null = null;
+  titleSpinner: string = "Cargando...";
   isLoading: boolean = false;
 
-  form: FormGroup = new FormGroup({
-    id: new FormControl(''),
-    username: new FormControl(''),
-    password: new FormControl(''),
-    rol: new FormControl(''),
-    activo: new FormControl('')
-  });
+  form: FormGroup;
 
   constructor(
-    private usuarioService: UsuarioService,
-    private readonly formBuilder: FormBuilder
-  ) {
+    private readonly usuarioService: UsuarioService,
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
+  ) {    
     this.listarUsuarios();
-    this.cargarFormulario();
+    this.inicializarFormulario();    
   }
 
-  cargarFormulario() {
+  inicializarFormulario() {
     this.form = this.formBuilder.group({
-      id: [''],
-      username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator]],
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+      email: ['', [Validators.required, Validators.email]],
       rol: ['', [Validators.required]],
-      activo: [true]
+      activo: [true],
+      password: [''] // Campo opcional: si se deja vacío, el backend genera una automática
     });
-  }
-
-  passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | null> {
-    const contrasenasProhibidas = ['123456', 'password', 'admin'];
-
-    return of(contrasenasProhibidas.includes(control.value)).pipe(
-      delay(800),
-      map((invalida) => (invalida ? { passwordProhibida: true } : null))
-    );
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -72,72 +53,24 @@ export class UsuarioComponent {
   }
 
   listarUsuarios() {
-    console.log('Iniciando carga de usuarios...');
     this.isLoading = true;
-    
+    this.spinner.show();
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
-        setTimeout(() => {
-          this.usuarios = data;
-          console.log('Usuarios cargados:', this.usuarios);
-          this.isLoading = false;
-        }, 800);
+        this.usuarios = data;
+        this.isLoading = false;
+        this.spinner.hide();
       },
-      error: (err) => {
-        console.error('Error al listar usuarios:', err);
-        setTimeout(() => {
-          this.isLoading = false;
-          Swal.fire('Error', 'No se pudieron cargar los usuarios', 'error');
-        }, 800);
+      error: (error) => {
+        console.error('Error al listar usuarios', error);
+        this.isLoading = false;
+        this.spinner.hide();
+        Swal.fire('Error', 'No se pudieron cargar los usuarios', 'error');
       }
     });
   }
 
-  guardarUsuario() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    if (this.modoFormulario === 'C') {
-      // Modo Creación
-      this.form.get('activo')?.setValue(true);
-      
-      this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
-        next: (data) => {
-          console.log('Usuario guardado:', data);
-          Swal.fire('Éxito', data.message || 'Usuario creado correctamente', 'success');
-          this.listarUsuarios();
-          this.closeModal();
-        },
-        error: (err) => {
-          console.error('Error al guardar usuario:', err);
-          Swal.fire('Error', err.error?.message || 'Ocurrió un error al crear el usuario', 'error');
-        }
-      });
-    } else {
-      // Modo Edición
-      const usuarioActualizar = this.form.getRawValue();
-  const idUsuario = usuarioActualizar.id; // AGREGAR ESTO
-  
-  this.usuarioService.actualizarUsuario(idUsuario, usuarioActualizar).subscribe({ // CAMBIAR ESTO
-    next: (data) => {
-      console.log('Usuario actualizado:', data);
-      Swal.fire('Éxito', data.message || 'Usuario actualizado correctamente', 'success');
-      this.listarUsuarios();
-      this.closeModal();
-    },
-    error: (err) => {
-      console.error('Error al actualizar usuario:', err);
-      Swal.fire('Error', err.error?.message || 'Ocurrió un error al actualizar el usuario', 'error');
-    }
-      });
-    }
-  }
-
   eliminarUsuario(usuario: Usuario) {
-    console.log('MÉTODO ELIMINAR EJECUTADO', usuario); // DEBUG
-    
     Swal.fire({
       title: '¿Está seguro?',
       text: `¿Desea eliminar al usuario "${usuario.username}"?`,
@@ -153,16 +86,18 @@ export class UsuarioComponent {
           Swal.fire('Error', 'ID de usuario no válido', 'error');
           return;
         }
-  
-        console.log('Intentando eliminar usuario con ID:', usuario.id); // DEBUG
-  
+        this.isLoading = true;
+        this.spinner.show();
         this.usuarioService.eliminarUsuario(usuario.id).subscribe({
           next: (resp) => {
-            console.log('Respuesta de eliminación:', resp); // DEBUG
-            Swal.fire('Eliminado', resp.message || 'Usuario eliminado correctamente', 'success');
+            this.isLoading = false;
+            this.spinner.hide();
+            Swal.fire('Eliminado', resp.mensaje || 'Usuario eliminado correctamente', 'success');
             this.listarUsuarios();
           },
           error: (err) => {
+            this.isLoading = false;
+            this.spinner.hide();
             console.error('Error al eliminar usuario:', err);
             Swal.fire('Error', err.error?.message || 'No se pudo eliminar el usuario', 'error');
           }
@@ -174,8 +109,8 @@ export class UsuarioComponent {
   closeModal() {
     if (this.modalInstance) {
       this.modalInstance.hide();
-      this.limpiarFormulario();
     }
+    this.limpiarFormulario();
   }
 
   openModal(modo: string) {
@@ -197,39 +132,120 @@ export class UsuarioComponent {
 
   abrirEditarUsuario(usuario: Usuario) {
     this.usuarioSelected = usuario;
-    this.limpiarFormulario();
-    
-    // Cargar datos del usuario en el formulario
     this.form.patchValue({
-      id: usuario.id,
       username: usuario.username,
-      password: '', // No cargar la contraseña por seguridad
+      email: usuario.email,
       rol: usuario.rol,
       activo: usuario.activo
     });
-    
-    // En modo edición, hacer el password opcional
-    this.form.get('password')?.clearValidators();
-    this.form.get('password')?.setValidators([Validators.minLength(8)]);
-    this.form.get('password')?.updateValueAndValidity();
-    
     this.openModal('E');
   }
 
+  /**
+   * Funcion que permite guardar/actualizar un usuario.
+   */
+  guardarUsuario() {
+    this.titleSpinner = this.modoFormulario === 'C' ? "Creando usuario..." : "Actualizando usuario...";
+    this.spinner.show();   
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo')?.setValue(true);
+    }
+    if (this.form.invalid) {
+      // Manejar el formulario inválido
+      this.spinner.hide();
+      Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
+      return;
+    }
+
+    if (this.modoFormulario === 'C') {
+      // Modo Creación
+      this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
+        next: (data) => {          
+          if (data.status === 200 || data.status === 201) {
+            this.spinner.hide();
+            
+            // Extraer la contraseña de la respuesta si está disponible
+            let password = '';
+            if (data.data && typeof data.data === 'object' && 'password' in data.data) {
+              password = (data.data as any).password;
+            }
+            
+            // Mostrar la contraseña al usuario
+            if (password) {
+              Swal.fire({
+                title: 'Usuario creado exitosamente',
+                html: `
+                  <p>${data.mensaje}</p>
+                  <hr>
+                  <p><strong>Credenciales del usuario:</strong></p>
+                  <p><strong>Username:</strong> ${this.form.get('username')?.value}</p>
+                  <p><strong>Contraseña:</strong> <code style="background: #f0f0f0; padding: 5px; border-radius: 3px; font-size: 18px;">${password}</code></p>
+                  <p class="text-muted"><small>Guarda esta información de forma segura</small></p>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Copiar contraseña',
+                showCancelButton: true,
+                cancelButtonText: 'Cerrar',
+                width: '500px'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Copiar contraseña al portapapeles
+                  navigator.clipboard.writeText(password).then(() => {
+                    Swal.fire('Copiado', 'La contraseña ha sido copiada al portapapeles', 'info');
+                  });
+                }
+                this.closeModal();
+                this.listarUsuarios();
+              });
+            } else {
+              Swal.fire('Éxito', data.mensaje, 'success');
+              this.closeModal();
+              this.listarUsuarios();
+            }
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje || 'Ocurrió un error al crear el usuario', 'error');
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();
+          console.error('Error completo:', error);
+          const errorMessage = error?.error?.mensaje || error?.error?.message || error?.message || 'Ocurrió un error al crear el usuario';
+          Swal.fire('Error', errorMessage, 'error');
+        }
+      });
+    } else {
+      // Modo Edición
+      const usuarioActualizado: Usuario = this.form.getRawValue();
+      usuarioActualizado.id = this.usuarioSelected!.id;
+      this.usuarioService.actualizarUsuario(usuarioActualizado).subscribe({
+        next: (data) => {       
+          if (data.status === 200) {
+            this.spinner.hide();
+            Swal.fire('Éxito', data.mensaje, 'success');
+            this.closeModal();
+            this.listarUsuarios();
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje, 'error');
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();          
+          Swal.fire('Error', error.error?.message || 'Ocurrió un error al actualizar el usuario', 'error');
+        }
+      });
+    }
+  }
+
   limpiarFormulario() {
+    this.form.reset({
+      username: this.usuarioSelected ? this.usuarioSelected.username : '',
+      email: this.usuarioSelected ? this.usuarioSelected.email : '',
+      rol: this.usuarioSelected ? this.usuarioSelected.rol : '',
+      activo: this.usuarioSelected ? this.usuarioSelected.activo : false
+    });
     this.form.markAsPristine();
     this.form.markAsUntouched();
-    this.form.reset({
-      id: '',
-      username: '',
-      password: '',
-      rol: '',
-      activo: true
-    });
-    
-    // Restaurar validaciones originales
-    this.form.get('password')?.setValidators([Validators.required, Validators.minLength(8)]);
-    this.form.get('password')?.setAsyncValidators([this.passwordAsyncValidator]);
-    this.form.get('password')?.updateValueAndValidity();
   }
 }

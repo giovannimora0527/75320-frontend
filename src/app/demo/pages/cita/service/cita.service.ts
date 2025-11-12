@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
@@ -29,5 +30,10 @@ export class CitaService {
 
   eliminarCita(id: number): Observable<RespuestaRs> {
     return this.backendService.post(this.urlBase, this.urlApi, `eliminar?id=${id}`, {});
+  }
+
+  buscarCitaPorPacienteId(pacienteId: number): Observable<Cita[]> {
+    const params: HttpParams = new HttpParams().set('pacienteIds', pacienteId.toString());
+    return this.backendService.get(this.urlBase, this.urlApi, 'listar-citas-paciente', params);
   }
 }
