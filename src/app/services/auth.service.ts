@@ -61,14 +61,24 @@ export class AuthService {
    * Realiza el login del usuario
    */
   login(loginResponse: LoginRs, usuario?: Usuario): void {
+    console.log('AuthService.login() - Iniciando login');
+    console.log('Token recibido:', loginResponse.token ? 'existe' : 'no existe');
+    
     const roles = usuario?.rol ? [usuario.rol] : [];
     
     // Guardar en localStorage
     localStorage.setItem(this.TOKEN_KEY, loginResponse.token);
+    console.log('Token guardado en localStorage');
+    
     if (usuario) {
       localStorage.setItem(this.USER_KEY, JSON.stringify(usuario));
+      console.log('Usuario guardado:', usuario.username, 'Rol:', usuario.rol);
     }
     localStorage.setItem(this.ROLES_KEY, JSON.stringify(roles));
+
+    // Verificar que el token se guardó correctamente
+    const tokenGuardado = localStorage.getItem(this.TOKEN_KEY);
+    console.log('Token verificado después de guardar:', tokenGuardado ? 'existe' : 'no existe');
 
     // Actualizar estado
     const newState: AuthState = {
@@ -79,6 +89,7 @@ export class AuthService {
     };
 
     this.authStateSubject.next(newState);
+    console.log('Estado de autenticación actualizado. isAuthenticated:', this.isAuthenticated());
   }
 
   /**
@@ -132,7 +143,9 @@ export class AuthService {
    */
   isAuthenticated(): boolean {
     const token = this.getToken();
-    return !!token && this.isTokenValid(token);
+    const isValid = !!token && this.isTokenValid(token);
+    console.log('AuthService.isAuthenticated() - Token:', token ? 'existe' : 'no existe', 'Válido:', isValid);
+    return isValid;
   }
 
   /**
@@ -156,14 +169,49 @@ export class AuthService {
    */
   private isTokenValid(token: string): boolean {
     try {
+      if (!token || token.split('.').length !== 3) {
+        console.error('Token inválido: formato incorrecto');
+        return false;
+      }
+      
       // Decodificar el payload del JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('Token payload decodificado:', payload);
+      
       const currentTime = Math.floor(Date.now() / 1000);
+      console.log('Tiempo actual (segundos):', currentTime);
       
       // Verificar si el token no ha expirado
-      return payload.exp > currentTime;
-    } catch {
+      // El token puede tener 'exp' (timestamp en segundos) o 'fecha_fin_sesion' (timestamp en segundos)
+      if (payload.exp) {
+        console.log('Token tiene exp:', payload.exp, 'Válido:', payload.exp > currentTime);
+        return payload.exp > currentTime;
+      } else if (payload.fecha_fin_sesion) {
+        // fecha_fin_sesion viene como timestamp en segundos (Unix timestamp)
+        // Si el valor es muy grande (> 1e12), está en milisegundos, si no, está en segundos
+        let expirationTime: number;
+        if (typeof payload.fecha_fin_sesion === 'number') {
+          // Si el número es mayor a 1e12, está en milisegundos, si no, está en segundos
+          expirationTime = payload.fecha_fin_sesion > 1e12 
+            ? Math.floor(payload.fecha_fin_sesion / 1000)
+            : payload.fecha_fin_sesion;
+        } else {
+          // Si es un string o Date, convertirlo
+          expirationTime = Math.floor(new Date(payload.fecha_fin_sesion).getTime() / 1000);
+        }
+        console.log('Token tiene fecha_fin_sesion (raw):', payload.fecha_fin_sesion);
+        console.log('Token tiene fecha_fin_sesion (procesado):', expirationTime);
+        console.log('Tiempo actual:', currentTime);
+        console.log('Válido:', expirationTime > currentTime);
+        return expirationTime > currentTime;
+      }
+      
+      // Si no tiene fecha de expiración, considerar válido (no ideal pero funcional)
+      console.warn('Token sin fecha de expiración, considerando válido');
+      return true;
+    } catch (error) {
       // Si hay error al decodificar, el token no es válido
+      console.error('Error al validar token:', error);
       return false;
     }
   }

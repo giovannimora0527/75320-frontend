@@ -6,6 +6,9 @@ import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
 import { RecuperarPasswordService } from './service/recuperar-password.service';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { Usuario } from '../usuario/models/usuario';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +27,8 @@ export class LoginComponent {
     private readonly spinner: NgxSpinnerService,
     private readonly loginService: LoginService,
     private readonly recuperarPasswordService: RecuperarPasswordService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authService: AuthService
   ) {
     this.inicializarFormulario();
   }
@@ -61,19 +65,57 @@ export class LoginComponent {
       this.loginService.loginUsuario(loginData).subscribe({
         next: (response) => {
           console.log('Respuesta del servidor:', response);
-          localStorage.setItem("token", response.token)
-          this.isLoading = false;
-          this.spinner.hide();
-          Swal.fire({
-            title: 'Éxito',
-            text: 'Inicio de sesión exitoso',
-            icon: 'success'
-          }).then(() => {
-            // Aquí redirigirías al usuario al dashboard
-            console.log('Redirigir al dashboard');
+          
+          // Decodificar el token para obtener información del usuario
+          try {
+            const tokenPayload = JSON.parse(atob(response.token.split('.')[1]));
+            const username = tokenPayload.sub || tokenPayload.username;
+            const rol = tokenPayload.rol || 'USER';
+            
+            // Crear un objeto usuario con la información del token
+            const usuario: Usuario = {
+              id: 0,
+              username: username,
+              email: tokenPayload.correo || '',
+              rol: rol,
+              fechaCreacion: new Date(),
+              activo: true
+            };
+            
+            // Usar el AuthService para guardar la sesión correctamente
+            this.authService.login(response, usuario);
+            
+            // Verificar que la autenticación se guardó correctamente
+            console.log('Después de login - isAuthenticated:', this.authService.isAuthenticated());
+            console.log('Token en localStorage:', localStorage.getItem('token'));
+            
             this.isLoading = false;
+            this.spinner.hide();
+            
+            // Pequeño delay para asegurar que el estado se actualice
+            setTimeout(() => {
+              console.log('Verificación final - isAuthenticated:', this.authService.isAuthenticated());
+              Swal.fire({
+                title: 'Éxito',
+                text: 'Inicio de sesión exitoso',
+                icon: 'success'
+              }).then(() => {
+                console.log('Redirigir al dashboard');
+                this.router.navigate(['/inicio']).then(() => {
+                  console.log('Navegación completada');
+                }).catch(err => {
+                  console.error('Error en navegación:', err);
+                });
+              });
+            }, 100);
+          } catch (error) {
+            console.error('Error al decodificar el token:', error);
+            // Si hay error al decodificar, aún así guardar el token
+            this.authService.login(response);
+            this.isLoading = false;
+            this.spinner.hide();
             this.router.navigate(['/inicio']);
-          });
+          }
         },
         error: (error) => {
           this.spinner.hide();
@@ -136,7 +178,7 @@ export class LoginComponent {
         }
 
         // Llamar al servicio de recuperación de contraseña
-        return this.recuperarPasswordService.recuperarPassword(username.trim()).toPromise()
+        return firstValueFrom(this.recuperarPasswordService.recuperarPassword(username.trim()))
           .then((response) => {
             return response;
           })

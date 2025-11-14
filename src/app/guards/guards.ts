@@ -11,10 +11,17 @@ export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
+  console.log('authGuard ejecutado - Ruta:', state.url);
+  const isAuth = authService.isAuthenticated();
+  console.log('authGuard - isAuthenticated:', isAuth);
+  console.log('authGuard - Token en localStorage:', localStorage.getItem('token'));
+
+  if (isAuth) {
+    console.log('authGuard - Acceso permitido');
     return true;
   }
 
+  console.log('authGuard - Acceso denegado, redirigiendo al login');
   // Mostrar mensaje de que necesita autenticarse
   Swal.fire({
     title: 'Acceso denegado',
