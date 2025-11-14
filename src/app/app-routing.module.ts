@@ -11,6 +11,14 @@ import { FormulaMedicaComponent } from './demo/pages/formula-medica/formula-medi
 import { HistoriaMedicaComponent } from './demo/pages/historia-medica/historia-medica.component';
 import { LoginComponent } from './demo/pages/login/login.component';
 
+// Importar los guards
+import { 
+  authGuard, 
+  loginGuard, 
+  adminGuard, 
+  medicoAdminGuard
+} from './guards/guards';
+
 export const routes: Routes = [
   {
     path: '',
@@ -19,25 +27,112 @@ export const routes: Routes = [
   },  
   {
     path: 'login',
-    data: { title: 'Login' },
     component: LoginComponent,
+    canActivate: [loginGuard], // Evita que usuarios autenticados accedan al login
+    data: { title: 'Login' }
+  },
+  {
+    path: 'dashboard',
+    redirectTo: 'inicio/cita', // Redirigir al módulo de citas por defecto
+    pathMatch: 'full'
   },
   {
     path: 'inicio',
     component: AdminComponent,
-    data: { title: 'Inicio' },
+    canActivate: [authGuard], // Requiere autenticación para acceder al área administrativa
+    data: { title: 'Dashboard' },
     children: [      
-       { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }},
-       { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
-       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
-       { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},     
-       { path: 'cita', component: CitaComponent, data: { title: 'Cita' }},     
-       { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamento' }},     
-       { path: 'formula-medica', component: FormulaMedicaComponent, data: { title: 'Formula Medica' }},     
-       { path: 'historia-medica', component: HistoriaMedicaComponent, data: { title: 'Historia Medica' }}
+       { 
+         path: 'usuario', 
+         component: UsuarioComponent, 
+         canActivate: [adminGuard], // Solo administradores
+         data: { 
+           title: 'Gestión de Usuarios',
+           module: 'usuarios',
+           roles: ['ADMIN']
+         }
+       },
+       { 
+         path: 'medico', 
+         component: MedicoComponent, 
+         canActivate: [adminGuard], // Solo administradores
+         data: { 
+           title: 'Gestión de Médicos',
+           module: 'medicos',
+           roles: ['ADMIN']
+         }
+       },
+       { 
+         path: 'paciente', 
+         component: PacienteComponent, 
+         canActivate: [medicoAdminGuard], // Médicos y administradores
+         data: { 
+           title: 'Gestión de Pacientes',
+           module: 'pacientes',
+           roles: ['ADMIN', 'MEDICO']
+         }
+       },
+       { 
+         path: 'cita', 
+         component: CitaComponent, 
+         canActivate: [authGuard], // Cualquier usuario autenticado
+         data: { 
+           title: 'Gestión de Citas',
+           module: 'citas',
+           roles: ['ADMIN', 'MEDICO', 'PACIENTE']
+         }
+       },
+       { 
+         path: 'medicamento', 
+         component: MedicamentoComponent, 
+         canActivate: [medicoAdminGuard], // Médicos y administradores
+         data: { 
+           title: 'Gestión de Medicamentos',
+           module: 'medicamentos',
+           roles: ['ADMIN', 'MEDICO']
+         }
+       },
+       { 
+         path: 'formula-medica', 
+         component: FormulaMedicaComponent, 
+         canActivate: [medicoAdminGuard], // Médicos y administradores
+         data: { 
+           title: 'Fórmulas Médicas',
+           module: 'formulas',
+           roles: ['ADMIN', 'MEDICO']
+         }
+       },
+       { 
+         path: 'historia-medica', 
+         component: HistoriaMedicaComponent, 
+         canActivate: [medicoAdminGuard], // Médicos y administradores
+         data: { 
+           title: 'Historias Clínicas',
+           module: 'historias',
+           roles: ['ADMIN', 'MEDICO']
+         }
+       },
+       { 
+         path: 'especializacion', 
+         component: EspecializacionComponent, 
+         canActivate: [adminGuard], // Solo administradores
+         data: { 
+           title: 'Especializaciones Médicas',
+           module: 'especializaciones',
+           roles: ['ADMIN']
+         }
+       },
+       {
+         path: '',
+         redirectTo: 'cita', // Redirigir a citas por defecto
+         pathMatch: 'full'
+       }
     ]
   },
-  { path: '**', redirectTo: 'login' }
+  { 
+    path: '**', 
+    redirectTo: 'login' 
+  }
 ];
 
 @NgModule({
