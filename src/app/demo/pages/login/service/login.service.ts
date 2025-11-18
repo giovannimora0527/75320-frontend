@@ -16,14 +16,15 @@ export class LoginService {
   constructor(private readonly backendService: BackendService) {}
 
   // ===========================
-  // LOGIN DE USUARIO
+  // INICIAR SESIÓN (LOGIN)
   // ===========================
-  loginUsuario(loginForm: LoginRq): Observable<LoginRs> {
-    return this.backendService.post(
+  autenticar(payload: LoginRq): Observable<LoginRs> {
+    // Llama a: POST http://localhost:8000/clinica/v1/auth/login
+    return this.backendService.post<LoginRs>(
       this.urlBase,
-      this.endpoint,
-      'login',
-      loginForm
+      this.endpoint,   // "auth"
+      'login',         // método del backend: /auth/login
+      payload
     );
   }
 
@@ -31,6 +32,7 @@ export class LoginService {
   // RECUPERAR CONTRASEÑA
   // ===========================
   recuperarContrasena(username: string): Observable<any> {
+    // Llama a: POST http://localhost:8000/clinica/v1/auth/recuperar-contrasena
     return this.backendService.post(
       this.urlBase,
       this.endpoint,              // usa el mismo endpoint "auth"

@@ -11,18 +11,19 @@ import {
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
-import { Router, RouterModule } from '@angular/router';
+  import { Router, RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoginRq } from './models/login-rq';
+import { LoginRs } from './models/login-rs';
 
 @Component({
   selector: 'app-login',
-  // 👇 si tu proyecto ya estaba así, lo dejamos igual, solo agregamos RouterModule
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     NgxSpinnerModule,
-    RouterModule       // <- NECESARIO para que routerLink funcione en el template
+    RouterModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -38,14 +39,14 @@ export class LoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly spinner: NgxSpinnerService,
     private readonly loginService: LoginService,
-    private readonly router: Router,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {
-    this.inicializarFormulario();
+    this.loginForm = this.inicializarFormulario();
   }
 
-  inicializarFormulario() {
-    this.loginForm = this.formBuilder.group({
+  private inicializarFormulario(): FormGroup {
+    return this.formBuilder.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       recordarSesion: [false]
@@ -56,57 +57,12 @@ export class LoginComponent {
     return this.loginForm.controls;
   }
 
-  toggleMostrarPassword() {
+  toggleMostrarPassword(): void {
     this.mostrarPassword = !this.mostrarPassword;
   }
 
-  onLogin() {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.spinner.show();
-
-      const loginData = {
-        username: this.f['username'].value,
-        password: this.f['password'].value,
-        recordarSesion: this.f['recordarSesion'].value
-      };
-
-      this.loginService.loginUsuario(loginData).subscribe({
-        next: (response) => {
-          console.log('Respuesta del servidor:', response);
-
-          // Guardar token y roles
-          this.authService.login(response);
-
-          this.isLoading = false;
-          this.spinner.hide();
-
-          Swal.fire({
-            title: 'Éxito',
-            text: 'Inicio de sesión exitoso',
-            icon: 'success'
-          }).then(() => {
-            this.router.navigate(['/inicio/cita']);
-          });
-        },
-
-        error: (error) => {
-          this.spinner.hide();
-          this.isLoading = false;
-          console.error('Error en la autenticación:', error);
-
-          Swal.fire({
-            title: 'Error',
-            text: 'Ups! Algo salió mal durante el inicio de sesión.',
-            icon: 'error'
-          });
-        }
-      });
-
-    } else {
-      this.spinner.hide();
-      this.isLoading = false;
-
+  onLogin(): void {
+    if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
 
       Swal.fire({
@@ -114,8 +70,100 @@ export class LoginComponent {
         text: 'Por favor complete todos los campos requeridos',
         icon: 'error'
       });
+
+      return;
     }
+
+    this.isLoading = true;
+    this.titleSpinner = 'Autenticando...';
+    this.spinner.show();
+
+    const payload: LoginRq = {
+      username: this.loginForm.value.username,
+      password: this.loginForm.value.password
+    };
+
+    this.loginService.autenticar(payload).subscribe({
+      next: (data: LoginRs) => {
+        this.spinner.hide();
+        this.isLoading = false;
+
+        this.authService.login(data);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: 'Inicio de sesión exitoso',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#6c5ce7'
+        }).then(() => {
+          this.router.navigate(['/inicio/cita']);
+        });
+      },
+      error: (err) => {
+        this.spinner.hide();
+        this.isLoading = false;
+
+        let mensaje = 'Error al iniciar sesión';
+
+        if (err?.error) {
+          if (typeof err.error === 'string') {
+            mensaje = err.error;
+          } else if (err.error?.message) {
+            mensaje = err.error.message;
+          } else if (err.error?.mensaje) {
+            mensaje = err.error.mensaje;
+          }
+        } else if (err?.message) {
+          mensaje = err.message;
+        }
+
+        // FORMATEAMOS EL BLOQUEO
+        if (mensaje.includes('Usuario bloqueado hasta')) {
+          const fechaStr = mensaje.replace('Usuario bloqueado hasta ', '').trim();
+          const fecha = new Date(fechaStr);
+
+          const opcionesFecha: Intl.DateTimeFormatOptions = {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+          };
+
+          const fechaBonita = fecha.toLocaleDateString('es-CO', opcionesFecha);
+
+          const opcionesHora: Intl.DateTimeFormatOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+          };
+
+          const horaBonita = fecha.toLocaleTimeString('es-CO', opcionesHora);
+
+          Swal.fire({
+            icon: 'warning',
+            title: 'Cuenta bloqueada temporalmente',
+            html: `
+              <p><b>Tu cuenta fue bloqueada por seguridad.</b></p>
+              <p>Podrás volver a intentarlo:</p>
+              <p style="font-size: 18px; margin-top: 10px;">
+                📅 <b>${fechaBonita}</b><br>
+                🕒 <b>${horaBonita}</b>
+              </p>
+            `,
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#6c5ce7'
+          });
+
+          return;
+        }
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: mensaje
+        });
+      }
+    });
   }
-
-
 }
