@@ -9,12 +9,33 @@ import { LoginRq } from '../models/login-rq';
   providedIn: 'root'
 })
 export class LoginService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'auth';
+
+  private urlBase = environment.apiUrl;
+  private endpoint: string = 'auth';   // donde están tus endpoints de autenticación
 
   constructor(private readonly backendService: BackendService) {}
 
+  // ===========================
+  // LOGIN DE USUARIO
+  // ===========================
   loginUsuario(loginForm: LoginRq): Observable<LoginRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'login', loginForm);
+    return this.backendService.post(
+      this.urlBase,
+      this.endpoint,
+      'login',
+      loginForm
+    );
+  }
+
+  // ===========================
+  // RECUPERAR CONTRASEÑA
+  // ===========================
+  recuperarContrasena(username: string): Observable<any> {
+    return this.backendService.post(
+      this.urlBase,
+      this.endpoint,              // usa el mismo endpoint "auth"
+      'recuperar-contrasena',     // el método en tu backend
+      { username }
+    );
   }
 }

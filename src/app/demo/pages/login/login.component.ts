@@ -1,18 +1,34 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
+  // 👇 si tu proyecto ya estaba así, lo dejamos igual, solo agregamos RouterModule
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxSpinnerModule,
+    RouterModule       // <- NECESARIO para que routerLink funcione en el template
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+
   loginForm: FormGroup;
   mostrarPassword: boolean = false;
   isLoading: boolean = false;
@@ -22,7 +38,8 @@ export class LoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly spinner: NgxSpinnerService,
     private readonly loginService: LoginService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authService: AuthService
   ) {
     this.inicializarFormulario();
   }
@@ -48,47 +65,50 @@ export class LoginComponent {
       this.isLoading = true;
       this.spinner.show();
 
-      // Simular llamada al servicio de autenticación
       const loginData = {
         username: this.f['username'].value,
         password: this.f['password'].value,
         recordarSesion: this.f['recordarSesion'].value
       };
 
-      console.log('Datos de login:', loginData);
       this.loginService.loginUsuario(loginData).subscribe({
         next: (response) => {
           console.log('Respuesta del servidor:', response);
-          localStorage.setItem("token", response.token)
+
+          // Guardar token y roles
+          this.authService.login(response);
+
           this.isLoading = false;
           this.spinner.hide();
+
           Swal.fire({
             title: 'Éxito',
             text: 'Inicio de sesión exitoso',
             icon: 'success'
           }).then(() => {
-            // Aquí redirigirías al usuario al dashboard
-            console.log('Redirigir al dashboard');
-            this.isLoading = false;
-            this.router.navigate(['/inicio']);
+            this.router.navigate(['/inicio/cita']);
           });
         },
+
         error: (error) => {
           this.spinner.hide();
           this.isLoading = false;
           console.error('Error en la autenticación:', error);
+
           Swal.fire({
-            title: 'Erro',
+            title: 'Error',
             text: 'Ups! Algo salió mal durante el inicio de sesión.',
             icon: 'error'
           });
         }
       });
+
     } else {
       this.spinner.hide();
       this.isLoading = false;
-      // Marcar todos los campos como tocados para mostrar errores
+
       this.loginForm.markAllAsTouched();
+
       Swal.fire({
         title: 'Error',
         text: 'Por favor complete todos los campos requeridos',
@@ -97,44 +117,5 @@ export class LoginComponent {
     }
   }
 
-  onForgotPassword(event: Event) {
-    event.preventDefault();
 
-    Swal.fire({
-      title: 'Recuperar contraseña',
-      text: 'Ingrese su correo electrónico para recuperar su contraseña',
-      input: 'email',
-      inputAttributes: {
-        autocapitalize: 'off',
-        placeholder: 'correo@ejemplo.com'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar',
-      showLoaderOnConfirm: true,
-      preConfirm: (email) => {
-        if (!email) {
-          Swal.showValidationMessage('El correo electrónico es requerido');
-          return false;
-        }
-
-        // Simular envío de email de recuperación
-        return new Promise<boolean>((resolve) => {
-          setTimeout(() => {
-            console.log('Enviar email de recuperación a:', email);
-            resolve(true);
-          }, 1000);
-        });
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Email enviado',
-          text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
-          icon: 'success'
-        });
-      }
-    });
-  }
 }

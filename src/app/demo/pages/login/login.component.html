@@ -8,15 +8,20 @@
     <div class="row justify-content-center align-items-center min-vh-100">
       <div class="col-md-6 col-lg-4">
         <div class="card shadow-lg border-0">
+          
+          <!-- Header -->
           <div class="card-header bg-primary text-white text-center py-4">
             <h3 class="mb-0">
               <i class="fa fa-user-circle"></i>
               &nbsp;Iniciar Sesión
             </h3>
           </div>
+
+          <!-- Body -->
           <div class="card-body p-4">
             <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-              <!-- Campo de nombre de usuario -->
+
+              <!-- Usuario -->
               <div class="mb-3">
                 <label for="username" class="form-label">
                   <i class="fa fa-user"></i>
@@ -40,7 +45,7 @@
                 </div>
               </div>
 
-              <!-- Campo de contraseña -->
+              <!-- Contraseña -->
               <div class="mb-3">
                 <label for="password" class="form-label">
                   <i class="fa fa-lock"></i>
@@ -86,35 +91,39 @@
                 </label>
               </div>
 
-              <!-- Botón de autenticar -->
+              <!-- Botón Login -->
               <div class="d-grid mb-3">
                 <button 
                   type="submit" 
                   class="btn btn-primary btn-lg"
                   [disabled]="loginForm.invalid || isLoading">
+                  
                   <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
                   <i *ngIf="!isLoading" class="fa fa-sign-in-alt me-2"></i>
+
                   {{ isLoading ? 'Autenticando...' : 'Autenticar' }}
                 </button>
               </div>
 
-              <!-- Enlace de contraseña olvidada -->
-              <div class="text-center">
-                <a href="#" class="text-decoration-none" (click)="onForgotPassword($event)">
+              <!-- Recuperar contraseña -->
+              <div class="text-center mt-3">
+                <a routerLink="/recuperar-contrasena" class="text-decoration-none forgot-pass">
                   <i class="fa fa-question-circle"></i>
-                  &nbsp;¿Has olvidado tu contraseña?
+                  ¿Has olvidado tu contraseña?
                 </a>
               </div>
+
             </form>
           </div>
-          
-          <!-- Footer del card -->
+
+          <!-- Footer -->
           <div class="card-footer text-center text-muted py-3">
             <small>
               <i class="fa fa-shield-alt"></i>
               &nbsp;Sistema seguro de autenticación
             </small>
           </div>
+
         </div>
       </div>
     </div>

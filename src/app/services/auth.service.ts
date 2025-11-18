@@ -61,25 +61,42 @@ export class AuthService {
    * Realiza el login del usuario
    */
   login(loginResponse: LoginRs, usuario?: Usuario): void {
-    const roles = usuario?.rol ? [usuario.rol] : [];
-    
-    // Guardar en localStorage
-    localStorage.setItem(this.TOKEN_KEY, loginResponse.token);
-    if (usuario) {
-      localStorage.setItem(this.USER_KEY, JSON.stringify(usuario));
+  let roles: string[] = [];
+
+  if (usuario?.rol) {
+    // Si nos pasan el usuario explícito, usamos ese rol
+    roles = [usuario.rol];
+  } else if (loginResponse?.token) {
+    // Si solo tenemos el token, sacamos el rol del payload
+    try {
+      const payload = JSON.parse(atob(loginResponse.token.split('.')[1]));
+      if (payload.rol) {
+        roles = [payload.rol]; // rol que viene en el JWT
+      }
+    } catch (e) {
+      console.error('Error al decodificar el token para obtener roles', e);
     }
-    localStorage.setItem(this.ROLES_KEY, JSON.stringify(roles));
-
-    // Actualizar estado
-    const newState: AuthState = {
-      isAuthenticated: true,
-      token: loginResponse.token,
-      usuario: usuario || null,
-      roles: roles
-    };
-
-    this.authStateSubject.next(newState);
   }
+
+  // Guardar en localStorage
+  localStorage.setItem(this.TOKEN_KEY, loginResponse.token);
+  if (usuario) {
+    localStorage.setItem(this.USER_KEY, JSON.stringify(usuario));
+  }
+  localStorage.setItem(this.ROLES_KEY, JSON.stringify(roles));
+
+  // Actualizar estado
+  const newState: AuthState = {
+    isAuthenticated: true,
+    token: loginResponse.token,
+    usuario: usuario || null,
+    roles: roles
+  };
+
+  this.authStateSubject.next(newState);
+}
+
+
 
   /**
    * Realiza el logout del usuario

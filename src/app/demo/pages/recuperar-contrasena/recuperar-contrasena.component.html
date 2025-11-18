@@ -1,0 +1,91 @@
+<!-- Spinner de carga -->
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="login-container">
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg border-0">
+
+          <!-- Header -->
+          <div class="card-header bg-primary text-white text-center py-4">
+            <h3 class="mb-0">
+              <i class="fa fa-unlock-alt"></i>
+              &nbsp;Recuperar contraseña
+            </h3>
+          </div>
+
+          <!-- Body -->
+          <div class="card-body p-4">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+              <p class="text-center text-muted mb-4">
+                Ingresa tu nombre de usuario.  
+                Si existe en el sistema, enviaremos una contraseña temporal a tu correo.
+              </p>
+
+              <!-- Usuario -->
+              <div class="mb-3">
+                <label for="username" class="form-label">
+                  <i class="fa fa-user"></i>
+                  &nbsp;Nombre de usuario
+                </label>
+                <input
+                  id="username"
+                  type="text"
+                  class="form-control"
+                  formControlName="username"
+                  placeholder="Usuario"
+                  [class.is-invalid]="f['username'].invalid && (f['username'].dirty || f['username'].touched)"
+                />
+
+                <div class="invalid-feedback" *ngIf="f['username'].invalid && (f['username'].dirty || f['username'].touched)">
+                  <div *ngIf="f['username'].errors?.['required']">
+                    El nombre de usuario es obligatorio.
+                  </div>
+                  <div *ngIf="f['username'].errors?.['minlength']">
+                    Debe tener al menos 3 caracteres.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botón Enviar -->
+              <div class="d-grid mb-3">
+                <button 
+                  type="submit" 
+                  class="btn btn-primary btn-lg"
+                  [disabled]="form.invalid || isLoading">
+
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                  <i *ngIf="!isLoading" class="fa fa-paper-plane me-2"></i>
+
+                  {{ isLoading ? 'Procesando...' : 'Enviar' }}
+                </button>
+              </div>
+
+              <div class="text-center mt-3">
+                <a routerLink="/login" class="text-decoration-none forgot-pass">
+                  <i class="fa fa-arrow-left"></i>
+                  Volver al inicio de sesión
+                </a>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Footer -->
+          <div class="card-footer text-center text-muted py-3">
+            <small>
+              <i class="fa fa-shield-alt"></i>
+              &nbsp;Sistema seguro de autenticación
+            </small>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

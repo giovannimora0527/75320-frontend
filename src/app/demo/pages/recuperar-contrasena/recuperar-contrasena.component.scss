@@ -1,0 +1,34 @@
+.login-container {
+  background: linear-gradient(135deg, #5a60ff, #9b59d1);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #5a60ff, #9b59d1) !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #5a60ff, #9b59d1);
+  border: none;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.forgot-pass {
+  color: #5a60ff;
+}
+
+.forgot-pass:hover {
+  text-decoration: underline;
+}
