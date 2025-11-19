@@ -1,0 +1,60 @@
+﻿/* Variables SCSS basicas para el proyecto */
+
+/* Colores principales */
+$primary-color: #04a9f5;
+$secondary-color: #748892;
+$success-color: #1de9b6;
+$warning-color: #f4c22b;
+$danger-color: #f44236;
+$info-color: #3ebfea;
+$light-color: #f2f2f2;
+$dark-color: #2c3e50;
+
+/* Colores basicos */
+$white: #fff;
+$black: #000;
+$default-color: #6c757d;
+
+/* Variables de tema */
+$theme-color: $primary-color;
+$theme-color2: $secondary-color;
+$theme-heading-color: $dark-color;
+$theme-body-color: #666;
+$theme-border-color: #e0e0e0;
+$theme-border: $theme-border-color;
+$theme-background-color: #fff;
+$theme-background: #f8f9fa;
+
+/* Mapa de colores del tema */
+$theme-colors: (
+  "primary": $primary-color,
+  "secondary": $secondary-color,
+  "success": $success-color,
+  "warning": $warning-color,
+  "danger": $danger-color,
+  "info": $info-color,
+  "light": $light-color,
+  "dark": $dark-color
+);
+
+/* Variables adicionales para botones */
+$soft-bg-level: 10%;
+
+/* Lista de colores para labels y badges */
+$color-bt-name: (
+  "primary": $primary-color,
+  "secondary": $secondary-color,
+  "success": $success-color,
+  "warning": $warning-color,
+  "danger": $danger-color,
+  "info": $info-color,
+  "light": $light-color,
+  "dark": $dark-color
+);
+
+/* Espaciado */
+$Menu-collapsed-width: 80px;
+
+/* Variables de Bootstrap */
+$body-bg: #f8f9fa;
+$body-color: $theme-body-color;

@@ -1,0 +1,211 @@
+@import '../variables';
+
+// Button variants
+//
+// Easily pump out default styles, as well as :hover, :focus, :active,
+// and disabled options for all buttons
+@mixin button-variant(
+  $background,
+  $border,
+  $hover-background: darken($background, 7.5%),
+  $hover-border: darken($border, 10%),
+  $active-background: darken($background, 10%),
+  $active-border: darken($border, 12.5%)
+) {
+  color: color-yiq($background);
+  background-color: $border;
+  border-color: $border;
+
+  &:hover {
+    color: color-yiq($hover-background);
+    background-color: $hover-background;
+    border-color: $hover-border;
+  }
+
+  &.focus,
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba($border, 0.25);
+  }
+
+  &.disabled,
+  &:disabled {
+    color: color-yiq($background);
+    background-color: $background;
+    border-color: $border;
+  }
+
+  &:not(:disabled):not(.disabled).active,
+  &:not(:disabled):not(.disabled):active,
+  .show > &.dropdown-toggle {
+    color: color-yiq($active-background);
+    background-color: $active-background;
+    border-color: $active-border;
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba($border, 0.25);
+    }
+  }
+}
+@mixin button-outline-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
+  color: $color;
+  background-color: transparent;
+  background-image: none;
+  border-color: $color;
+
+  &:hover {
+    color: color-yiq($color);
+    background-color: $active-background;
+    border-color: $active-border;
+  }
+
+  &.focus,
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba($color, 0.25);
+  }
+
+  &.disabled,
+  &:disabled {
+    color: $color;
+    background-color: transparent;
+  }
+
+  &:not(:disabled):not(.disabled).active,
+  &:not(:disabled):not(.disabled):active,
+  .show > &.dropdown-toggle {
+    color: color-yiq($active-background);
+    background-color: $active-background;
+    border-color: $active-border;
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba($color, 0.25);
+    }
+  }
+}
+@mixin button-glow-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
+  box-shadow:
+    0 1px 6px 2px rgba($color, 0.56),
+    0 6px 11px 2px rgba($color, 0.2);
+  &:hover {
+    box-shadow:
+      0 1px 4px 2px rgba($color, 0.56),
+      0 4px 9px 2px rgba($color, 0.1);
+  }
+  &:not(:disabled):not(.disabled).active,
+  &:not(:disabled):not(.disabled):active:focus,
+  .show > &.dropdown-toggle,
+  &.active,
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-light-#{$color} {
+    background: shift-color($value, $soft-bg-level);
+    color: $value;
+    border-color: shift-color($value, $soft-bg-level);
+    .material-icons-two-tone {
+      background-color: $value;
+    }
+
+    &:hover {
+      background: $value;
+      color: #fff;
+      border-color: $value;
+      .material-icons-two-tone {
+        background-color: #fff;
+      }
+    }
+
+    &.focus,
+    &:focus {
+      background: $value;
+      color: #fff;
+      border-color: $value;
+      .material-icons-two-tone {
+        background-color: #fff;
+      }
+    }
+
+    &:not(:disabled):not(.disabled).active,
+    &:not(:disabled):not(.disabled):active,
+    .show > &.dropdown-toggle {
+      background: $value;
+      color: #fff;
+      border-color: $value;
+      .material-icons-two-tone {
+        background-color: #fff;
+      }
+    }
+  }
+
+  .btn-check:active,
+  .btn-check:checked {
+    + .btn-light-#{$color} {
+      background: $value;
+      color: #fff;
+      border-color: $value;
+      .material-icons-two-tone {
+        background-color: #fff;
+      }
+    }
+  }
+
+  .btn-link-#{$color} {
+    background: transparent;
+    color: $value;
+    border-color: transparent;
+    .material-icons-two-tone {
+      background-color: $value;
+    }
+    &:hover {
+      background: shift-color($value, $soft-bg-level);
+      color: $value;
+      border-color: shift-color($value, $soft-bg-level);
+    }
+
+    &.focus,
+    &:focus {
+      background: shift-color($value, $soft-bg-level);
+      color: $value;
+      border-color: shift-color($value, $soft-bg-level);
+    }
+
+    &:not(:disabled):not(.disabled).active,
+    &:not(:disabled):not(.disabled):active,
+    .show > &.dropdown-toggle {
+      background: shift-color($value, $soft-bg-level);
+      color: $value;
+      border-color: shift-color($value, $soft-bg-level);
+    }
+  }
+
+  .btn-check:active,
+  .btn-check:checked {
+    + .btn-link-#{$color} {
+      background: shift-color($value, $soft-bg-level);
+      color: $value;
+      border-color: shift-color($value, $soft-bg-level);
+    }
+  }
+}
+
+// Custom color-yiq function for compatibility
+@function color-yiq($color, $dark: #111, $light: #fff) {
+  $r: red($color);
+  $g: green($color);
+  $b: blue($color);
+
+  $yiq: ($r * 299 + $g * 587 + $b * 114) / 1000;
+
+  @if ($yiq >= 150) {
+    @return $dark;
+  } @else {
+    @return $light;
+  }
+}
+
+// Custom shift-color function for compatibility
+@function shift-color($color, $weight) {
+  @return if($weight > 0, lighten($color, abs($weight)), darken($color, abs($weight)));
+}

@@ -1,0 +1,54 @@
+// Basic utility functions for SCSS@function color-yiq($color) {
+
+  $r: red($color);
+
+@function color-yiq($color) {  $g: green($color);
+
+  $r: red($color);  $b: blue($color);
+
+  $g: green($color);  $yiq: calc((($r * 299) + ($g * 587) + ($b * 114)) / 1000);
+
+  $b: blue($color);  $yiq: math.div((($r * 299) + ($g * 587) + ($b * 114)), 1000);
+
+  $yiq: calc((($r * 299) + ($g * 587) + ($b * 114)) / 1000);>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
+
+    @if ($yiq >= $yiq-contrasted-threshold) {
+
+  @if ($yiq >= 150) {    @return $yiq-dark-color;
+
+    @return #000;  } @else {
+
+  } @else {    @return $yiq-light-color;
+
+    @return #fff;  }
+
+  }}
+
+}@function theme-color($key: 'primary') {
+
+<<<<<<< HEAD
+
+@function theme-color($key: 'primary') {  @return map-get($theme-colors, $key);
+
+  @return #04a9f5;=======
+
+}  @return map.get($theme-colors, $key);
+
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
+
+@function theme-color-level($color: #04a9f5, $level: 0) {}
+
+  $color-base: #fff;@function theme-color-level($color-name: 'primary', $level: 0) {
+
+  $theme-color-interval: 8%;  $color: theme-color($color-name);
+
+  @return mix($color-base, $color, $level * $theme-color-interval);  $color-base: if($level > 0, $yiq-dark-color, $yiq-light-color);
+
+}<<<<<<< HEAD
+  $level: abs($level);
+  @return mix($color-base, $color, $level * $theme-color-interval);
+=======
+  $level: math.abs($level);
+  @return color.mix($color-base, $color, $level * $theme-color-interval);
+>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
+}

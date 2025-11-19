@@ -1,0 +1,354 @@
+/* Generic utility classes for the project */// Generic utility classes for the project// Generic utility classes for the project/**  =====================/**  =====================
+
+
+
+/* Display utilities */
+
+.d-none { display: none !important; }
+
+.d-block { display: block !important; }// Basic utility classes
+
+.d-flex { display: flex !important; }
+
+.d-none {
+
+/* Text alignment */
+
+.text-center { text-align: center !important; }  display: none !important;// Basic utility classes      Generic-class css start      Generic-class css start
+
+.text-left { text-align: left !important; }
+
+.text-right { text-align: right !important; }}
+
+
+
+/* Margin utilities */.d-none {
+
+.m-0 { margin: 0 !important; }
+
+.m-1 { margin: 0.25rem !important; }.d-block {
+
+.m-2 { margin: 0.5rem !important; }
+
+.m-3 { margin: 1rem !important; }  display: block !important;  display: none !important;========================== **/========================== **/
+
+.m-4 { margin: 1.5rem !important; }
+
+.m-5 { margin: 3rem !important; }}
+
+
+
+/* Padding utilities */}
+
+.p-0 { padding: 0 !important; }
+
+.p-1 { padding: 0.25rem !important; }.d-flex {
+
+.p-2 { padding: 0.5rem !important; }
+
+.p-3 { padding: 1rem !important; }  display: flex !important;/*====== Padding , Margin css starts ======*//*====== Padding , Margin css starts ======*/
+
+.p-4 { padding: 1.5rem !important; }
+
+.p-5 { padding: 3rem !important; }}
+
+
+
+/* Color utilities */.d-block {
+
+.text-primary { color: #04a9f5 !important; }
+
+.text-secondary { color: #748892 !important; }.text-center {
+
+.text-success { color: #1de9b6 !important; }
+
+.text-warning { color: #f4c22b !important; }  text-align: center !important;  display: block !important;$i: 0;$i: 0;
+
+.text-danger { color: #f44236 !important; }
+
+.text-info { color: #3ebfea !important; }}
+
+
+
+.bg-primary { background-color: #04a9f5 !important; }}
+
+.bg-secondary { background-color: #748892 !important; }
+
+.bg-success { background-color: #1de9b6 !important; }.text-left {
+
+.bg-warning { background-color: #f4c22b !important; }
+
+.bg-danger { background-color: #f44236 !important; }  text-align: left !important;@while $i<=70 {@while $i<=50 {
+
+.bg-info { background-color: #3ebfea !important; }
+}
+
+.d-flex {
+
+.text-right {
+
+  text-align: right !important;  display: flex !important;  .m-#{$i} {  .p {
+
+}
+
+}
+
+// Basic margin and padding utilities
+
+.m-0 { margin: 0 !important; }    margin: #{$i}px !important;    &-#{$i} {
+
+.m-1 { margin: 0.25rem !important; }
+
+.m-2 { margin: 0.5rem !important; }.text-center {
+
+.m-3 { margin: 1rem !important; }
+
+.m-4 { margin: 1.5rem !important; }  text-align: center !important;  }      padding: #{$i}px;
+
+.m-5 { margin: 3rem !important; }
+
+}
+
+.p-0 { padding: 0 !important; }
+
+.p-1 { padding: 0.25rem !important; }  .m-l-#{$i} {    }
+
+.p-2 { padding: 0.5rem !important; }
+
+.p-3 { padding: 1rem !important; }.text-left {
+
+.p-4 { padding: 1.5rem !important; }
+
+.p-5 { padding: 3rem !important; }  text-align: left !important;    margin-left: #{$i}px !important;
+
+
+
+// Color utilities}
+
+.text-primary { color: #04a9f5 !important; }
+
+.text-secondary { color: #748892 !important; }  }    &-t-#{$i} {
+
+.text-success { color: #1de9b6 !important; }
+
+.text-warning { color: #f4c22b !important; }.text-right {
+
+.text-danger { color: #f44236 !important; }
+
+.text-info { color: #3ebfea !important; }  text-align: right !important;  .m-r-#{$i} {      padding-top: #{$i}px;
+
+
+
+.bg-primary { background-color: #04a9f5 !important; }}
+
+.bg-secondary { background-color: #748892 !important; }
+
+.bg-success { background-color: #1de9b6 !important; }    margin-right: #{$i}px !important;    }
+
+.bg-warning { background-color: #f4c22b !important; }
+
+.bg-danger { background-color: #f44236 !important; }// Basic margin and padding utilities
+
+.bg-info { background-color: #3ebfea !important; }
+.m-0 { margin: 0 !important; }  }
+
+.m-1 { margin: 0.25rem !important; }
+
+.m-2 { margin: 0.5rem !important; }  .m-t-#{$i} {    &-b-#{$i} {
+
+.m-3 { margin: 1rem !important; }
+
+.m-4 { margin: 1.5rem !important; }    margin-top: #{$i}px !important;      padding-bottom: #{$i}px;
+
+.m-5 { margin: 3rem !important; }
+
+  }    }
+
+.p-0 { padding: 0 !important; }
+
+.p-1 { padding: 0.25rem !important; }  .m-b-#{$i} {
+
+.p-2 { padding: 0.5rem !important; }
+
+.p-3 { padding: 1rem !important; }    margin-bottom: #{$i}px !important;    &-l-#{$i} {
+
+.p-4 { padding: 1.5rem !important; }
+
+.p-5 { padding: 3rem !important; }  }      padding-left: #{$i}px;
+
+
+
+// Color utilities  .p-#{$i} {    }
+
+.text-primary { color: #04a9f5 !important; }
+
+.text-secondary { color: #748892 !important; }    padding: #{$i}px !important;
+
+.text-success { color: #1de9b6 !important; }
+
+.text-warning { color: #f4c22b !important; }  }    &-r-#{$i} {
+
+.text-danger { color: #f44236 !important; }
+
+.text-info { color: #3ebfea !important; }  .p-l-#{$i} {      padding-right: #{$i}px;
+
+
+
+.bg-primary { background-color: #04a9f5 !important; }    padding-left: #{$i}px !important;    }
+
+.bg-secondary { background-color: #748892 !important; }
+
+.bg-success { background-color: #1de9b6 !important; }  }  }
+
+.bg-warning { background-color: #f4c22b !important; }
+
+.bg-danger { background-color: #f44236 !important; }  .p-r-#{$i} {  .m {
+
+.bg-info { background-color: #3ebfea !important; }
+    padding-right: #{$i}px !important;    &-#{$i} {
+
+  }      margin: #{$i}px;
+
+  .p-t-#{$i} {    }
+
+    padding-top: #{$i}px !important;
+
+  }    &-t-#{$i} {
+
+  .p-b-#{$i} {      margin-top: #{$i}px;
+
+    padding-bottom: #{$i}px !important;    }
+
+  }
+
+  $i: $i + 5;    &-b-#{$i} {
+
+}      margin-bottom: #{$i}px;
+
+    }
+
+$color-name: (
+
+  primary,    &-l-#{$i} {
+
+  secondary,      margin-left: #{$i}px;
+
+  success,    }
+
+  warning,
+
+  danger,    &-r-#{$i} {
+
+  info,      margin-right: #{$i}px;
+
+  light,    }
+
+  dark  }
+
+);  $i: $i + 5;
+
+}
+
+$color-color: (/*====== Padding , Margin css ends ======*/
+
+  #04a9f5,
+
+  #748892,/*====== text-color, background color css starts ======*/
+
+  #1de9b6,@each $value in $color-name {
+
+  #f4c22b,<<<<<<< HEAD
+
+  #f44236,  $i: index($color-name, $value);
+
+  #3ebfea,  .bg-#{$value} {
+
+  #f2f2f2,    background: nth($color-color, $i);
+
+  #2c3e50  }
+
+);  .text-#{$value} {
+
+    color: nth($color-color, $i);
+
+/*====== Padding , Margin css ends ======*/=======
+
+  $i: list.index($color-name, $value);
+
+/*====== text-color, background color css starts ======*/  .bg-#{$value} {
+
+@each $value in $color-name {    background: list.nth($color-color, $i);
+
+  $i: index($color-name, $value);  }
+
+  .bg-#{$value} {  .text-#{$value} {
+
+    background: nth($color-color, $i);    color: list.nth($color-color, $i);
+
+  }>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
+
+  .text-#{$value} {  }
+
+    color: nth($color-color, $i);}
+
+  }/*====== text-color css ends ======*/
+
+}/*====== Card top border css starts ======*/
+
+/*====== text-color css ends ======*/@each $value in $color-name {
+
+/*====== Card top border css starts ======*/<<<<<<< HEAD
+
+@each $value in $color-name {  $i: index($color-name, $value);
+
+  $i: index($color-name, $value);  .card-border-#{$value} {
+
+  .card-border-#{$value} {    border-top: 4px solid nth($color-color, $i);
+
+    border-top: 4px solid nth($color-color, $i);=======
+
+  }  $i: list.index($color-name, $value);
+
+}  .card-border-#{$value} {
+
+/*====== Card top border ends ======*/    border-top: 4px solid list.nth($color-color, $i);
+
+/*====== Font-size css starts ======*/>>>>>>> 054efa9 (Primer commit - subiendo proyecto a mi rama 976621_Mariana Castillo Segundo corte)
+
+$i: 10;  }
+
+@while $i<=80 {}
+
+  .f-#{$i} {/*====== Card top border ends ======*/
+
+    font-size: #{$i}px;/*====== Font-size css starts ======*/
+
+  }$i: 10;
+
+  $i: $i + 2;@while $i<=80 {
+
+}  .f-#{$i} {
+
+/*====== Font-size css ends ======*/    font-size: #{$i}px;
+
+/*====== Font-weight css starts ======*/  }
+
+$i: 100;  $i: $i + 2;
+
+@while $i<=900 {}
+
+  .f-w-#{$i} {/*====== Font-size css ends ======*/
+
+    font-weight: #{$i};/*====== Font-weight css starts ======*/
+
+  }$i: 100;
+
+  $i: $i + 100;@while $i<=900 {
+
+}  .f-w-#{$i} {
+
+/*====== Font-weight css ends ******/    font-weight: #{$i};
+  }
+  $i: $i + 100;
+}
+/*====== Font-weight css ends ======*/

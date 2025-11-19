@@ -1,0 +1,164 @@
+/* 🌸 ESTILOS CLARITOS PARA COMPONENTES - COLORES PASTELES ✨ */
+
+/* Variables de colores claritos */
+:root {
+  --color-primario-claro: #87CEEB;     /* Azul cielo suave */
+  --color-secundario-claro: #FFB6C1;   /* Rosa claro */
+  --color-exito-claro: #98FB98;        /* Verde menta claro */
+  --color-advertencia-claro: #FFD700;  /* Amarillo dorado suave */
+  --color-info-claro: #B0E0E6;         /* Azul polvo */
+  --color-lavanda-claro: #DDA0DD;      /* Lavanda suave */
+  --fondo-claro: #FAFAFA;              /* Blanco hueso */
+  --fondo-tarjeta: #FFF8F5;            /* Blanco rosa muy suave */
+  --texto-claro: #696969;              /* Gris suave */
+  --borde-claro: #E6E6FA;              /* Lavanda muy claro */
+}
+
+/* 📋 Estilos para las tablas */
+.tabla-claritos {
+  background: var(--fondo-tarjeta) !important;
+  border-radius: 15px !important;
+  box-shadow: 0 4px 15px rgba(135, 206, 235, 0.1) !important;
+  border: 2px solid var(--borde-claro) !important;
+}
+
+.tabla-claritos .mat-mdc-header-cell {
+  background: var(--color-primario-claro) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+
+.tabla-claritos .mat-mdc-cell {
+  border-bottom: 1px solid var(--borde-claro) !important;
+  color: var(--texto-claro) !important;
+}
+
+.tabla-claritos .mat-mdc-row:hover {
+  background: rgba(135, 206, 235, 0.05) !important;
+}
+
+/* 🎴 Estilos para las tarjetas */
+.tarjeta-clarita {
+  background: var(--fondo-tarjeta) !important;
+  border: 2px solid var(--borde-claro) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 25px rgba(135, 206, 235, 0.1) !important;
+  padding: 25px !important;
+  margin: 15px 0 !important;
+}
+
+.tarjeta-clarita .card-header {
+  background: linear-gradient(135deg, var(--color-primario-claro), var(--color-lavanda-claro)) !important;
+  color: white !important;
+  border-radius: 15px 15px 0 0 !important;
+  padding: 20px !important;
+  margin: -25px -25px 20px -25px !important;
+  text-align: center !important;
+  font-weight: 600 !important;
+}
+
+/* 🔘 Botones claritos */
+.btn-clarito-primario {
+  background: linear-gradient(135deg, var(--color-primario-claro), var(--color-info-claro)) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 25px !important;
+  padding: 12px 25px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 15px rgba(135, 206, 235, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-clarito-primario:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(135, 206, 235, 0.4) !important;
+}
+
+.btn-clarito-secundario {
+  background: linear-gradient(135deg, var(--color-secundario-claro), var(--color-lavanda-claro)) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 25px !important;
+  padding: 12px 25px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 15px rgba(255, 182, 193, 0.3) !important;
+}
+
+.btn-clarito-exito {
+  background: linear-gradient(135deg, var(--color-exito-claro), #90EE90) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 25px !important;
+  padding: 12px 25px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 15px rgba(152, 251, 152, 0.3) !important;
+}
+
+/* 📝 Formularios claritos */
+.formulario-clarito .mat-mdc-form-field {
+  width: 100% !important;
+  margin: 10px 0 !important;
+}
+
+.formulario-clarito .mat-mdc-text-field-wrapper {
+  background: var(--fondo-tarjeta) !important;
+  border-radius: 15px !important;
+  border: 2px solid var(--borde-claro) !important;
+}
+
+.formulario-clarito .mat-mdc-form-field-focus-overlay {
+  background: var(--color-primario-claro) !important;
+  opacity: 0.1 !important;
+}
+
+.formulario-clarito .mat-mdc-floating-label {
+  color: var(--color-lavanda-claro) !important;
+}
+
+/* 🔍 Buscador clarito */
+.buscador-clarito {
+  background: var(--fondo-tarjeta) !important;
+  border: 2px solid var(--color-primario-claro) !important;
+  border-radius: 25px !important;
+  padding: 15px 20px !important;
+  box-shadow: 0 4px 15px rgba(135, 206, 235, 0.1) !important;
+}
+
+/* 📄 Paginador clarito */
+.mat-mdc-paginator {
+  background: var(--fondo-tarjeta) !important;
+  border-radius: 0 0 15px 15px !important;
+  border: 2px solid var(--borde-claro) !important;
+  border-top: none !important;
+}
+
+/* 🎯 Iconos claritos */
+.icono-clarito {
+  color: var(--color-primario-claro) !important;
+}
+
+.icono-editar-clarito {
+  color: var(--color-lavanda-claro) !important;
+}
+
+.icono-eliminar-clarito {
+  color: var(--color-secundario-claro) !important;
+}
+
+/* 🌈 Fondo general clarito */
+.contenedor-clarito {
+  background: linear-gradient(135deg, var(--fondo-claro), #F0F8FF) !important;
+  min-height: 100vh !important;
+  padding: 20px !important;
+}
+
+/* 💫 Efectos especiales */
+.efecto-clarito {
+  transition: all 0.3s ease !important;
+}
+
+.efecto-clarito:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2) !important;
+}
