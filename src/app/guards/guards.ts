@@ -304,6 +304,9 @@ export const modulePermissionGuard: CanActivateFn = (route: ActivatedRouteSnapsh
     
     case 'especializaciones':
       return authService.hasRole('ADMIN');
+
+    case 'auditorias':
+        return authService.hasRole('ADMIN');
     
     default:
       return true;

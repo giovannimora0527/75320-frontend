@@ -34,7 +34,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Medicos',
         type: 'item',
         url: '/inicio/medico',
-        icon: 'feather icon-users',
+        icon: 'feather icon-activity',
         classes: 'nav-item'
       },
       {
@@ -42,7 +42,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-user-check',
+        icon: 'feather icon-user-plus',
         classes: 'nav-item'
       },
       {
@@ -50,7 +50,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de medicamentos',
         type: 'item',
         url: '/inicio/medicamento',
-        icon: 'feather icon-user-check',
+        icon: 'feather icon-package',
         classes: 'nav-item'
       },
       {
@@ -58,7 +58,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de citas',
         type: 'item',
         url: '/inicio/cita',
-        icon: 'feather icon-user-check',
+        icon: 'feather icon-calendar',
         classes: 'nav-item'
       },
       {
@@ -66,7 +66,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de formulas medicas',
         type: 'item',
         url: '/inicio/formula-medica',
-        icon: 'feather icon-user-check',
+        icon: 'feather icon-file-text',
         classes: 'nav-item'
       },
       {
@@ -74,7 +74,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de historias clinicas',
         type: 'item',
         url: '/inicio/historia-clinica',
-        icon: 'feather icon-user-check',
+        icon: 'feather icon-book',
         classes: 'nav-item'
       },
       {
@@ -82,10 +82,19 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
-        icon: 'feather icon-user-check',
+        icon: 'feather icon-award',
         classes: 'nav-item'
-      }
+      },
+      /* ---------- Nuevos menus aqui -------------  */
+      {
+        id: 'auditoria',
+        title: 'Auditoría',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-shield',
+        classes: 'nav-item'
+      },
     ]
   },
-  /* ---------- Nuevos menus aqui -------------  */
+
 ];
