@@ -61,48 +61,48 @@ export class AuthService {
    * Realiza el login del usuario
    */
   login(loginResponse: LoginRs, usuario?: Usuario): void {
-  let roles: string[] = [];
+    let roles: string[] = [];
 
-  if (usuario?.rol) {
-    // Si nos pasan el usuario explícito, usamos ese rol
-    roles = [usuario.rol];
-  } else if (loginResponse?.token) {
-    // Si solo tenemos el token, sacamos el rol del payload
-    try {
-      const payload = JSON.parse(atob(loginResponse.token.split('.')[1]));
-      if (payload.rol) {
-        roles = [payload.rol]; // rol que viene en el JWT
+    if (usuario?.rol) {
+      roles = [usuario.rol];
+    } else if (loginResponse?.token) {
+      try {
+        const payload = JSON.parse(atob(loginResponse.token.split('.')[1]));
+        if (payload.rol) {
+          roles = [payload.rol];
+        }
+      } catch (e) {
+        console.error('Error al decodificar el token para obtener roles', e);
       }
-    } catch (e) {
-      console.error('Error al decodificar el token para obtener roles', e);
     }
+
+    // Guardar en localStorage
+    localStorage.setItem(this.TOKEN_KEY, loginResponse.token);
+    if (usuario) {
+      localStorage.setItem(this.USER_KEY, JSON.stringify(usuario));
+    }
+    localStorage.setItem(this.ROLES_KEY, JSON.stringify(roles));
+
+    // Actualizar estado
+    const newState: AuthState = {
+      isAuthenticated: true,
+      token: loginResponse.token,
+      usuario: usuario || null,
+      roles: roles
+    };
+
+    this.authStateSubject.next(newState);
   }
-
-  // Guardar en localStorage
-  localStorage.setItem(this.TOKEN_KEY, loginResponse.token);
-  if (usuario) {
-    localStorage.setItem(this.USER_KEY, JSON.stringify(usuario));
-  }
-  localStorage.setItem(this.ROLES_KEY, JSON.stringify(roles));
-
-  // Actualizar estado
-  const newState: AuthState = {
-    isAuthenticated: true,
-    token: loginResponse.token,
-    usuario: usuario || null,
-    roles: roles
-  };
-
-  this.authStateSubject.next(newState);
-}
-
-
 
   /**
    * Realiza el logout del usuario
    */
   logout(): void {
-    // Limpiar localStorage
+    // Limpiar localStorage (ambas variantes de claves)
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('roles');
+
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     localStorage.removeItem(this.ROLES_KEY);
@@ -173,14 +173,10 @@ export class AuthService {
    */
   private isTokenValid(token: string): boolean {
     try {
-      // Decodificar el payload del JWT
       const payload = JSON.parse(atob(token.split('.')[1]));
       const currentTime = Math.floor(Date.now() / 1000);
-      
-      // Verificar si el token no ha expirado
       return payload.exp > currentTime;
     } catch {
-      // Si hay error al decodificar, el token no es válido
       return false;
     }
   }

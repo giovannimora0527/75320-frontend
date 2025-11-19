@@ -5,11 +5,10 @@ import { NavigationEnd, Router, RouterModule, Event } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 // project import
-import { NavigationItem, NavigationItems } from 'src/app/theme/layout/admin/navigation/navigation';
+import { NavigationItem, navigationItems } from 'src/app/theme/layout/admin/navigation/navigation';
 import { SharedModule } from '../../shared.module';
 
 interface titleType {
-  // eslint-disable-next-line
   url: string | boolean | any | undefined;
   title: string;
   breadcrumbs: unknown;
@@ -26,58 +25,61 @@ export class BreadcrumbsComponent {
   private route = inject(Router);
   private titleService = inject(Title);
 
-  // public props
-  @Input() type: string;
+  @Input() type: string = 'theme1';
 
-  navigations: NavigationItem[];
+  navigations: NavigationItem[] = navigationItems;
   breadcrumbList: string[] = [];
   navigationList!: titleType[];
 
-  // constructor
   constructor() {
-    this.navigations = NavigationItems;
-    this.type = 'theme1';
     this.setBreadcrumb();
   }
 
-  // public method
+  // PUBLIC: Actualiza breadcrumbs cuando cambia la ruta
   setBreadcrumb() {
     this.route.events.subscribe((router: Event) => {
       if (router instanceof NavigationEnd) {
         const activeLink = router.url;
         const breadcrumbList = this.filterNavigation(this.navigations, activeLink);
         this.navigationList = breadcrumbList;
+
         const title = breadcrumbList[breadcrumbList.length - 1]?.title || 'Welcome';
         this.titleService.setTitle('Clínica - Uniminuto | ' + title);
       }
     });
   }
 
+  // Busca coincidencia en menú y arma el breadcrumb
   filterNavigation(navItems: NavigationItem[], activeLink: string): titleType[] {
     for (const navItem of navItems) {
-      if (navItem.type === 'item' && 'url' in navItem && navItem.url === activeLink) {
+      // Ítem directo
+      if (navItem.type === 'item' && navItem.url === activeLink) {
         return [
           {
-            url: 'url' in navItem ? navItem.url : false,
+            url: navItem.url,
             title: navItem.title,
-            breadcrumbs: 'breadcrumbs' in navItem ? navItem.breadcrumbs : true,
+            breadcrumbs: navItem.breadcrumbs ?? true,
             type: navItem.type
           }
         ];
       }
-      if ((navItem.type === 'group' || navItem.type === 'collapse') && 'children' in navItem) {
-        const breadcrumbList = this.filterNavigation(navItem.children!, activeLink);
+
+      // Grupo o colapsable con hijos
+      if ((navItem.type === 'group' || navItem.type === 'collapse') && navItem.children) {
+        const breadcrumbList = this.filterNavigation(navItem.children, activeLink);
+
         if (breadcrumbList.length > 0) {
           breadcrumbList.unshift({
-            url: 'url' in navItem ? navItem.url : false,
+            url: navItem.url ?? false,
             title: navItem.title,
-            breadcrumbs: 'breadcrumbs' in navItem ? navItem.breadcrumbs : true,
+            breadcrumbs: navItem.breadcrumbs ?? true,
             type: navItem.type
           });
           return breadcrumbList;
         }
       }
     }
+
     return [];
   }
 }

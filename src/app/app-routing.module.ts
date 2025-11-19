@@ -12,12 +12,14 @@ import { HistoriaComponent } from './demo/pages/historia/historia.component';
 import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
 import { LoginComponent } from './demo/pages/login/login.component';
 import { RecuperarContrasenaComponent } from './demo/pages/recuperar-contrasena/recuperar-contrasena.component';
+import { AuditoriaLogsComponent } from './demo/pages/auditoria-logs/auditoria-logs.component';
+import { LogoutComponent } from './demo/pages/logout/logout.component';
 
 // GUARDS
-import { 
-  authGuard, 
-  loginGuard, 
-  adminGuard, 
+import {
+  authGuard,
+  loginGuard,
+  adminGuard,
   medicoAdminGuard
 } from './guards/guards';
 
@@ -152,6 +154,18 @@ export const routes: Routes = [
         }
       },
 
+      // =========== LOGS AUDITORÍA ============
+      {
+        path: 'logs-auditoria',
+        component: AuditoriaLogsComponent,
+        canActivate: [adminGuard],
+        data: {
+          title: 'Logs de auditoría',
+          module: 'auditoria',
+          roles: ['ADMIN']
+        }
+      },
+
       {
         path: '',
         redirectTo: 'cita',
@@ -161,9 +175,17 @@ export const routes: Routes = [
   },
 
   // ============================
+  // LOGOUT
+  // ============================
+  {
+    path: 'logout',
+    component: LogoutComponent
+  },
+
+  // ============================
   // 404
   // ============================
-  { 
+  {
     path: '**',
     redirectTo: 'login'
   }

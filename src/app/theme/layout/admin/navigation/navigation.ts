@@ -14,7 +14,8 @@ export interface NavigationItem {
 
   children?: NavigationItem[];
 }
-export const NavigationItems: NavigationItem[] = [
+
+export const navigationItems: NavigationItem[] = [
   {
     id: 'navigation',
     title: 'Inicio',
@@ -84,8 +85,23 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/especializacion',
         icon: 'feather icon-user-check',
         classes: 'nav-item'
+      },
+      {
+        id: 'auditoria',
+        title: 'Logs de auditoría',
+        type: 'item',
+        url: '/inicio/logs-auditoria',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      },
+      {
+        id: 'logout',
+        title: 'Cerrar sesión',
+        type: 'item',
+        url: '/logout',
+        icon: 'feather icon-log-out',
+        classes: 'nav-item'
       }
     ]
-  },
-  /* ---------- Nuevos menus aqui -------------  */
+  }
 ];

@@ -1,0 +1,155 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">
+          <i class="fa fa-list-alt"></i>
+          &nbsp;Logs de auditoría
+        </h3>
+        <small class="text-light">
+          Filtros por fecha, usuario y tipo de evento
+        </small>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Filtros -->
+      <form [formGroup]="filtrosForm" (ngSubmit)="aplicarFiltros()" class="mb-3">
+        <div class="row g-2 align-items-end">
+
+          <div class="col-md-3">
+            <label class="form-label mb-1">Usuario</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="username"
+              placeholder="usuario..."
+            />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label mb-1">Tipo de evento</label>
+            <select class="form-select form-control" formControlName="tipoEvento">
+              <option value="">Todos</option>
+              <option value="LOGIN_OK">Login exitoso</option>
+              <option value="LOGIN_FALLIDO">Login fallido</option>
+              <option value="RECUPERACION_CONTRASENA">Recuperación de contraseña</option>
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label mb-1">Desde</label>
+            <input type="date" class="form-control" formControlName="fechaDesde" />
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label mb-1">Hasta</label>
+            <input type="date" class="form-control" formControlName="fechaHasta" />
+          </div>
+
+          <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="fa fa-filter"></i> Aplicar
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary w-100"
+              (click)="limpiarFiltros()"
+            >
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Tabla -->
+      <div class="table-responsive" *ngIf="!cargando && logs.length > 0; else sinDatos">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Fecha / Hora</th>
+              <th>Usuario</th>
+              <th>Tipo de evento</th>
+              <th>Descripción</th>
+              <th>IP origen</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of logs">
+              <td>{{ log.fechaHora | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+              <td>{{ log.username }}</td>
+              <td>
+                <span class="badge"
+                  [ngClass]="{
+                    'bg-success': log.tipoEvento === 'LOGIN_OK',
+                    'bg-danger': log.tipoEvento === 'LOGIN_FALLIDO',
+                    'bg-info': log.tipoEvento === 'RECUPERACION_CONTRASENA'
+                  }">
+                  {{ log.tipoEvento }}
+                </span>
+              </td>
+              <td>{{ log.descripcion }}</td>
+              <td>{{ log.ipOrigen }}</td>
+              <td>
+                <ng-container [ngSwitch]="log.tipoEvento">
+                  <span *ngSwitchCase="'LOGIN_OK'" class="text-success">
+                    <i class="fa fa-check-circle"></i> Éxito
+                  </span>
+                  <span *ngSwitchCase="'LOGIN_FALLIDO'" class="text-danger">
+                    <i class="fa fa-times-circle"></i> Fallo
+                  </span>
+                  <span *ngSwitchDefault class="text-muted">
+                    N/A
+                  </span>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #sinDatos>
+        <div class="text-center py-4" *ngIf="cargando">
+          <i class="fa fa-spinner fa-spin"></i>
+          <p class="mt-2 mb-0 text-muted">Cargando logs de auditoría...</p>
+        </div>
+        <div class="text-center py-4" *ngIf="!cargando && logs.length === 0">
+          <i class="fa fa-info-circle text-muted"></i>
+          <p class="mt-2 mb-0 text-muted">
+            No se encontraron registros con los filtros actuales.
+          </p>
+        </div>
+      </ng-template>
+
+      <!-- Paginación -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3"
+        *ngIf="totalPaginas > 1"
+      >
+        <div>
+          Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+          <span class="text-muted"> ({{ totalElementos }} registros) </span>
+        </div>
+        <div class="btn-group">
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            (click)="irPaginaAnterior()"
+            [disabled]="paginaActual === 0"
+          >
+            « Anterior
+          </button>
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            (click)="irPaginaSiguiente()"
+            [disabled]="paginaActual + 1 >= totalPaginas"
+          >
+            Siguiente »
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

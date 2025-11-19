@@ -4,9 +4,10 @@ import { Location } from '@angular/common';
 
 // project import
 import { environment } from 'src/environments/environment';
-import { NavigationItem, NavigationItems } from '../navigation';
+import { NavigationItem, navigationItems } from '../navigation';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { NavGroupComponent } from './nav-group/nav-group.component';
+
 
 @Component({
   selector: 'app-nav-content',
@@ -30,7 +31,7 @@ export class NavContentComponent {
 
   // constructor
   constructor() {
-    this.navigations = NavigationItems;
+    this.navigations = navigationItems;
   }
 
   fireOutClick() {
