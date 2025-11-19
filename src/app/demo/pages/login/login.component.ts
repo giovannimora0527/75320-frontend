@@ -5,7 +5,8 @@ import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { LoginService } from './service/login.service';
 import { Router } from '@angular/router';
-
+import { AuthService } from 'src/app/services/auth.service';
+import { Usuario } from '../usuario/models/usuario';
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
@@ -22,7 +23,8 @@ export class LoginComponent {
     private readonly formBuilder: FormBuilder,
     private readonly spinner: NgxSpinnerService,
     private readonly loginService: LoginService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly authService: AuthService
   ) {
     this.inicializarFormulario();
   }
@@ -48,37 +50,58 @@ export class LoginComponent {
       this.isLoading = true;
       this.spinner.show();
 
-      // Simular llamada al servicio de autenticación
       const loginData = {
         username: this.f['username'].value,
         password: this.f['password'].value,
         recordarSesion: this.f['recordarSesion'].value
       };
 
-      console.log('Datos de login:', loginData);
       this.loginService.loginUsuario(loginData).subscribe({
         next: (response) => {
-          console.log('Respuesta del servidor:', response);
-          localStorage.setItem("token", response.token)
-          this.isLoading = false;
-          this.spinner.hide();
-          Swal.fire({
-            title: 'Éxito',
-            text: 'Inicio de sesión exitoso',
-            icon: 'success'
-          }).then(() => {
-            // Aquí redirigirías al usuario al dashboard
-            console.log('Redirigir al dashboard');
+          try {
+            const tokenPayload = JSON.parse(atob(response.token.split('.')[1]));
+            const username = tokenPayload.sub || tokenPayload.username;
+            const rol = tokenPayload.rol || 'USER';
+            
+            // Asegúrate de que la interfaz Usuario importada tenga 'username'
+            const usuario: Usuario = {
+              id: 0,
+              username: username, // Si esto marca error, revisa tu interfaz Usuario
+              email: tokenPayload.correo || '',
+              rol: rol,
+              fechaCreacion: new Date(),
+              activo: true 
+            };
+            
+            this.authService.login(response, usuario);
+            
             this.isLoading = false;
+            this.spinner.hide();
+            
+            setTimeout(() => {
+              Swal.fire({
+                title: 'Éxito',
+                text: 'Inicio de sesión exitoso',
+                icon: 'success'
+              }).then(() => {
+                this.router.navigate(['/inicio']);
+              });
+            }, 100);
+          } catch (error) {
+            console.error('Error al decodificar:', error);
+            this.authService.login(response);
+            this.isLoading = false;
+            this.spinner.hide();
             this.router.navigate(['/inicio']);
-          });
-        },
+          }
+        }, // <--- ¡AQUÍ FALTABA LA LLAVE Y LA COMA!
+        
         error: (error) => {
           this.spinner.hide();
           this.isLoading = false;
           console.error('Error en la autenticación:', error);
           Swal.fire({
-            title: 'Erro',
+            title: 'Error',
             text: 'Ups! Algo salió mal durante el inicio de sesión.',
             icon: 'error'
           });
@@ -87,7 +110,6 @@ export class LoginComponent {
     } else {
       this.spinner.hide();
       this.isLoading = false;
-      // Marcar todos los campos como tocados para mostrar errores
       this.loginForm.markAllAsTouched();
       Swal.fire({
         title: 'Error',
@@ -136,5 +158,5 @@ export class LoginComponent {
         });
       }
     });
-  }
-}
+  }}
+
