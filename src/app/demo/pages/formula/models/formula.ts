@@ -1,4 +1,4 @@
-import { Cita } from "../../cita/models/cita";
+import { Cita } from "../../cita/model/cita";
 import { Medicamento } from "../../medicamento/models/medicamento";
 
 export class Formula {

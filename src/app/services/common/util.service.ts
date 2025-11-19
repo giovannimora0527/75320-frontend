@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UtilService {
-  urlBase: string = environment.apiUrlAuth;
+  urlBase: string = environment.apiUrl;
 
   constructor(private backendService: BackendService) {}
 

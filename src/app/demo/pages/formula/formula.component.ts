@@ -12,9 +12,9 @@ import Modal from 'bootstrap/js/dist/modal';
 import { Formula } from './models/formula';
 import { FormulaService } from './service/formula.service';
 import { PacienteService } from '../paciente/service/paciente.service';
-import { Paciente } from '../paciente/models/paciente';
+import { Paciente } from '../paciente/model/paciente';
 import { CitaService } from '../cita/service/cita.service';
-import { Cita } from '../cita/models/cita';
+import { Cita } from '../cita/model/cita';
 
 @Component({
   selector: 'app-formula',
@@ -166,8 +166,13 @@ export class FormulaComponent {
       // Filtrar por apellidos del paciente
       const apellidosCumple = formula.cita?.paciente?.apellidos && formula.cita.paciente.apellidos.toLowerCase().includes(busquedaLower);
 
-      // Filtrar por apellidos del paciente
-      const fechasCumple = formula.cita?.fechaHora && formula.cita.fechaHora.toLowerCase().includes(busquedaLower);
+      // Filtrar por fecha (fechaHora puede ser Date o string) — normalizar a string
+      const fechaStr: string = formula.cita?.fechaHora
+        ? (formula.cita.fechaHora instanceof Date
+            ? formula.cita.fechaHora.toLocaleString()
+            : String(formula.cita.fechaHora))
+        : '';
+      const fechasCumple = fechaStr.toLowerCase().includes(busquedaLower);
 
       // Retorna true si cualquiera de los criterios se cumple
       return dosisCumple || indicacionesCumple || numeroDocumentoCumple || nombresCumple || apellidosCumple || fechasCumple;

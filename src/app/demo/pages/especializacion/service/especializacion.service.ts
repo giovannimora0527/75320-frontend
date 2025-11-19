@@ -1,28 +1,33 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
-import { Especializacion } from '../models/especializacion';
-import { Observable } from 'rxjs';
-import { RespuestaRs } from '../../usuario/models/respuesta-rs';
-
+import { Especializacion } from '../model/especializacion';
+import { RespuestaRs } from 'src/app/demo/pages/especializacion/model/respuestaRs';
 @Injectable({
   providedIn: 'root'
 })
 export class EspecializacionService {
-  urlBase = environment.apiUrl;
-  endpoint: string = 'especializacion';
 
-  constructor(private readonly backendService: BackendService) {}
+  urlBase: string = environment.apiUrl;
+  urlApi: string = 'especializacion';
 
-  listarEspecializaciones(): Observable<Especializacion[]> {
-    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
+  constructor(private backendService: BackendService) {
+ }
+
+  listarEspecializaciones(): Observable<Especializacion[]>{
+    return this.backendService.get(this.urlBase, this.urlApi, 'listar');
   }
-
-  guardarEspecializacion(especializacion: Especializacion): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', especializacion);
-  }
-
-  actualizarEspecializacion(especializacion: Especializacion): Observable<RespuestaRs> {
-    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', especializacion);
-  }
+  guardarEspecializaciones(especializacion: Especializacion): Observable<RespuestaRs>{
+      return this.backendService.post(this.urlBase, this.urlApi, 'guardar', especializacion);
+ }
+  
+  actualizarEspecializaciones(especializacion: Especializacion): Observable<RespuestaRs>{
+      return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', especializacion);
+    }
+  eliminarEspecializaciones(especializacion: Especializacion): Observable<RespuestaRs>{
+      return this.backendService.post(this.urlBase, this.urlApi, 'eliminar', especializacion);
+    }
+  
+  
 }
