@@ -17,6 +17,11 @@ export class LoginComponent {
   mostrarPassword: boolean = false;
   isLoading: boolean = false;
   titleSpinner: string = 'Autenticando...';
+  
+  // NUEVOS: Para mostrar mensajes de error
+  mensajeError: string = '';
+  intentosRestantes: number | null = null;
+  cuentaBloqueada: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -44,32 +49,34 @@ export class LoginComponent {
   }
 
   onLogin() {
+    // Limpiar mensajes anteriores
+    this.mensajeError = '';
+    this.intentosRestantes = null;
+    this.cuentaBloqueada = false;
+
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.spinner.show();
 
-      // Simular llamada al servicio de autenticación
       const loginData = {
         username: this.f['username'].value,
-        password: this.f['password'].value,
-        recordarSesion: this.f['recordarSesion'].value
+        password: this.f['password'].value
       };
 
-      console.log('Datos de login:', loginData);
       this.loginService.loginUsuario(loginData).subscribe({
         next: (response) => {
           console.log('Respuesta del servidor:', response);
-          localStorage.setItem("token", response.token)
+          localStorage.setItem("token", response.token);
           this.isLoading = false;
           this.spinner.hide();
+          
           Swal.fire({
             title: 'Éxito',
             text: 'Inicio de sesión exitoso',
-            icon: 'success'
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
           }).then(() => {
-            // Aquí redirigirías al usuario al dashboard
-            console.log('Redirigir al dashboard');
-            this.isLoading = false;
             this.router.navigate(['/inicio']);
           });
         },
@@ -77,18 +84,65 @@ export class LoginComponent {
           this.spinner.hide();
           this.isLoading = false;
           console.error('Error en la autenticación:', error);
-          Swal.fire({
-            title: 'Erro',
-            text: 'Ups! Algo salió mal durante el inicio de sesión.',
-            icon: 'error'
-          });
+          
+          // Extraer mensaje de error del backend
+          let errorMessage = 'Usuario o contraseña incorrectos';
+          
+          if (error.error && typeof error.error === 'string') {
+            errorMessage = error.error;
+          } else if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+          }
+          
+          // Detectar si es cuenta bloqueada
+          if (errorMessage.includes('bloqueada') || errorMessage.includes('Bloqueada')) {
+            this.cuentaBloqueada = true;
+            this.mensajeError = errorMessage;
+            
+            Swal.fire({
+              title: '⛔ Cuenta Bloqueada',
+              html: `<p class="text-danger">${errorMessage}</p>`,
+              icon: 'error',
+              confirmButtonText: 'Entendido'
+            });
+          } 
+          // Detectar si hay intentos restantes
+          else if (errorMessage.includes('Intentos restantes') || errorMessage.includes('restantes')) {
+            // Extraer número de intentos si está en el mensaje
+            const match = errorMessage.match(/(\d+)/);
+            if (match) {
+              this.intentosRestantes = parseInt(match[0]);
+            }
+            this.mensajeError = errorMessage;
+            
+            Swal.fire({
+              title: '⚠️ Contraseña Incorrecta',
+              html: `
+                <p>${errorMessage}</p>
+                ${this.intentosRestantes ? `<p class="text-warning mt-2"><strong>Intentos restantes: ${this.intentosRestantes}</strong></p>` : ''}
+              `,
+              icon: 'warning',
+              confirmButtonText: 'Reintentar'
+            });
+          } 
+          // Error genérico
+          else {
+            this.mensajeError = errorMessage;
+            
+            Swal.fire({
+              title: 'Error',
+              text: errorMessage,
+              icon: 'error',
+              confirmButtonText: 'Reintentar'
+            });
+          }
         }
       });
     } else {
       this.spinner.hide();
       this.isLoading = false;
-      // Marcar todos los campos como tocados para mostrar errores
       this.loginForm.markAllAsTouched();
+      
       Swal.fire({
         title: 'Error',
         text: 'Por favor complete todos los campos requeridos',
@@ -96,45 +150,10 @@ export class LoginComponent {
       });
     }
   }
+  onForgotPassword(event: Event): void {
+  event.preventDefault();
+  this.router.navigate(['/recuperar-password']);
+}
 
-  onForgotPassword(event: Event) {
-    event.preventDefault();
 
-    Swal.fire({
-      title: 'Recuperar contraseña',
-      text: 'Ingrese su correo electrónico para recuperar su contraseña',
-      input: 'email',
-      inputAttributes: {
-        autocapitalize: 'off',
-        placeholder: 'correo@ejemplo.com'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar',
-      showLoaderOnConfirm: true,
-      preConfirm: (email) => {
-        if (!email) {
-          Swal.showValidationMessage('El correo electrónico es requerido');
-          return false;
-        }
-
-        // Simular envío de email de recuperación
-        return new Promise<boolean>((resolve) => {
-          setTimeout(() => {
-            console.log('Enviar email de recuperación a:', email);
-            resolve(true);
-          }, 1000);
-        });
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Email enviado',
-          text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
-          icon: 'success'
-        });
-      }
-    });
-  }
 }

@@ -132,7 +132,7 @@ export class AuthService {
    */
   isAuthenticated(): boolean {
     const token = this.getToken();
-    return !!token && this.isTokenValid(token);
+    return token !==null;
   }
 
   /**

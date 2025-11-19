@@ -10,6 +10,8 @@ import { FormulaComponent } from './demo/pages/formula/formula.component';
 import { HistoriaComponent } from './demo/pages/historia/historia.component';
 import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
 import { LoginComponent } from './demo/pages/login/login.component';
+import { RecuperarPasswordComponent } from './demo/pages/recuperar-password/recuperar-password.component';
+
 
 // Importar los guards
 import { 
@@ -31,6 +33,18 @@ export const routes: Routes = [
     canActivate: [loginGuard], // Evita que usuarios autenticados accedan al login
     data: { title: 'Login' }
   },
+
+
+  // nueva ruta para recuperar contraseña
+  {
+    path: 'recuperar-password',                    
+    component: RecuperarPasswordComponent,         
+    canActivate: [loginGuard],                     
+    data: { title: 'Recuperar Contraseña' }       
+  },
+
+
+
   {
     path: 'dashboard',
     redirectTo: 'inicio/cita', // Redirigir al módulo de citas por defecto
@@ -45,7 +59,7 @@ export const routes: Routes = [
        { 
          path: 'usuario', 
          component: UsuarioComponent, 
-         canActivate: [adminGuard], // Solo administradores
+
          data: { 
            title: 'Gestión de Usuarios',
            module: 'usuarios',
@@ -55,7 +69,7 @@ export const routes: Routes = [
        { 
          path: 'medico', 
          component: MedicoComponent, 
-         canActivate: [adminGuard], // Solo administradores
+
          data: { 
            title: 'Gestión de Médicos',
            module: 'medicos',
@@ -65,7 +79,6 @@ export const routes: Routes = [
        { 
          path: 'paciente', 
          component: PacienteComponent, 
-         canActivate: [medicoAdminGuard], // Médicos y administradores
          data: { 
            title: 'Gestión de Pacientes',
            module: 'pacientes',
@@ -75,7 +88,6 @@ export const routes: Routes = [
        { 
          path: 'cita', 
          component: CitaComponent, 
-         canActivate: [authGuard], // Cualquier usuario autenticado
          data: { 
            title: 'Gestión de Citas',
            module: 'citas',
@@ -85,7 +97,6 @@ export const routes: Routes = [
        { 
          path: 'medicamento', 
          component: MedicamentoComponent, 
-         canActivate: [medicoAdminGuard], // Médicos y administradores
          data: { 
            title: 'Gestión de Medicamentos',
            module: 'medicamentos',
@@ -95,7 +106,6 @@ export const routes: Routes = [
        { 
          path: 'formula-medica', 
          component: FormulaComponent, 
-         canActivate: [medicoAdminGuard], // Médicos y administradores
          data: { 
            title: 'Fórmulas Médicas',
            module: 'formulas',
@@ -105,7 +115,6 @@ export const routes: Routes = [
        { 
          path: 'historia-clinica', 
          component: HistoriaComponent, 
-         canActivate: [medicoAdminGuard], // Médicos y administradores
          data: { 
            title: 'Historias Clínicas',
            module: 'historias',
@@ -115,7 +124,6 @@ export const routes: Routes = [
        { 
          path: 'especializacion', 
          component: EspecializacionComponent, 
-         canActivate: [adminGuard], // Solo administradores
          data: { 
            title: 'Especializaciones Médicas',
            module: 'especializaciones',
