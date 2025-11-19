@@ -1,0 +1,122 @@
+<!-- Spinner de carga -->
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="login-container">
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center min-vh-100">
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-lg border-0">
+          <div class="card-header bg-primary text-white text-center py-4">
+            <h3 class="mb-0">
+              <i class="fa fa-user-circle"></i>
+              &nbsp;Iniciar Sesión
+            </h3>
+          </div>
+          <div class="card-body p-4">
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+              <!-- Campo de nombre de usuario -->
+              <div class="mb-3">
+                <label for="username" class="form-label">
+                  <i class="fa fa-user"></i>
+                  &nbsp;Nombre de usuario
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  formControlName="username"
+                  placeholder="Ingrese su nombre de usuario"
+                  [class.is-invalid]="f['username'].invalid && (f['username'].dirty || f['username'].touched)"
+                />
+                <div *ngIf="f['username'].invalid && (f['username'].dirty || f['username'].touched)" class="invalid-feedback">
+                  <div *ngIf="f['username'].errors?.['required']">
+                    El nombre de usuario es requerido.
+                  </div>
+                  <div *ngIf="f['username'].errors?.['minlength']">
+                    El nombre de usuario debe tener al menos 3 caracteres.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Campo de contraseña -->
+              <div class="mb-3">
+                <label for="password" class="form-label">
+                  <i class="fa fa-lock"></i>
+                  &nbsp;Contraseña
+                </label>
+                <div class="input-group">
+                  <input
+                    [type]="mostrarPassword ? 'text' : 'password'"
+                    class="form-control"
+                    id="password"
+                    formControlName="password"
+                    placeholder="Ingrese su contraseña"
+                    [class.is-invalid]="f['password'].invalid && (f['password'].dirty || f['password'].touched)"
+                  />
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-secondary" 
+                    (click)="toggleMostrarPassword()" 
+                    tabindex="-1">
+                    <i class="fa" [ngClass]="mostrarPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                  </button>
+                </div>
+                <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" class="invalid-feedback d-block">
+                  <div *ngIf="f['password'].errors?.['required']">
+                    La contraseña es requerida.
+                  </div>
+                  <div *ngIf="f['password'].errors?.['minlength']">
+                    La contraseña debe tener al menos 6 caracteres.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recordar sesión -->
+              <div class="mb-3 form-check">
+                <input 
+                  type="checkbox" 
+                  class="form-check-input" 
+                  id="recordarSesion" 
+                  formControlName="recordarSesion"
+                />
+                <label class="form-check-label" for="recordarSesion">
+                  Recordar mi sesión
+                </label>
+              </div>
+
+              <!-- Botón de autenticar -->
+              <div class="d-grid mb-3">
+                <button 
+                  type="submit" 
+                  class="btn btn-primary btn-lg"
+                  [disabled]="loginForm.invalid || isLoading">
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+                  <i *ngIf="!isLoading" class="fa fa-sign-in-alt me-2"></i>
+                  {{ isLoading ? 'Autenticando...' : 'Autenticar' }}
+                </button>
+              </div>
+
+              <!-- Enlace de contraseña olvidada -->
+              <div class="text-center">
+                <a href="#" class="text-decoration-none" (click)="onForgotPassword($event)">
+                  <i class="fa fa-question-circle"></i>
+                  &nbsp;¿Has olvidado tu contraseña?
+                </a>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Footer del card -->
+          <div class="card-footer text-center text-muted py-3">
+            <small>
+              <i class="fa fa-shield-alt"></i>
+              &nbsp;Sistema seguro de autenticación
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
