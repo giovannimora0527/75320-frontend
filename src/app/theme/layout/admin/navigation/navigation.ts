@@ -29,7 +29,6 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-user',
         classes: 'nav-item'
       },
-      /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
         title: 'Gestión de Medicos',
@@ -43,19 +42,27 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'medicamento',
+<<<<<<< HEAD
         title: 'Gestión de Medicamentos',
         type: 'item',
         url: '/inicio/medicamentos',
         icon: 'feather icon-droplet',
+=======
+        title: 'Gestión de medicamentos',
+        type: 'item',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-user-check',
+>>>>>>> origin/928391_Luis_Jimenez
         classes: 'nav-item'
       },
       {
         id: 'cita',
+<<<<<<< HEAD
         title: 'Gestión de Citas',
         type: 'item',
         url: '/inicio/cita',
@@ -76,17 +83,46 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/inicio/historia-clinica',
         icon: 'feather icon-file-text',
+=======
+        title: 'Gestión de citas',
+        type: 'item',
+        url: '/inicio/cita',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'formula',
+        title: 'Gestión de formulas medicas',
+        type: 'item',
+        url: '/inicio/formula-medica',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historia',
+        title: 'Gestión de historias clinicas',
+        type: 'item',
+        url: '/inicio/historia-clinica',
+        icon: 'feather icon-user-check',
+>>>>>>> origin/928391_Luis_Jimenez
         classes: 'nav-item'
       },
       {
         id: 'especializacion',
+<<<<<<< HEAD
         title: 'Gestión de Especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
         icon: 'feather icon-briefcase',
+=======
+        title: 'Gestión de especializaciones',
+        type: 'item',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-user-check',
+>>>>>>> origin/928391_Luis_Jimenez
         classes: 'nav-item'
       }
     ]
   },
-  
+  /* ---------- Nuevos menus aqui -------------  */
 ];

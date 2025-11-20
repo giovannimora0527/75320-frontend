@@ -1,260 +1,213 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { Receta } from './models/receta';
-import { RecetaService } from './service/receta.service';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
-import { UtilService } from 'src/app/services/common/util.service';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
 
-// Angular Material imports
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatTooltipModule } from '@angular/material/tooltip';
+// Import library module
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
-import { Medicamento } from './models/medicamento';
-import { Cita } from './models/cita';
+import { Formula } from './models/formula';
+import { FormulaService } from './service/formula.service';
+import { PacienteService } from '../paciente/service/paciente.service';
+import { Paciente } from '../paciente/models/paciente';
+import { CitaService } from '../cita/service/cita.service';
+import { Cita } from '../cita/models/cita';
 
 @Component({
   selector: 'app-formula',
-  imports: [
-    CommonModule, 
-    FormsModule, 
-    ReactiveFormsModule, 
-    NgxSpinnerModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatIconModule,
-    MatChipsModule,
-    MatTooltipModule
-  ],
+  imports: [CommonModule, NgxSpinnerModule, FormsModule, ReactiveFormsModule],
   templateUrl: './formula.component.html',
   styleUrl: './formula.component.scss'
 })
-
-export class FormulaComponent implements AfterViewInit{
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
+export class FormulaComponent {
+  mostrarPassword: boolean = false;
   modalInstance: Modal | null = null;
-    modoFormulario: string = '';
-    receta: Receta[] = [];
-    dataSource = new MatTableDataSource<Receta>([]);
-    displayedColumns: string[] = ['id','citaPaciente', 'citaPacienteDocumento', 'citaMedico', 'citaMedicoDocumento', 'medicamento', 'dosis', 'indicaciones', 'fechaCreacionRegistro', 'acciones'];
-    titleModal: string = '';
-    titleBoton: string = '';
-    recetaSelected: Receta;
-    titleSpinner: string = "";
-    medicamentoList: Medicamento[] = [];
-    citaList: Cita[] = [];
-  
-    form: FormGroup = new FormGroup({
-      cita: new FormControl('', Validators.required),
-      medicamento: new FormControl('', Validators.required),
-      dosis: new FormControl('', Validators.required),
-      indicaciones: new FormControl('', Validators.required),
+  modoFormulario: string = '';
+  titleModal: string = '';
+  titleBoton: string = '';
+  formulaSelected: Formula;
+  titleSpinner: string = 'Cargando...';
+  busqueda: string = '';
+
+  documentoPacienteBuscar: string = "";
+  pacienteEncontrado: Paciente;
+
+  formulaList: Formula[] = [];
+  formulaFiltered: Formula[] = [];
+  citasPaciente: Cita[] = [];
+
+  // Contador de caracteres para indicaciones
+  contadorIndicaciones: number = 0;
+  maxCaracteresIndicaciones: number = 500;
+
+  form: FormGroup;
+
+  constructor(
+    private readonly formulaService: FormulaService,
+    private readonly pacienteService: PacienteService,
+    private readonly citaService: CitaService,
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
+  ) {
+    this.inicializarFormulario();
+    this.listarFormulas();    
+  }
+
+  inicializarFormulario() {
+    this.form = this.formBuilder.group({
+      citaId: ['', [Validators.required]],
+      medicamentoId: ['', [Validators.required]],
+      dosis: ['', [Validators.required]],
+      indicaciones: ['', [Validators.required, Validators.maxLength(this.maxCaracteresIndicaciones)]]
     });
-  
-    constructor(
-      private readonly recetaService: RecetaService,
-      private readonly formBuilder: FormBuilder,
-      private readonly spinner: NgxSpinnerService,
-      private readonly utilService: UtilService
-    ) {
-      this.listarRecetas();
-      this.listarMedicamentos();
-      this.listarCitas();
-      this.cargarFormulario();
-      this.titleSpinner = "Cargando Formulas Medicas...";
-      this.spinner.show();
-      setTimeout(() => {
+
+    // Suscripción a los cambios del campo indicaciones para actualizar el contador
+    this.form.get('indicaciones')?.valueChanges.subscribe((valor: string) => {
+      this.contadorIndicaciones = valor ? valor.length : 0;
+    });
+  }
+
+  listarFormulas() {
+    this.spinner.show();
+    this.formulaService.listarFormulas().subscribe({
+      next: (data) => {
+        this.formulaList = data;
+        this.formulaFiltered = this.formulaList;
         this.spinner.hide();
-      }, 2000);
+      },
+      error: (error) => {
+        this.spinner.hide();
+        Swal.fire('Error', error.error.mesage, 'error');
+      }
+    });
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
+  closeModal() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
+    this.limpiarFormulario();
+  }
+
+  openModal(modo: string) {
+    this.titleModal = modo === 'C' ? 'Crear Formula' : 'Editar Formula';
+    this.titleBoton = modo === 'C' ? 'Guardar Formula' : 'Actualizar Formula';
+    this.modoFormulario = modo;
+    
+    // Si es modo crear, limpiar el formulario y resetear contador
+    if (modo === 'C') {
+      this.limpiarFormulario();
     }
     
-    listarMedicamentos() {
-      this.utilService.listarMedicamentos().subscribe({
-        next: (data) => {
-          console.log(data);
-          this.medicamentoList = data;
-        },
-        error: (error) => {
-          console.error('Error fetching medicamento:', error);
-        }
-      });
+    const modalElement = document.getElementById('modalCrearFormula');
+    if (modalElement) {
+      // Verificar si ya existe una instancia del modal
+      this.modalInstance ??= new Modal(modalElement);
+      this.modalInstance.show();
     }
+  }
 
-    listarCitas() {
-      this.utilService.listarCitas().subscribe({
-        next: (data) => {
-          console.log(data);
-          this.citaList = data;
-        },
-        error: (error) => {
-          console.error('Error fetching cita:', error);
-        }
-      });
-    }
+  abrirNuevoFormula() {
+    this.formulaSelected = null;
+    this.contadorIndicaciones = 0; // Resetear contador para nuevo formulario
+    this.openModal('C');
+  }
 
-    ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        
-        // Configurar filtro personalizado
-        this.dataSource.filterPredicate = (data: Receta, filter: string) => {
-          const searchString = filter.toLowerCase();
-          return data.id?.toString().includes(searchString) ||
-                 data.cita?.toString().includes(searchString) ||
-                 data.medicamento?.toString().includes(searchString) ||
-                 data.dosis?.toLowerCase().includes(searchString) ||
-                 data.indicaciones?.toLowerCase().includes(searchString) ||
-                 data.fechaCreacionRegistro?.toString().includes(searchString);
-        };
-      }
-
-    cargarFormulario() {
-      this.form = this.formBuilder.group({
-        cita: ['', [Validators.required]],
-        medicamento: ['', [Validators.required]],
-        dosis: ['', [Validators.required]],
-        indicaciones: ['', [Validators.required]],
-      });
-    }
-  
-    get f(): { [key: string]: AbstractControl } {
-      return this.form.controls;
-    }
-  
-    listarRecetas() {
-      this.recetaService.listarRecetas().subscribe({
-        next: (data) => {
-          console.log(data);
-          this.receta = data;
-          this.dataSource.data = data;
-        },
-
-        error: (err) => {
-          this.spinner.hide();
-          console.error('Error al listar recetas:', err);
-          Swal.fire('Error', 'Ocurrió un error al cargar las recetas.', 'error');
-        }
-      });
-    }
-  
-  
-    guardarReceta() {
-        if (this.form.invalid) {
-          this.form.markAllAsTouched();
-          Swal.fire('Error', 'Por favor, complete todos los campos obligatorios.', 'error');
-          return;
-        }
+  abrirEditarFormula(formula: Formula) {
+    this.formulaSelected = formula;
+    // Actualizar contador con la longitud de las indicaciones existentes
+    this.contadorIndicaciones = formula.indicaciones ? formula.indicaciones.length : 0;
+    this.openModal('E');
     
-        if (this.modoFormulario === 'C') {
-          // Crear receta
-          this.recetaService.guardarReceta(this.form.getRawValue()).subscribe({
-            next: (data) => {          
-              Swal.fire('Éxito', data.message, 'success');
-              this.listarRecetas();
-              this.closeModal();
-            },
-            error: (error) => {
-              console.error('Error creating receta:', error);
-              Swal.fire("Error", error.error.message, "error");
-            }
-          });
-        } else {
-          // Editar receta
-          const recetaActualizada = { ...this.recetaSelected, ...this.form.getRawValue() };      
-          this.recetaService.actualizarReceta(recetaActualizada).subscribe({
-            next: (data) => { 
-              Swal.fire('Éxito', data.message, 'success');
-              this.listarRecetas();
-              this.closeModal();
-            },
-            error: (error) => {
-              console.error('Error updating receta:', error);
-              Swal.fire("Error", error.error.message, "error");
-            }
-          });
-        }
-      }
+    // Cargar los datos en el formulario
+    this.form.patchValue({
+      citaId: formula.cita?.id || '',
+      medicamentoId: formula.medicamento?.id || '',
+      dosis: formula.dosis || '',
+      indicaciones: formula.indicaciones || ''
+    });
+  }
 
-    closeModal() {
-      if (this.modalInstance) {
-        this.modalInstance.hide();
-        this.limpiarFormulario();
-      }
-    }
-  
-    openModal(modo: string) {
-      this.titleModal = modo === 'C' ? 'Crear Receta' : 'Editar Receta';
-      this.titleBoton = modo === 'C' ? 'Guardar Receta' : 'Actualizar Receta';
-      this.modoFormulario = modo;
-      const modalElement = document.getElementById('modalCrearReceta');
-      if (modalElement) {
-        // Verificar si ya existe una instancia del modal
-        this.modalInstance ??= new Modal(modalElement);
-        this.modalInstance.show();
-      }
-    }
-  
-    abrirNuevaReceta() {
-      this.recetaSelected = new Receta();
-      this.limpiarFormulario();
-      // Dejamos el formulario en blanco
-      this.openModal('C');
-    }
-  
-    abrirEditarReceta(receta: Receta) {
-      this.limpiarFormulario();
-      this.recetaSelected = receta;
-      this.form.get("cita").setValue(this.recetaSelected.cita);
-      this.form.get("medicamento").setValue(this.recetaSelected.medicamento);
-      this.form.get("dosis").setValue(this.recetaSelected.dosis);
-      this.form.get("indicaciones").setValue(this.recetaSelected.indicaciones);
-      this.openModal('E');
-    }
-
-    limpiarFormulario() {
+  limpiarFormulario() {
     this.form.markAsPristine();
     this.form.markAsUntouched();
-    this.form.reset({
-      cita: '',
-      medicamento: '',
-      dosis: '',
-      indicaciones: ''
+    this.form.reset();
+    this.contadorIndicaciones = 0;
+  }
+
+  filtrarFormula() {
+    if (this.busqueda === '') {
+      this.formulaFiltered = this.formulaList;
+      return;
+    }
+    this.formulaFiltered = this.formulaList.filter((formula) => {
+      const busquedaLower = this.busqueda.toLowerCase();
+
+      // Filtrar por dosis
+      const dosisCumple = formula.dosis && formula.dosis.toLowerCase().includes(busquedaLower);
+
+      // Filtrar por indicaciones
+      const indicacionesCumple = formula.indicaciones && formula.indicaciones.toLowerCase().includes(busquedaLower);
+
+      // Filtrar por número de documento del paciente
+      const numeroDocumentoCumple =
+        formula.cita?.paciente?.numeroDocumento && formula.cita.paciente.numeroDocumento.toLowerCase().includes(busquedaLower);
+
+      // Filtrar por nombres del paciente
+      const nombresCumple = formula.cita?.paciente?.nombres && formula.cita.paciente.nombres.toLowerCase().includes(busquedaLower);
+
+      // Filtrar por apellidos del paciente
+      const apellidosCumple = formula.cita?.paciente?.apellidos && formula.cita.paciente.apellidos.toLowerCase().includes(busquedaLower);
+
+      // Filtrar por apellidos del paciente
+      const fechasCumple = formula.cita?.fechaHora && formula.cita.fechaHora.toLowerCase().includes(busquedaLower);
+
+      // Retorna true si cualquiera de los criterios se cumple
+      return dosisCumple || indicacionesCumple || numeroDocumentoCumple || nombresCumple || apellidosCumple || fechasCumple;
     });
   }
 
-  /**
-   * Aplicar filtro a la tabla de Material
-   */
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  buscarPacientePorDocumento() {
+    this.pacienteService.buscarPacientePorDocumento(this.documentoPacienteBuscar).subscribe({
+      next: (data) => {
+        console.log('Paciente encontrado:', data);
+        this.pacienteEncontrado = data;
+        // Coloco la logica para conocer las citas por paciente
+        this.citaService.buscarCitaPorPacienteId(this.pacienteEncontrado.id).subscribe({
+          next: (data) => {
+            console.log('Citas del paciente:', data);
+            this.citasPaciente = data;
+            Swal.fire("Citas cargadas correctamente","Citas del paciente encontradas", "success");
+          },
+          error: (error) => {
+            console.error('Error al buscar citas del paciente:', error);
+            Swal.fire('Error', error.error.message, 'error');
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error al buscar paciente:', error);
+        Swal.fire('Error', error.error.message, 'error');
+      }
+    });
   }
+
+  // Método para actualizar el contador de caracteres de indicaciones
+  onIndicacionesChange(event: Event) {
+    // Usar setTimeout para asegurar que el valor se actualice después de eventos como paste
+    setTimeout(() => {
+      const target = event.target as HTMLTextAreaElement;
+      const valor = target.value;
+      this.contadorIndicaciones = valor.length;
+    }, 0);
+  }
+
+  guardarFormula() {}
 }
