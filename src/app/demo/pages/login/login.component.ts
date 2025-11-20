@@ -108,7 +108,7 @@ export class LoginComponent {
           // Extraer el mensaje de error del response usando RespuestaRs
           const errorMessage = error.error?.mensaje 
             ? error.error.mensaje 
-            : 'Ups! Algo salió mal durante el inicio de sesión.';
+            : error.error?.message || 'Ups! Algo salió mal durante el inicio de sesión.';
 
           Swal.fire({
             title: 'Error',
@@ -151,6 +151,11 @@ export class LoginComponent {
           return false;
         }
 
+        if (username.length < 3) {
+          Swal.showValidationMessage('El nombre de usuario debe tener al menos 3 caracteres');
+          return false;
+        }
+
         const request: RecuperarPasswordRq = {
           username: username
         };
@@ -161,9 +166,9 @@ export class LoginComponent {
             return response;
           })
           .catch((err) => {
-            Swal.showValidationMessage(
-              'Error enviando la solicitud: ' + (err?.error?.mensaje || err?.message || 'Error inesperado')
-            );
+            // Extraemos el mensaje de error del backend
+            const errorMsg = err?.error?.mensaje || err?.error?.message || err?.message || 'Error inesperado';
+            Swal.showValidationMessage(`Error enviando la solicitud: ${errorMsg}`);
             return false;
           });
       },
