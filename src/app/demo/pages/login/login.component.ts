@@ -7,6 +7,9 @@ import { LoginService } from './service/login.service';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { Usuario } from '../usuario/models/usuario';
+//Importaciones de Recuperar contraseña
+import { RecuperarPasswordRq } from './models/password-rq';
+
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
@@ -20,6 +23,7 @@ export class LoginComponent {
   titleSpinner: string = 'Autenticando...';
 
   constructor(
+    private service: LoginService,
     private readonly formBuilder: FormBuilder,
     private readonly spinner: NgxSpinnerService,
     private readonly loginService: LoginService,
@@ -122,41 +126,47 @@ export class LoginComponent {
   onForgotPassword(event: Event) {
     event.preventDefault();
 
+Swal.fire({
+  title: 'Recuperar contraseña',
+  text: 'Ingrese su correo electrónico para recuperar su contraseña',
+  input: 'email',
+  inputAttributes: {
+    autocapitalize: 'off',
+    placeholder: 'correo@ejemplo.com'
+  },
+  showCancelButton: true,
+  confirmButtonText: 'Enviar',
+  cancelButtonText: 'Cancelar',
+  showLoaderOnConfirm: true,
+
+  preConfirm: (email) => {
+    if (!email) {
+      Swal.showValidationMessage('El correo electrónico es requerido');
+      return false;
+    }
+
+    // 👇 Creamos el request con tu modelo RecuperarPasswordRq
+    const request: RecuperarPasswordRq = {
+      username: email
+    };
+
+    return this.service.testEmail(request).toPromise()
+      .catch((err) => {
+        Swal.showValidationMessage(
+          'Error enviando el correo: ' + (err?.message || 'Error inesperado')
+        );
+      });
+  },
+
+  allowOutsideClick: () => !Swal.isLoading()
+}).then((result) => {
+  if (result.isConfirmed) {
     Swal.fire({
-      title: 'Recuperar contraseña',
-      text: 'Ingrese su correo electrónico para recuperar su contraseña',
-      input: 'email',
-      inputAttributes: {
-        autocapitalize: 'off',
-        placeholder: 'correo@ejemplo.com'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar',
-      showLoaderOnConfirm: true,
-      preConfirm: (email) => {
-        if (!email) {
-          Swal.showValidationMessage('El correo electrónico es requerido');
-          return false;
-        }
-
-        // Simular envío de email de recuperación
-        return new Promise<boolean>((resolve) => {
-          setTimeout(() => {
-            console.log('Enviar email de recuperación a:', email);
-            resolve(true);
-          }, 1000);
-        });
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'Email enviado',
-          text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
-          icon: 'success'
-        });
-      }
+      title: 'Email enviado',
+      text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
+      icon: 'success'
     });
-  }}
-
+  }
+});
+  }
+}
