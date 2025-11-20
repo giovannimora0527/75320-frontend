@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Usuario } from '../usuario/models/usuario';
 //Importaciones de Recuperar contraseña
 import { RecuperarPasswordRq } from './models/password-rq';
+import { RespuestaRs } from './models/respuesta-rs';
 
 @Component({
   selector: 'app-login',
@@ -67,10 +68,9 @@ export class LoginComponent {
             const username = tokenPayload.sub || tokenPayload.username;
             const rol = tokenPayload.rol || 'USER';
             
-            // Asegúrate de que la interfaz Usuario importada tenga 'username'
             const usuario: Usuario = {
               id: 0,
-              username: username, // Si esto marca error, revisa tu interfaz Usuario
+              username: username,
               email: tokenPayload.correo || '',
               rol: rol,
               fechaCreacion: new Date(),
@@ -98,15 +98,21 @@ export class LoginComponent {
             this.spinner.hide();
             this.router.navigate(['/inicio']);
           }
-        }, // <--- ¡AQUÍ FALTABA LA LLAVE Y LA COMA!
+        },
         
         error: (error) => {
           this.spinner.hide();
           this.isLoading = false;
           console.error('Error en la autenticación:', error);
+          
+          // Extraer el mensaje de error del response usando RespuestaRs
+          const errorMessage = error.error?.mensaje 
+            ? error.error.mensaje 
+            : 'Ups! Algo salió mal durante el inicio de sesión.';
+
           Swal.fire({
             title: 'Error',
-            text: 'Ups! Algo salió mal durante el inicio de sesión.',
+            text: errorMessage,
             icon: 'error'
           });
         }
@@ -126,47 +132,54 @@ export class LoginComponent {
   onForgotPassword(event: Event) {
     event.preventDefault();
 
-Swal.fire({
-  title: 'Recuperar contraseña',
-  text: 'Ingrese su correo electrónico para recuperar su contraseña',
-  input: 'email',
-  inputAttributes: {
-    autocapitalize: 'off',
-    placeholder: 'correo@ejemplo.com'
-  },
-  showCancelButton: true,
-  confirmButtonText: 'Enviar',
-  cancelButtonText: 'Cancelar',
-  showLoaderOnConfirm: true,
-
-  preConfirm: (email) => {
-    if (!email) {
-      Swal.showValidationMessage('El correo electrónico es requerido');
-      return false;
-    }
-
-    // 👇 Creamos el request con tu modelo RecuperarPasswordRq
-    const request: RecuperarPasswordRq = {
-      username: email
-    };
-
-    return this.service.testEmail(request).toPromise()
-      .catch((err) => {
-        Swal.showValidationMessage(
-          'Error enviando el correo: ' + (err?.message || 'Error inesperado')
-        );
-      });
-  },
-
-  allowOutsideClick: () => !Swal.isLoading()
-}).then((result) => {
-  if (result.isConfirmed) {
     Swal.fire({
-      title: 'Email enviado',
-      text: 'Se ha enviado un enlace de recuperación a su correo electrónico',
-      icon: 'success'
+      title: 'Recuperar contraseña',
+      text: 'Ingrese su nombre de usuario para recuperar su contraseña',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off',
+        placeholder: 'Nombre de usuario'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+
+      preConfirm: (username) => {
+        if (!username) {
+          Swal.showValidationMessage('El nombre de usuario es requerido');
+          return false;
+        }
+
+        const request: RecuperarPasswordRq = {
+          username: username
+        };
+
+        return this.service.testEmail(request).toPromise()
+          .then((response: RespuestaRs) => {
+            // Retornamos el mensaje del backend para usarlo en el then
+            return response;
+          })
+          .catch((err) => {
+            Swal.showValidationMessage(
+              'Error enviando la solicitud: ' + (err?.error?.mensaje || err?.message || 'Error inesperado')
+            );
+            return false;
+          });
+      },
+
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        // Usamos el mensaje del backend desde result.value.mensaje
+        const mensajeExito = result.value.mensaje || 'Se ha procesado su solicitud de recuperación de contraseña';
+        
+        Swal.fire({
+          title: 'Solicitud enviada',
+          text: mensajeExito,
+          icon: 'success'
+        });
+      }
     });
-  }
-});
   }
 }
