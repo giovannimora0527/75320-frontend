@@ -1,55 +1,50 @@
-<ngx-spinner type="ball-spin" size="medium">
-  <p style="color: white">{{ titleSpinner }}</p>
+<ngx-spinner type="ball-fussion" size="medium" color="#fff">
+  <p>{{ titleSpinner }}</p>
 </ngx-spinner>
 
 <div class="container">
   <div class="card">
     <div class="card-header">
-      <div class="d-flex align-items-center justify-content-between">
-        <h3 class="mb-0">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>
           <i class="fa fa-user-md"></i>
-          &nbsp;Mis médicos
+          &nbsp;Lista de médicos
         </h3>
-        <button class="btn btn-outline-primary" (click)="abrirNuevoMedico()">Nuevo Medico</button>
+        <button class="btn btn-outline-primary" (click)="abrirNuevoMedico()">
+          <i class="fa fa-plus"></i>
+          Nuevo medico
+        </button>
       </div>
     </div>
     <div class="card-body">
-      <div class="table table-responsive">
+      <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead>
             <tr>
               <th>Id</th>
               <th>Tipo de documento</th>
-              <th>#. Documento</th>
+              <th># documento.</th>
               <th>Nombres</th>
               <th>Apellidos</th>
-              <th>Registro Profesional</th>
               <th>Teléfono</th>
-              <th>Especialización</th>
-              <th>Acciones</th>
+              <th>Registro Profesional</th>
+              <th>Especialidad</th>
+              <th>Acción</th>
             </tr>
           </thead>
-          <tbody *ngIf="medicoList.length === 0">
-            <tr class="text-center">
-              <td colspan="8">
-                <span>No hay registros de médicos</span>
-              </td>
-            </tr>
-          </tbody>
-          <tbody *ngIf="medicoList.length > 0">
+          <tbody>
             <tr *ngFor="let medico of medicoList">
               <td>{{ medico.id }}</td>
               <td>{{ medico.tipoDocumento }}</td>
-              <td>{{ medico.numeroDocumento }}</td>
+              <td>{{ medico.documento }}</td>
               <td>{{ medico.nombres }}</td>
               <td>{{ medico.apellidos }}</td>
-              <td>{{ medico.registroProfesional }}</td>
               <td>{{ medico.telefono }}</td>
+              <td>{{ medico.registroProfesional }}</td>
               <td>{{ medico.especializacion.nombre }}</td>
               <td>
-                <button class="btn btn-sm btn-outline-primary" (click)="abrirEditarMedico(medico)">
+                <button type="button" class="btn btn btn-outline-primary" title="Editar médico" (click)="editarModalMedico(medico)">
                   <i class="fa fa-edit"></i>
-                  &nbsp;Editar
                 </button>
               </td>
             </tr>
@@ -60,15 +55,15 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalCrearMedico" tabindex="-1" aria-labelledby="modalCrearMedicoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+<!-- Modal para nuevo medico -->
+<div class="modal fade" id="modalCrearMedico" tabindex="-1" aria-labelledby="modalCrearMedicoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="modalCrearMedicoModalLabel">
+        <h1 class="modal-title fs-5" id="modalCrearMedicoLabel">
           {{ titleModal }}
         </h1>
-        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -77,55 +72,50 @@
               <!--  Tipo de documento -->
               <div class="mb-3">
                 <label for="tipoDocumento" class="form-label">Tipo de documento</label>
-                <select
-                  formControlName="tipoDocumento"
-                  class="form-control"
-                  id="tipoDocumento"
-                  [ngModel]="medicoSelected ? medicoSelected.tipoDocumento : ''"
-                >
-                  <option value="" [selected]="!medicoSelected" disabled>Seleccione tipo de documento</option>
+                <select formControlName="tipoDocumento" class="form-control" id="rol" [ngModel]="medicoSelected?.tipoDocumento || ''">
+                  <option value="" disabled selected>Seleccione el tipo de documento</option>
                   <option value="CC">Cédula de ciudadanía</option>
                   <option value="PA">Pasaporte</option>
                   <option value="CE">Cédula de extranjería</option>
                 </select>
                 <div *ngIf="form.get('tipoDocumento')?.hasError('required') && form.get('tipoDocumento')?.touched" class="text-danger">
-                  El tipo de documento es requerido.
+                  El Tipo de documento del médico es requerido.
                 </div>
               </div>
 
-              <!-- Número de documento -->
+              <!--  Número del documento -->
               <div class="mb-3">
-                <label for="numeroDocumento" class="form-label">Número de documento</label>
+                <label for="documento" class="form-label">#. Documento</label>
                 <input
                   type="text"
-                  formControlName="numeroDocumento"
+                  formControlName="documento"
                   class="form-control"
-                  id="numeroDocumento"
-                  placeholder="Ingrese el numero del documento del medico"
-                  [ngModel]="medicoSelected ? medicoSelected.numeroDocumento : ''"
+                  id="documento"
+                  placeholder="Ingrese el número de documento"
+                  [ngModel]="medicoSelected ? medicoSelected.documento : ''"
                 />
-                <div *ngIf="form.get('numeroDocumento')?.hasError('required') && form.get('numeroDocumento')?.touched" class="text-danger">
+                <div *ngIf="form.get('documento')?.hasError('required') && form.get('documento')?.touched" class="text-danger">
                   El número de documento es requerido.
                 </div>
               </div>
 
-              <!-- Nombres -->
+              <!--  Nombres -->
               <div class="mb-3">
-                <label for="nombres" class="form-label">Nombres</label>
+                <label for="nombres" class="form-label">Nombre completo</label>
                 <input
                   type="text"
                   formControlName="nombres"
                   class="form-control"
                   id="nombres"
-                  placeholder="Ingrese los nombres del medico"
+                  placeholder="Ingrese el nombre completo del médico"
                   [ngModel]="medicoSelected ? medicoSelected.nombres : ''"
                 />
                 <div *ngIf="form.get('nombres')?.hasError('required') && form.get('nombres')?.touched" class="text-danger">
-                  Los nombres son obligatorios.
+                  Los nombres son requeridos.
                 </div>
               </div>
 
-              <!-- Apellidos -->
+              <!--  Apellidos -->
               <div class="mb-3">
                 <label for="apellidos" class="form-label">Apellidos</label>
                 <input
@@ -133,73 +123,64 @@
                   formControlName="apellidos"
                   class="form-control"
                   id="apellidos"
-                  placeholder="Ingrese los apellidos del medico"
+                  placeholder="Ingrese los apellidos del médico"
                   [ngModel]="medicoSelected ? medicoSelected.apellidos : ''"
                 />
                 <div *ngIf="form.get('apellidos')?.hasError('required') && form.get('apellidos')?.touched" class="text-danger">
-                  Los apellidos son obligatorios.
+                  Los apellidos son requeridos.
                 </div>
               </div>
 
-              <!-- Registro profesional -->
+              <!--  Telefono -->
               <div class="mb-3">
-                <label for="registroProfesional" class="form-label">N°. Registro Profesional</label>
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input
+                  type="text"
+                  formControlName="telefono"
+                  class="form-control"
+                  id="telefono"
+                  placeholder="Ingrese el telefono o celular"
+                  [ngModel]="medicoSelected ? medicoSelected.telefono : ''"
+                />
+                <div *ngIf="form.get('telefono')?.hasError('required') && form.get('telefono')?.touched" class="text-danger">
+                  El telefono o número de celular es requerido.
+                </div>
+              </div>
+
+              <!--  Registro profesional -->
+              <div class="mb-3">
+                <label for="registroProfesional" class="form-label">Registro o tarjeta profesional</label>
                 <input
                   type="text"
                   formControlName="registroProfesional"
                   class="form-control"
                   id="registroProfesional"
-                  placeholder="Ingrese el número de registro profesional o tarjeta profesional del medico"
+                  placeholder="Ingrese el número de tarjeta o registro profesional"
                   [ngModel]="medicoSelected ? medicoSelected.registroProfesional : ''"
                 />
                 <div
                   *ngIf="form.get('registroProfesional')?.hasError('required') && form.get('registroProfesional')?.touched"
                   class="text-danger"
                 >
-                  El número de registro profesional es obligatorios.
+                  El registro o la tarjeta profesional es requerida.
                 </div>
               </div>
 
-                <!-- Telefono -->
+              <!--  Especializacion especializacion -->
               <div class="mb-3">
-                <label for="telefono" class="form-label">Teléfono o Celular</label>
-                <input
-                  type="text"
-                  formControlName="telefono"
-                  class="form-control"
-                  id="telefono"
-                  placeholder="Ingrese el teléfono del medico"
-                  [ngModel]="medicoSelected ? medicoSelected.telefono : ''"
-                />                
-              </div>
-
-              <!-- Especializacion -->
-              <div class="mb-3">
-                <label for="especializacionId" class="form-label">Especialización</label>
-                <select
-                  formControlName="especializacionId"
-                  class="form-control"
-                  id="especializacionId"
-                  [ngModel]="medicoSelected && medicoSelected.especializacion ? medicoSelected.especializacion.id : ''"
-                >
-                  <option value="" [selected]="!medicoSelected" disabled>Seleccione la especializacion</option>
-                  <option *ngFor="let especializacion of especializacionesList" [value]="especializacion.id">
-                    {{ especializacion.nombre }}
-                  </option>
-                </select>
-                <div
-                  *ngIf="form.get('especializacionId')?.hasError('required') && form.get('especializacionId')?.touched"
-                  class="text-danger"
-                >
-                  La especialización es requerida.
-                </div>
+                <label for="tipoDocumento" class="form-label">Especializacion</label>
+                <select formControlName="especializacion" class="form-control" id="especializacion" [ngModel]="medicoSelected?.especializacion || ''">
+                  <option value="" disabled selected>Seleccione la especialidad del médico</option>
+                  <option [value]="especialidad.id" *ngFor="let especialidad of especializacionList">{{especialidad.nombre}}</option>
+                 
+                </select>                
               </div>
             </form>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         <button type="button" class="btn btn-primary" (click)="guardarMedico()">{{ titleBoton }}</button>
       </div>
     </div>

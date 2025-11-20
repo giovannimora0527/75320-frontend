@@ -1,10 +1,10 @@
 export class Medicamento {
     id!: number;
     nombre!: string;
-    descripcion!:string;
+    descripcion!: string;
     presentacion!: string;
-    fechaCompra!: Date;
-    fechaVence!: Date;
-    fechaCreacionRegistro!: String;
-    fechaModificacionRegistro!: Date |null;
+    fechaCompra!: string;
+    fechaVence!: string;
+    fechaCreacionRegistro!: string;
+    fechaModificacionRegistro!: string;
 }

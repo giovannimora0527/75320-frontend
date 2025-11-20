@@ -29,7 +29,6 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-user',
         classes: 'nav-item'
       },
-      /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
         title: 'Gestión de Medicos',
@@ -43,50 +42,50 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'medicamento',
-        title: 'Gestión de Medicamentos',
+        title: 'Gestión de medicamentos',
         type: 'item',
-        url: '/inicio/medicamentos',
-        icon: 'feather icon-droplet',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'cita',
-        title: 'Gestión de Citas',
+        title: 'Gestión de citas',
         type: 'item',
         url: '/inicio/cita',
-        icon: 'feather icon-calendar',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'formulas-medicas',
-        title: 'Gestión de Fórmulas Médicas',
+        id: 'formula',
+        title: 'Gestión de formulas medicas',
         type: 'item',
-        url: '/inicio/formulas-medicas',
-        icon: 'feather icon-clipboard',
+        url: '/inicio/formula-medica',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'historias-medicas',
-        title: 'Gestión de Historias Clínicas',
+        id: 'historia',
+        title: 'Gestión de historias clinicas',
         type: 'item',
         url: '/inicio/historia-clinica',
-        icon: 'feather icon-file-text',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'especializacion',
-        title: 'Gestión de Especializaciones',
+        title: 'Gestión de especializaciones',
         type: 'item',
         url: '/inicio/especializacion',
-        icon: 'feather icon-briefcase',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       }
     ]
   },
-  
+  /* ---------- Nuevos menus aqui -------------  */
 ];

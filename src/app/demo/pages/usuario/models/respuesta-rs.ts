@@ -1,4 +1,4 @@
 export class RespuestaRs {
-    message!: string;
+    mensaje!: string;    
     status!: number;
 }
