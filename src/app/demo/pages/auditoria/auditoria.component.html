@@ -1,0 +1,210 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <!-- Encabezado -->
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title mb-0">
+            <i class="feather icon-list"></i> Logs de Auditoría de Inicio de Sesión
+          </h4>
+        </div>
+        
+        <div class="card-body">
+          <!-- Panel de Filtros -->
+          <div class="card mb-4">
+            <div class="card-header bg-light">
+              <h5 class="mb-0">
+                <i class="feather icon-filter"></i> Filtros de Búsqueda
+              </h5>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="filtrosForm" (ngSubmit)="buscar()">
+                <div class="row g-3">
+                  <!-- Filtro por Usuario -->
+                  <div class="col-md-3">
+                    <label for="username" class="form-label">Usuario</label>
+                    <input
+                      type="text"
+                      id="username"
+                      class="form-control"
+                      formControlName="username"
+                      placeholder="Buscar por usuario..."
+                      (input)="onFiltroChange()"
+                    />
+                  </div>
+                  
+                  <!-- Filtro por Fecha Desde -->
+                  <div class="col-md-3">
+                    <label for="fechaDesde" class="form-label">Fecha Desde</label>
+                    <input
+                      type="datetime-local"
+                      id="fechaDesde"
+                      class="form-control"
+                      formControlName="fechaDesde"
+                      (change)="onFiltroChange()"
+                    />
+                  </div>
+                  
+                  <!-- Filtro por Fecha Hasta -->
+                  <div class="col-md-3">
+                    <label for="fechaHasta" class="form-label">Fecha Hasta</label>
+                    <input
+                      type="datetime-local"
+                      id="fechaHasta"
+                      class="form-control"
+                      formControlName="fechaHasta"
+                      (change)="onFiltroChange()"
+                    />
+                  </div>
+                  
+                  <!-- Filtro por Tipo de Evento -->
+                  <div class="col-md-3">
+                    <label for="exitoso" class="form-label">Tipo de Evento</label>
+                    <select
+                      id="exitoso"
+                      class="form-select"
+                      formControlName="exitoso"
+                      (change)="onFiltroChange()"
+                    >
+                      <option [ngValue]="null">Todos</option>
+                      <option [ngValue]="true">Exitosos</option>
+                      <option [ngValue]="false">Fallidos</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <button type="button" class="btn btn-primary me-2" (click)="buscar()">
+                      <i class="feather icon-search"></i> Buscar
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="limpiarFiltros()">
+                      <i class="feather icon-x"></i> Limpiar Filtros
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Tabla de Resultados -->
+          <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">
+                <i class="feather icon-table"></i> Resultados
+                <span class="badge bg-info ms-2" *ngIf="totalElementos > 0">
+                  {{ totalElementos }} registro(s)
+                </span>
+              </h5>
+            </div>
+            
+            <div class="card-body">
+              <!-- Mensaje cuando no hay datos -->
+              <div *ngIf="!isLoading && datos.length === 0" class="alert alert-info text-center">
+                <i class="feather icon-info"></i> No se encontraron registros con los filtros aplicados.
+              </div>
+              
+              <!-- Tabla de datos -->
+              <div *ngIf="datos.length > 0" class="table-responsive">
+                <table class="table table-striped table-hover table-bordered">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>ID</th>
+                      <th>Usuario</th>
+                      <th>Fecha y Hora</th>
+                      <th>Estado</th>
+                      <th>IP Origen</th>
+                      <th>Descripción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let registro of datos">
+                      <td>{{ registro.id }}</td>
+                      <td>
+                        <strong>{{ registro.usernameIngresado }}</strong>
+                      </td>
+                      <td>{{ formatearFecha(registro.fechaHora) }}</td>
+                      <td>
+                        <span [ngClass]="getEstadoClase(registro.exitoso)">
+                          {{ getEstadoTexto(registro.exitoso) }}
+                        </span>
+                      </td>
+                      <td>
+                        <code *ngIf="registro.ipOrigen">{{ registro.ipOrigen }}</code>
+                        <span *ngIf="!registro.ipOrigen" class="text-muted">-</span>
+                      </td>
+                      <td>
+                        <small [title]="registro.descripcion">
+                          {{ registro.descripcion || '-' }}
+                        </small>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Paginación -->
+              <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-3">
+                <div class="text-muted">
+                  Mostrando {{ getRangoElementos() }} de {{ totalElementos }} registro(s)
+                </div>
+                
+                <nav>
+                  <ul class="pagination mb-0">
+                    <li class="page-item" [class.disabled]="paginaActual === 0">
+                      <a class="page-link" href="#" (click)="paginaAnterior(); $event.preventDefault()">
+                        <i class="feather icon-chevron-left"></i> Anterior
+                      </a>
+                    </li>
+                    
+                    <ng-container *ngIf="totalPaginas <= 10">
+                      <li
+                        *ngFor="let i of getPaginasVisibles()"
+                        class="page-item"
+                        [class.active]="i === paginaActual"
+                      >
+                        <a
+                          class="page-link"
+                          href="#"
+                          (click)="irAPagina(i); $event.preventDefault()"
+                        >
+                          {{ i + 1 }}
+                        </a>
+                      </li>
+                    </ng-container>
+                    <ng-container *ngIf="totalPaginas > 10">
+                      <li
+                        *ngFor="let i of getPaginasVisibles()"
+                        class="page-item"
+                        [class.active]="i === paginaActual"
+                      >
+                        <a
+                          class="page-link"
+                          href="#"
+                          (click)="irAPagina(i); $event.preventDefault()"
+                        >
+                          {{ i + 1 }}
+                        </a>
+                      </li>
+                    </ng-container>
+                    
+                    <li class="page-item" [class.disabled]="paginaActual >= totalPaginas - 1">
+                      <a class="page-link" href="#" (click)="paginaSiguiente(); $event.preventDefault()">
+                        Siguiente <i class="feather icon-chevron-right"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </nav>
+                
+                <div class="text-muted">
+                  Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

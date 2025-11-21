@@ -1,0 +1,21 @@
+# .dockerignore para frontend
+node_modules/
+dist/
+.git/
+.gitignore
+*.log
+.DS_Store
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+README.md
+docs/
+*.md
+!docs/docker.md
+.env
+.env.local
+.env.*.local
+
