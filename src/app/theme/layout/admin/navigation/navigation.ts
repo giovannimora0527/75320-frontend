@@ -29,10 +29,9 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-user',
         classes: 'nav-item'
       },
-      /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
-        title: 'Gestión de medicos',
+        title: 'Gestión de Medicos',
         type: 'item',
         url: '/inicio/medico',
         icon: 'feather icon-users',
@@ -40,40 +39,63 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'paciente',
-        title: 'Gestión de pacientes',
+        title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
-      {
-        id: 'formula',
-        title: 'Gestión de formulas',
-        type: 'item',
-        url: '/inicio/Formula',
-        icon: 'feather icon-file-text',
-        classes: 'nav-item'
-      },
-
       {
         id: 'medicamento',
         title: 'Gestión de medicamentos',
         type: 'item',
         url: '/inicio/medicamento',
-        icon: 'feather icon-file-text',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'especialidad',
-        title: 'Gestión de especialidades',
+        id: 'cita',
+        title: 'Gestión de citas',
         type: 'item',
-        url: '/inicio/especialidad',
-        icon: 'feather icon-file-text',
+        url: '/inicio/cita',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'formula',
+        title: 'Gestión de formulas medicas',
+        type: 'item',
+        url: '/inicio/formula-medica',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historia',
+        title: 'Gestión de historias clinicas',
+        type: 'item',
+        url: '/inicio/historia-clinica',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'especializacion',
+        title: 'Gestión de especializaciones',
+        type: 'item',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+
+      {
+        id: 'auditoria',
+        title: 'Auditoría del Sistema',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-activity',
         classes: 'nav-item'
       }
-
-
+      
     ]
   },
-  
+  /* ---------- Nuevos menus aqui -------------  */
 ];

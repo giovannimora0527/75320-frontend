@@ -1,0 +1,88 @@
+<div class="row mb-3">
+
+  <div class="col-md-3">
+    <label>Usuario</label>
+    <input class="form-control" [(ngModel)]="filtros.usuario">
+  </div>
+
+  <div class="col-md-3">
+    <label>Tipo Evento</label>
+    <select class="form-control" [(ngModel)]="filtros.tipo">
+      <option value="Todos">Todos</option>
+      <option *ngFor="let t of tiposEventos" [value]="t">{{ t }}</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label>Fecha Desde</label>
+    <input type="datetime-local" class="form-control" [(ngModel)]="filtros.fechaDesde">
+  </div>
+
+  <div class="col-md-3">
+    <label>Fecha Hasta</label>
+    <input type="datetime-local" class="form-control" [(ngModel)]="filtros.fechaHasta">
+  </div>
+
+</div>
+
+<div class="text-end mb-3">
+  <button class="btn btn-primary" (click)="buscar()">Buscar</button>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Usuario</th>
+      <th>Evento</th>
+      <th>Descripción</th>
+      <th>IP</th>
+      <th>Fecha</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+
+  <tbody>
+
+    <tr *ngIf="logs.length === 0">
+      <td colspan="6" class="text-center">No hay registros</td>
+    </tr>
+
+    <tr *ngFor="let log of logs">
+      <td>{{ log.username }}</td>
+      <td>{{ log.tipoEvento }}</td>
+      <td>{{ log.descripcion }}</td>
+      <td>{{ log.direccionIp }}</td>
+      <td>{{ log.fechaEvento }}</td>
+      <td>
+        <span class="badge bg-success" *ngIf="log.exitoso">Éxito</span>
+        <span class="badge bg-danger" *ngIf="!log.exitoso">Fallo</span>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+
+<div class="d-flex justify-content-between mt-3">
+
+  <div>
+    <label>Elementos por página:</label>
+    <select [(ngModel)]="tamanioPagina" (change)="buscar()">
+      <option *ngFor="let size of [5,10,20]" [value]="size">{{ size }}</option>
+    </select>
+  </div>
+
+  <div>
+    Página {{ paginaActual + 1 }} de {{ totalPaginas }}
+  </div>
+
+  <div>
+    <button class="btn btn-secondary btn-sm"
+            (click)="anterior()"
+            [disabled]="paginaActual === 0">⟨</button>
+
+    <button class="btn btn-secondary btn-sm"
+            (click)="siguiente()"
+            [disabled]="paginaActual + 1 >= totalPaginas">⟩</button>
+  </div>
+
+</div>

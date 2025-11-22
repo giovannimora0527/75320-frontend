@@ -1,30 +1,24 @@
-import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpContext, HttpContextToken, HttpHeaders } from '@angular/common/http';
-
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class HeadersInterceptor implements HttpInterceptor {
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    const clonedRequest = req.clone({
-      setHeaders: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const hasContentType = clonedRequest.headers.has('Content-Type');
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    return next.handle(clonedRequest);
-  }
+    const token = localStorage.getItem('token'); // <-- AQUÍ RECUPERA EL JWT
 
-  addHeaders(request: HttpRequest<unknown>): HttpRequest<any> {
-    return (request = request.clone({
-      setHeaders: {
-        'Content-Type': 'application/json',
-      },
-    }));
+    let headers = req.headers
+      .set('Content-Type', 'application/json');
+
+    // Solo si existe token se agrega
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    const cloned = req.clone({ headers });
+
+    return next.handle(cloned);
   }
 }
