@@ -155,7 +155,7 @@ export class PacienteComponent implements AfterViewInit{
           // Crear paciente
           this.pacienteService.guardarPaciente(this.form.getRawValue()).subscribe({
             next: (data) => {          
-              Swal.fire('Éxito', data.message, 'success');
+              Swal.fire('Éxito', data.mensaje, 'success');
               this.listarPacientes();
               this.closeModal();
             },
@@ -169,13 +169,13 @@ export class PacienteComponent implements AfterViewInit{
           const pacienteActualizado = { ...this.pacienteSelected, ...this.form.getRawValue() };      
           this.pacienteService.actualizarPaciente(pacienteActualizado).subscribe({
             next: (data) => { 
-              Swal.fire('Éxito', data.message, 'success');
+              Swal.fire('Éxito', data.mensaje, 'success');
               this.listarPacientes();
               this.closeModal();
             },
             error: (error) => {
               console.error('Error updating paciente:', error);
-              Swal.fire("Error", error.error.message, "error");
+              Swal.fire("Error", error.error.mensaje, "error");
             }
           });
         }

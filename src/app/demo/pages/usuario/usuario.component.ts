@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AfterViewInit, ViewChild } from '@angular/core';
 
 import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
@@ -25,13 +26,35 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, React
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxSpinnerModule,
+
+    // Angular Material
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatTooltipModule
+  ],
   templateUrl: './usuario.component.html',
-  styleUrl: './usuario.component.scss'
+  styleUrls: ['./usuario.component.scss']
 })
 export class UsuarioComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+ngAfterViewInit(): void {
+  this.dataSource.paginator = this.paginator;
+  this.dataSource.sort = this.sort;
+}
 
   modalInstance: Modal | null = null;
   modoFormulario: string = '';

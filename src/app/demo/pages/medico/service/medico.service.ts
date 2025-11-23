@@ -12,7 +12,7 @@ export class MedicoService {
   urlBase = environment.apiUrl;
   endpoint: string = 'medico';
 
-  constructor(private readonly backendService: BackendService) {}
+  constructor(private readonly backendService: BackendService) { }
 
   listarMedicos(): Observable<Medico[]> {
     return this.backendService.get(this.urlBase, this.endpoint, 'listar');
@@ -24,13 +24,5 @@ export class MedicoService {
 
   actualizarMedico(medico: Medico): Observable<RespuestaRs> {
     return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', medico);
-  }
-
-  guardarMedico(medico: Medico): Observable<RespuestaRs>{
-    return this.backendService.post(this.urlBase, this.urlApi, 'guardar', medico);
-  }
-
-  actualizarMedico(medico: Medico): Observable<RespuestaRs>{
-    return this.backendService.post(this.urlBase, this.urlApi, 'actualizar', medico);
   }
 }
