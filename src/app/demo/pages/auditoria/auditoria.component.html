@@ -1,0 +1,85 @@
+<ngx-spinner type="pacman" size="medium">
+<p style="color: white">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">
+                    <i class="fa fa-users"></i>
+                    &nbsp;Lista de Procesos
+                </h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <mat-form-field appearance="outline" class="w-100 mb-3">
+                <mat-label>Buscar Proceso</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="  Filtrar por Nombre de Usuario, Fecha o Tipo de Evento" #input>
+            </mat-form-field>
+
+            <div class="mat-elevation-8">
+                <table mat-table [dataSource]="dataSource" matSort class="w-100">
+                    <!-- ID -->
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+                        <td mat-cell *matCellDef="let auditorias">{{ auditorias.id }}</td>
+                    </ng-container>
+
+                    <!-- Nombre -->
+                    <ng-container matColumnDef="username">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre de Usuario</th>
+                        <td mat-cell *matCellDef="let auditorias">{{ auditorias.username }}</td>
+                    </ng-container>
+
+                    <!-- Descripción -->
+                    <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Descripción</th>
+                        <td mat-cell *matCellDef="let auditorias">{{ auditorias.description }}</td>
+                    </ng-container>
+
+                    <!-- Fecha de Transacción -->
+                    <ng-container matColumnDef="transaccionFecha">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha de la Transacción</th>
+                        <td mat-cell *matCellDef="let auditorias">
+                            {{ auditorias.transaccionFecha }}
+                        </td>
+                    </ng-container>
+
+                    <!-- Tipo de Evento -->
+                    <ng-container matColumnDef="tipoAuditoria"> 
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo de Evento</th>
+                        <td mat-cell *matCellDef="let auditorias">
+                            {{ auditorias.tipoAuditoria }}
+                        </td>
+                    </ng-container>
+
+                    <!-- Dirección IP -->
+                    <ng-container matColumnDef="ipAddress">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Dirección IP</th>
+                        <td mat-cell *matCellDef="let auditorias">
+                            {{ auditorias.ipAddress }}
+                        </td>
+                    </ng-container>
+
+                    <!-- Fila de la tabla -->
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <!-- Mensaje si no hay datos -->
+                <div *ngIf="dataSource.filteredData.length === 0" class="text-center p-3">
+                    No hay procesos disponibles.
+                </div>
+
+                <!-- Paginador -->
+                <mat-paginator
+                    [pageSizeOptions]="[5, 10, 25, 100]"
+                    [pageSize]="20"
+                    showFirstLastButtons>
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>
