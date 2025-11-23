@@ -174,5 +174,6 @@ export class AuditoriaComponent implements AfterViewInit {
                 Swal.fire('Error al listar los procesos', error);
             }
         });
-    }
+    } 
+    /*Emily*/
 }
