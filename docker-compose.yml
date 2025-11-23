@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  # Base de datos MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: clinica-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: clinica
+      MYSQL_USER: clinica_user
+      MYSQL_PASSWORD: clinica_pass
+    ports:
+      - "3307:3306"  # Puerto externo 3307 para evitar conflicto con MySQL local
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./75320-backend/database_complete.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    networks:
+      - clinica-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Spring Boot
+  backend:
+    build:
+      context: ./75320-backend
+      dockerfile: Dockerfile
+    container_name: clinica-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/clinica
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "false"
+      JWT_SECRET: QWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMw==
+      JWT_EXPIRATION: 86400000
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME:-programacionwebuniminuto1@gmail.com}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-dnvpizhczylrmydk}
+      SPRING_MAIL_TO: ${MAIL_DEFAULT_TO:-programacionwebuniminuto1@gmail.com}
+      SECURITY_LOGIN_BLOCK_DURATION_MINUTES: 5
+      SECURITY_LOGIN_MAX_FAILED_ATTEMPTS: 3
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - clinica-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/clinica/v1/swagger-ui/index.html"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Frontend Angular
+  frontend:
+    build:
+      context: ./FRONTEND
+      dockerfile: Dockerfile
+    container_name: clinica-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - clinica-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  clinica-network:
+    driver: bridge
+

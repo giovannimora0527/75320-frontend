@@ -1,0 +1,32 @@
+<ul class="navbar-nav">
+  <li>
+    <div class="dropdown drp-user" ngbDropdown placement="auto">
+      <a href="javascript:" ngbDropdownToggle data-toggle="dropdown">
+        <i class="icon feather icon-settings"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
+        <div class="pro-head">
+          <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" />
+          <span>{{ usuarioActual?.username || 'Usuario' }}</span>
+          <a href="javascript:" class="dud-logout" title="Cerrar Sesión" (click)="cerrarSesion()">
+            <i class="feather icon-log-out"></i>
+          </a>
+        </div>
+        <ul class="pro-body">
+          <li>
+            <a href="javascript:" class="dropdown-item">
+              <i class="feather icon-user"></i>
+              Perfil
+            </a>
+          </li>
+          <li>
+            <a href="javascript:" class="dropdown-item" (click)="cerrarSesion()">
+              <i class="feather icon-log-out"></i>
+              Cerrar Sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+</ul>
