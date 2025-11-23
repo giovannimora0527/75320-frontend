@@ -10,6 +10,7 @@ import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.compo
 import { FormulaMedicaComponent } from './demo/pages/formula-medica/formula-medica.component';
 import { HistoriaMedicaComponent } from './demo/pages/historia-medica/historia-medica.component';
 import { LoginComponent } from './demo/pages/login/login.component';
+import { AuditoriaComponent } from './demo/pages/auditoria/auditoria.component';
 
 // Importar los guards
 import { 
@@ -119,6 +120,16 @@ export const routes: Routes = [
          data: { 
            title: 'Especializaciones Médicas',
            module: 'especializaciones',
+           roles: ['ADMIN']
+         }
+       },
+       { 
+         path: 'auditoria', 
+         component: AuditoriaComponent, 
+         canActivate: [adminGuard], // Solo administradores
+         data: { 
+           title: 'Logs de Auditoría',
+           module: 'auditoria',
            roles: ['ADMIN']
          }
        },

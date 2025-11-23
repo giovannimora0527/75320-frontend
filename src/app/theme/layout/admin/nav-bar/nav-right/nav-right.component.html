@@ -7,7 +7,10 @@
       <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
         <div class="pro-head">
           <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" />
-          <span>{{ usuarioActual?.username || 'Usuario' }}</span>
+          <div class="d-flex flex-column">
+            <span>{{ usuarioActual?.username || 'Usuario' }}</span>
+            <small class="text-muted">{{ usuarioActual?.rol || '' }}</small>
+          </div>
           <a href="javascript:" class="dud-logout" title="Cerrar Sesión" (click)="cerrarSesion()">
             <i class="feather icon-log-out"></i>
           </a>

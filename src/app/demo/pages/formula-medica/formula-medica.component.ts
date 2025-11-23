@@ -64,13 +64,22 @@ export class FormulaMedicaComponent implements OnInit {
     }, 6000);
 
     this.medicamentoService.listarMedicamentos().subscribe({
-      next: data => {
+      next: (data: any) => {
         clearTimeout(medsFallback);
-        this.medicamentos = data;
+        if (Array.isArray(data)) {
+          this.medicamentos = data;
+        } else if (Array.isArray(data?.data)) {
+          this.medicamentos = data.data;
+        } else if (Array.isArray(data?.content)) {
+          this.medicamentos = data.content;
+        } else {
+          this.medicamentos = [];
+        }
       },
       error: (err) => {
         clearTimeout(medsFallback);
-        Swal.fire('Error', 'No se pudieron cargar los medicamentos', 'error');
+        this.medicamentos = [];
+        Swal.fire('Error', err?.error?.message || 'No se pudieron cargar los medicamentos', 'error');
       }
     });
 
@@ -81,13 +90,22 @@ export class FormulaMedicaComponent implements OnInit {
     }, 6000);
 
     this.citaService.listarCitas().subscribe({
-      next: data => {
+      next: (data: any) => {
         clearTimeout(citasFallback);
-        this.citas = data;
+        if (Array.isArray(data)) {
+          this.citas = data;
+        } else if (Array.isArray(data?.data)) {
+          this.citas = data.data;
+        } else if (Array.isArray(data?.content)) {
+          this.citas = data.content;
+        } else {
+          this.citas = [];
+        }
       },
-      error: () => {
+      error: (err) => {
         clearTimeout(citasFallback);
-        Swal.fire('Error', 'No se pudieron cargar las citas', 'error');
+        this.citas = [];
+        Swal.fire('Error', err?.error?.message || 'No se pudieron cargar las citas', 'error');
       }
     });
   }
@@ -100,11 +118,19 @@ export class FormulaMedicaComponent implements OnInit {
     this.formulaService.listarFormulas().pipe(
       timeout(6000)
     ).subscribe({
-      next: data => {
+      next: (data: any) => {
         this.isLoadingFormulas = false;
         // Agregar retraso de 1 segundo antes de ocultar el spinner
         setTimeout(() => {
-          this.formulas = data;
+          if (Array.isArray(data)) {
+            this.formulas = data;
+          } else if (Array.isArray(data?.data)) {
+            this.formulas = data.data;
+          } else if (Array.isArray(data?.content)) {
+            this.formulas = data.content;
+          } else {
+            this.formulas = [];
+          }
           this.spinner.hide('pacmanSpinner');
         }, 1000); // 1000 ms = 1 segundo
       },
@@ -116,7 +142,15 @@ export class FormulaMedicaComponent implements OnInit {
           if (err && err.name === 'TimeoutError') {
             Swal.fire('Advertencia', 'No se recibió respuesta del servidor al cargar fórmulas. Intente nuevamente más tarde.', 'warning');
           } else {
-            Swal.fire('Error', 'No se pudieron cargar las fórmulas', 'error');
+            let mensajeError = 'No se pudieron cargar las fórmulas médicas.';
+            if (err?.status === 404) {
+              mensajeError = 'El endpoint de fórmulas médicas no está disponible en el backend.';
+            } else if (err?.status === 0) {
+              mensajeError = 'No se pudo conectar con el servidor. Verifique que el backend esté ejecutándose.';
+            } else if (err?.error?.message) {
+              mensajeError = err.error.message;
+            }
+            Swal.fire('Error', mensajeError, 'error');
           }
         }, 1000);
       }

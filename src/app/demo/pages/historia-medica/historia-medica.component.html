@@ -1,1 +1,202 @@
-<p>historia-medica works!</p>
+<div class="container-fluid">
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="fa fa-book me-2"></i>Historias Médicas
+      </h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light btn-sm" (click)="listarHistorias()" [disabled]="isLoading">
+          <i class="fa" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-refresh'"></i> 
+          {{ isLoading ? 'Cargando...' : 'Actualizar' }}
+        </button>
+        <button class="btn btn-success btn-sm" (click)="mostrarFormularioCrear()">
+          <i class="fa fa-plus"></i> Nueva Historia
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-3">
+      <!-- 🔍 Campo de búsqueda -->
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar por paciente, médico, motivo de consulta o diagnóstico"
+          [(ngModel)]="filtroTexto"
+          (input)="aplicarFiltro()"
+        />
+      </div>
+
+      <!-- Tabla -->
+      @if (isLoading) {
+        <div class="d-flex justify-content-center align-items-center py-5">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando historias médicas...</p>
+          </div>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="text-center" style="width: 50px;">#</th>
+                <th>Paciente</th>
+                <th>Médico</th>
+                <th>Fecha Consulta</th>
+                <th>Motivo Consulta</th>
+                <th>Diagnóstico</th>
+                <th class="text-center" style="width: 150px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (historiasFiltradas?.length) {
+                @for (hist of historiasFiltradas; track hist.id; let i = $index) {
+                  <tr>
+                    <td class="text-center fw-bold text-muted">{{ i + 1 }}</td>
+                    <td class="fw-semibold">
+                      <i class="fa fa-user text-muted me-2"></i>{{ obtenerNombrePaciente(hist.pacienteId) }}
+                    </td>
+                    <td>
+                      <i class="fa fa-user-md text-muted me-2"></i>{{ obtenerNombreMedico(hist.medicoId) }}
+                    </td>
+                    <td>
+                      <i class="fa fa-calendar text-muted me-1"></i>{{ hist.fechaConsulta | date:'dd/MM/yyyy' }}
+                    </td>
+                    <td>{{ hist.motivoConsulta }}</td>
+                    <td>{{ hist.diagnostico }}</td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm" role="group">
+                        <button 
+                          class="btn btn-outline-primary"
+                          (click)="editarHistoria(hist)"
+                          title="Editar historia">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button 
+                          class="btn btn-outline-danger"
+                          (click)="eliminarHistoria(hist)"
+                          title="Eliminar historia">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              } @else {
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-4">
+                    <i class="fa fa-inbox fa-2x mb-2 d-block"></i>
+                    No se encontraron historias médicas
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Modal para crear/editar historia médica -->
+<div class="modal fade" id="modalHistoria" tabindex="-1" aria-labelledby="modalHistoriaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalHistoriaLabel">
+          <i class="fa fa-book me-2"></i>
+          {{ modoEdicion ? 'Editar Historia Médica' : 'Nueva Historia Médica' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarHistoria()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="pacienteId" class="form-label">Paciente <span class="text-danger">*</span></label>
+              <select class="form-select" id="pacienteId" formControlName="pacienteId">
+                <option value="">Seleccione un paciente</option>
+                @for (pac of pacientes; track pac.id) {
+                  <option [value]="pac.id">{{ pac.nombres }} {{ pac.apellidos }}</option>
+                }
+              </select>
+              @if (form.get('pacienteId')?.invalid && form.get('pacienteId')?.touched) {
+                <small class="text-danger">El paciente es requerido</small>
+              }
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="medicoId" class="form-label">Médico <span class="text-danger">*</span></label>
+              <select class="form-select" id="medicoId" formControlName="medicoId">
+                <option value="">Seleccione un médico</option>
+                @for (med of medicos; track med.id) {
+                  <option [value]="med.id">{{ med.nombres }} {{ med.apellidos }}</option>
+                }
+              </select>
+              @if (form.get('medicoId')?.invalid && form.get('medicoId')?.touched) {
+                <small class="text-danger">El médico es requerido</small>
+              }
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="fechaConsulta" class="form-label">Fecha de Consulta <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="fechaConsulta" formControlName="fechaConsulta">
+              @if (form.get('fechaConsulta')?.invalid && form.get('fechaConsulta')?.touched) {
+                <small class="text-danger">La fecha de consulta es requerida</small>
+              }
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="motivoConsulta" class="form-label">Motivo de Consulta <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="motivoConsulta" formControlName="motivoConsulta" rows="2"></textarea>
+              @if (form.get('motivoConsulta')?.invalid && form.get('motivoConsulta')?.touched) {
+                <small class="text-danger">El motivo de consulta es requerido</small>
+              }
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="sintomas" class="form-label">Síntomas <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="sintomas" formControlName="sintomas" rows="3"></textarea>
+              @if (form.get('sintomas')?.invalid && form.get('sintomas')?.touched) {
+                <small class="text-danger">Los síntomas son requeridos</small>
+              }
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="diagnostico" class="form-label">Diagnóstico <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="diagnostico" formControlName="diagnostico" rows="3"></textarea>
+              @if (form.get('diagnostico')?.invalid && form.get('diagnostico')?.touched) {
+                <small class="text-danger">El diagnóstico es requerido</small>
+              }
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="tratamiento" class="form-label">Tratamiento <span class="text-danger">*</span></label>
+              <textarea class="form-control" id="tratamiento" formControlName="tratamiento" rows="3"></textarea>
+              @if (form.get('tratamiento')?.invalid && form.get('tratamiento')?.touched) {
+                <small class="text-danger">El tratamiento es requerido</small>
+              }
+            </div>
+
+            <div class="col-md-12 mb-3">
+              <label for="observaciones" class="form-label">Observaciones</label>
+              <textarea class="form-control" id="observaciones" formControlName="observaciones" rows="2"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarHistoria()" [disabled]="form.invalid || isLoading">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -9,13 +9,12 @@ import { RespuestaRs } from 'src/app/models/respuesta';
   providedIn: 'root'
 })
 export class FormulaMedicaService {
-  private urlBase: string = environment.apiUrlAuth; // ya lo tenías
-  private urlApi: string = 'api/recetas';
+  private urlBase: string = environment.apiUrlAuth;
+  private urlApi: string = 'receta';
 
   constructor(private backendService: BackendService) {}
 
   listarFormulas(): Observable<FormulaMedica[]> {
-    // ruta 'listar' en tu backend
     return this.backendService.get(this.urlBase, this.urlApi, 'listar');
   }
 

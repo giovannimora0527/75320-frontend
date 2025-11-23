@@ -84,6 +84,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/inicio/historia-medica',
         icon: 'feather icon-book',
         classes: 'nav-item'
+      },
+      {
+        id: 'auditoria',
+        title: 'Logs de Auditoría',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-shield',
+        classes: 'nav-item'
       }
     ]
   },

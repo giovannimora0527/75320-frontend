@@ -121,11 +121,35 @@ export class LoginComponent {
           this.spinner.hide();
           this.isLoading = false;
           console.error('Error en la autenticación:', error);
-          const errorMessage = error?.error?.message || error?.error?.mensaje || error?.message || 'Usuario o contraseña incorrectos';
+          
+          // Manejar diferentes tipos de errores
+          let errorMessage = 'Usuario o contraseña incorrectos';
+          let errorTitle = 'Error de autenticación';
+          
+          // Verificar si el usuario está bloqueado
+          if (error?.error?.codigo === 'USUARIO_BLOQUEADO' || 
+              error?.error?.tipo === 'USUARIO_BLOQUEADO' ||
+              error?.status === 423) {
+            errorTitle = 'Usuario Bloqueado';
+            const tiempoRestante = error?.error?.tiempoRestante || error?.error?.tiempoBloqueo;
+            if (tiempoRestante) {
+              errorMessage = `Su cuenta ha sido bloqueada temporalmente por múltiples intentos fallidos. Intente nuevamente en ${tiempoRestante} minutos.`;
+            } else {
+              errorMessage = 'Su cuenta ha sido bloqueada temporalmente por múltiples intentos fallidos. Por favor, intente nuevamente más tarde.';
+            }
+          } else if (error?.error?.intentosRestantes !== undefined) {
+            // Mostrar intentos restantes si el backend los proporciona
+            const intentosRestantes = error.error.intentosRestantes;
+            errorMessage = `Usuario o contraseña incorrectos. Intentos restantes: ${intentosRestantes}`;
+          } else {
+            errorMessage = error?.error?.message || error?.error?.mensaje || error?.message || errorMessage;
+          }
+          
           Swal.fire({
-            title: 'Error de autenticación',
+            title: errorTitle,
             text: errorMessage,
-            icon: 'error'
+            icon: 'error',
+            confirmButtonText: 'Entendido'
           });
         }
       });

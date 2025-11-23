@@ -1,5 +1,5 @@
 // angular import
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, ChangeDetectorRef } from '@angular/core';
 import { Location } from '@angular/common';
 
 // project import
@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { NavigationItem, NavigationItems } from '../navigation';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { NavGroupComponent } from './nav-group/nav-group.component';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-nav-content',
@@ -16,6 +17,8 @@ import { NavGroupComponent } from './nav-group/nav-group.component';
 })
 export class NavContentComponent {
   private location = inject(Location);
+  private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
 
   // public method
   // version
@@ -30,7 +33,71 @@ export class NavContentComponent {
 
   // constructor
   constructor() {
-    this.navigations = NavigationItems;
+    this.actualizarMenu();
+    
+    // Suscribirse a cambios en el estado de autenticación para actualizar el menú
+    this.authService.authState$.subscribe(() => {
+      console.log('NavContent: Estado de autenticación cambió, actualizando menú...');
+      this.actualizarMenu();
+      // Forzar detección de cambios
+      setTimeout(() => {
+        this.actualizarMenu();
+      }, 100);
+    });
+  }
+
+  /**
+   * Actualiza el menú filtrando por roles
+   */
+  private actualizarMenu(): void {
+    this.navigations = this.filtrarMenuPorRoles(NavigationItems);
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Filtra los items del menú según los roles del usuario
+   */
+  private filtrarMenuPorRoles(items: NavigationItem[]): NavigationItem[] {
+    // Si no está autenticado, no mostrar nada
+    if (!this.authService.isAuthenticated()) {
+      return [];
+    }
+
+    const userRoles = this.authService.getUserRoles();
+    const currentUser = this.authService.getCurrentUser();
+    const userRol = currentUser?.rol || '';
+    
+    // Verificar si tiene rol ADMIN (comparación case-insensitive)
+    const tieneAdmin = userRoles.some(r => r?.toUpperCase() === 'ADMIN') || 
+                       userRol?.toUpperCase() === 'ADMIN';
+    const tieneMedico = userRoles.some(r => r?.toUpperCase() === 'MEDICO') || 
+                        userRol?.toUpperCase() === 'MEDICO';
+
+    return items.map(item => {
+      if (item.children) {
+        const filteredChildren = item.children.filter(child => {
+          // Filtrar según el ID del item
+          switch (child.id) {
+            case 'usuario':
+            case 'medico':
+            case 'especializacion':
+            case 'auditoria':
+              return tieneAdmin;
+            case 'paciente':
+            case 'medicamento':
+            case 'formula-medica':
+            case 'historia-medica':
+              return tieneAdmin || tieneMedico;
+            case 'cita':
+              return this.authService.isAuthenticated(); // Todos los autenticados
+            default:
+              return true;
+          }
+        });
+        return { ...item, children: filteredChildren };
+      }
+      return item;
+    });
   }
 
   fireOutClick() {

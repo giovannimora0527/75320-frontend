@@ -32,6 +32,11 @@ export class NavRightComponent {
     
     // Obtener el usuario actual
     this.usuarioActual = this.authService.getCurrentUser();
+    
+    // Suscribirse a cambios en el estado de autenticación para actualizar el usuario
+    this.authService.authState$.subscribe(() => {
+      this.usuarioActual = this.authService.getCurrentUser();
+    });
   }
 
   /**

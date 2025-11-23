@@ -54,13 +54,43 @@ export class MedicamentoComponent {
   listarMedicamentos() {
     this.isLoading = true;
     this.medicamentoService.listarMedicamentos().subscribe({
-      next: (data) => {
-        this.medicamentos = data;
+      next: (data: any) => {
+        // Manejar diferentes formatos de respuesta
+        if (Array.isArray(data)) {
+          this.medicamentos = data;
+        } else if (Array.isArray(data?.data)) {
+          this.medicamentos = data.data;
+        } else if (Array.isArray(data?.content)) {
+          this.medicamentos = data.content;
+        } else {
+          this.medicamentos = [];
+        }
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error al listar medicamentos:', err);
+        this.medicamentos = [];
         this.isLoading = false;
+        
+        let mensajeError = 'No se pudieron cargar los medicamentos.';
+        if (err?.status === 404) {
+          mensajeError = 'El endpoint de medicamentos no está disponible en el backend.';
+        } else if (err?.status === 0) {
+          mensajeError = 'No se pudo conectar con el servidor. Verifique que el backend esté ejecutándose.';
+        } else if (err?.error?.message) {
+          mensajeError = err.error.message;
+          // Si hay un error SQL, mostrar información más clara
+          if (mensajeError.includes('Unknown column') || mensajeError.includes('SQL')) {
+            mensajeError = 'Error en la base de datos. Por favor, contacte al administrador del sistema.';
+          }
+        }
+        
+        Swal.fire({
+          title: 'Error',
+          text: mensajeError,
+          icon: 'error',
+          confirmButtonText: 'Aceptar'
+        });
       }
     });
   }
