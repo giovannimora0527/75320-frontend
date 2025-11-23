@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom, lastValueFrom } from 'rxjs';
+import { UtilityService } from './utility.service';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +46,29 @@ import { Observable } from 'rxjs';
  * @param data Archivo o datos a enviar en el cuerpo de la petición.
  */
 export class BackendService {
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private utilityService: UtilityService
+  ) { }
+
+  private wrapWithSpinner<T>(request: Observable<T>): Observable<T> {
+    this.utilityService.showSpinner();
+    return new Observable<T>(subscriber => {
+      request.subscribe({
+        next: (value) => {
+          subscriber.next(value);
+          subscriber.complete();
+        },
+        error: (error: any) => {
+          this.utilityService.showError(error.message || 'Error en la operación');
+          subscriber.error(error);
+        },
+        complete: () => {
+          this.utilityService.hideSpinner();
+        }
+      });
+    });
+  }
 
   construirHeader() {
     // Aqui obtenemos el token desde el local storage
@@ -77,21 +100,24 @@ export class BackendService {
    * @returns Observable<T> respuesta del servidor
    */
   get<T>(
-    urlApi: string,        // URL base de la API
-    endpoint: string,      // Endpoint específico
-    service: string,       // Servicio o recurso
-    routerParams?: HttpParams // Parámetros opcionales de la ruta
-  ) {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+    urlApi: string,
+    endpoint: string,
+    service: string,
+    routerParams?: HttpParams
+  ): Observable<T> {
+    const tokenRecuperado = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
-    return this.http.get<T>(`${urlApi}/${endpoint}/${service}`, {
+
+    const request = this.http.get<T>(`${urlApi}/${endpoint}/${service}`, {
       params: routerParams,
       headers: headers,
       withCredentials: true,
     });
+
+    return this.wrapWithSpinner(request);
   }
 
   /**
@@ -110,15 +136,18 @@ export class BackendService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+    const tokenRecuperado = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
-    return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
+
+    const request = this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
       headers: headers,
       withCredentials: true,
     });
+
+    return this.wrapWithSpinner(request);
   }
 
   /**
@@ -136,14 +165,17 @@ export class BackendService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+    const tokenRecuperado = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
-    return this.http.put<T>(`${urlApi}/${endpoint}/${service}`, data, {
+
+    const request = this.http.put<T>(`${urlApi}/${endpoint}/${service}`, data, {
       headers: headers,
     });
+
+    return this.wrapWithSpinner(request);
   }
 
 
@@ -155,14 +187,17 @@ export class BackendService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any
   ): Observable<T> {
-    const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
+    const tokenRecuperado = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
       mimeType: 'multipart/form-data',
       Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
     });
-    return this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
+
+    const request = this.http.post<T>(`${urlApi}/${endpoint}/${service}`, data, {
       headers: headers,
       withCredentials: true,
     });
+
+    return this.wrapWithSpinner(request);
   }
 }

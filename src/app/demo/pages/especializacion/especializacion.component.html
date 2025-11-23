@@ -1,0 +1,105 @@
+<<<<<<< HEAD
+<div class="container mt-4">
+  <!-- ENCABEZADO -->
+  <div class="card shadow-sm border-0 rounded-3 mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center text-white py-3" style="background-color: #007bff;">
+      <h5 class="mb-0">
+        <i class="bi bi-journal-text me-2"></i>
+        Listado de Especializaciones
+      </h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light btn-sm" (click)="ListarEspecializacion()">
+          <i class="fa fa-refresh"></i> Actualizar
+        </button>
+        <button class="btn btn-success btn-sm" (click)="abrirNuevoEspecializacion()">
+          <i class="fa fa-plus"></i> Nueva Especialización
+        </button>
+      </div>
+    </div>
+
+
+    <!-- TABLA -->
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle text-center">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 60px;">#</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Código</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngIf="especializaciones.length === 0">
+              <td colspan="4" class="text-muted py-3">
+                No hay especializaciones registradas
+              </td>
+            </tr>
+
+            <tr *ngFor="let esp of especializaciones; let i = index">
+              <td class="text-center fw-bold text-muted">{{ i + 1 }}</td>
+              <td class="fw-semibold">{{ esp.nombre }}</td>
+              <td>{{ esp.descripcion }}</td>
+              <td class="text-muted">{{ esp.codigoEspecialidad || esp['codigo_especializacion'] || esp['codigoEspecializacion'] }}</td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button class="btn btn-outline-primary" (click)="abrirEditarEspecializacion(esp)" title="Editar">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="eliminarEspecializacion(esp)" title="Eliminar">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Crear / Editar Especializacion -->
+<div class="modal fade" id="modalEspecializacion" tabindex="-1" aria-labelledby="modalEspecializacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" [ngClass]="modoFormulario === 'C' ? 'bg-success text-white' : 'bg-warning'">
+        <h5 class="modal-title" id="modalEspecializacionLabel">
+          <i class="fa me-2" [ngClass]="modoFormulario === 'C' ? 'fa-plus' : 'fa-edit'"></i>
+          {{ titleModal }}
+        </h5>
+        <button type="button" class="btn-close" [class.btn-close-white]="modoFormulario === 'C'" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre *</label>
+            <input type="text" formControlName="nombre" class="form-control" placeholder="Ingrese el nombre" [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched" />
+            <div class="invalid-feedback" *ngIf="form.get('nombre')?.hasError('required')">El nombre es requerido</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Descripción *</label>
+            <textarea formControlName="descripcion" rows="2" class="form-control" placeholder="Ingrese una descripción" [class.is-invalid]="form.get('descripcion')?.invalid && form.get('descripcion')?.touched"></textarea>
+            <div class="invalid-feedback" *ngIf="form.get('descripcion')?.hasError('required')">La descripción es requerida</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Código *</label>
+            <input type="text" formControlName="codigoEspecialidad" class="form-control" placeholder="Ej: COD_001" [class.is-invalid]="form.get('codigoEspecialidad')?.invalid && form.get('codigoEspecialidad')?.touched" [attr.readonly]="modoFormulario === 'E' ? true : null" />
+            <div class="invalid-feedback" *ngIf="form.get('codigoEspecialidad')?.hasError('required')">El código es requerido</div>
+            <div class="invalid-feedback" *ngIf="form.get('codigoEspecialidad')?.hasError('pattern')">El código debe comenzar con "COD_" y contener letras, números o guiones bajos (ej. COD_001).</div>
+            <div *ngIf="modoFormulario === 'E'" class="form-text text-muted">El código no se puede modificar al editar.</div>
+            <div *ngIf="modoFormulario === 'C'" class="form-text text-muted">El código debe empezar por <strong>COD_</strong> seguido de la secuencia que utilicen (ej. COD_001).</div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()"><i class="fa fa-times me-1"></i>Cerrar</button>
+        <button type="button" class="btn" [ngClass]="modoFormulario === 'C' ? 'btn-success' : 'btn-warning'" (click)="guardarEspecializacion()" [disabled]="form.invalid">
+          <i class="fa me-1" [ngClass]="modoFormulario === 'C' ? 'fa-save' : 'fa-edit'"></i> {{ titleBoton }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -29,10 +29,9 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-user',
         classes: 'nav-item'
       },
-      /* ---------- Nuevos menus aqui -------------  */
       {
         id: 'medico',
-        title: 'Gestión de medicos',
+        title: 'Gestión de Medicos',
         type: 'item',
         url: '/inicio/medico',
         icon: 'feather icon-users',
@@ -40,13 +39,61 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'paciente',
-        title: 'Gestión de pacientes',
+        title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
+      {
+        id: 'especializacion',
+        title: 'Especializaciones',
+        type: 'item',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-shield',
+        classes: 'nav-item'
+      },
+      {
+        id: 'cita',
+        title: 'Citas',
+        type: 'item',
+        url: '/inicio/cita',
+        icon: 'feather icon-calendar',
+        classes: 'nav-item'
+      },
+      {
+        id: 'medicamento',
+        title: 'Medicamentos',
+        type: 'item',
+        url: '/inicio/medicamento',
+        icon: 'feather icon-pills',
+        classes: 'nav-item'
+      },
+      {
+        id: 'formula-medica',
+        title: 'Formulas Medicas',
+        type: 'item',
+        url: '/inicio/formula-medica',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historia-medica',
+        title: 'Historias Medicas',
+        type: 'item',
+        url: '/inicio/historia-medica',
+        icon: 'feather icon-book',
+        classes: 'nav-item'
+      },
+      {
+        id: 'auditoria',
+        title: 'Logs de Auditoría',
+        type: 'item',
+        url: '/inicio/auditoria',
+        icon: 'feather icon-shield',
+        classes: 'nav-item'
+      }
     ]
   },
-  
+  /* ---------- Nuevos menus aqui -------------  */
 ];

@@ -1,1 +1,197 @@
-<p>paciente works!</p>
+<div class="container-fluid">
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="fa fa-users me-2"></i>Listado de Pacientes
+      </h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light btn-sm" (click)="listarPacientes()" [disabled]="isLoading">
+          <i class="fa" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-refresh'"></i> 
+          {{ isLoading ? 'Cargando...' : 'Actualizar' }}
+        </button>
+        <button class="btn btn-success btn-sm" (click)="mostrarFormularioCrear()">
+          <i class="fa fa-plus"></i> Nuevo Paciente
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-3">
+      <!-- 🔍 Campo de búsqueda -->
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar pacientes por nombre, documento o teléfono"
+          [(ngModel)]="filtroTexto"
+          (input)="aplicarFiltro()"
+        />
+      </div>
+
+      <!-- Tabla -->
+      @if (isLoading) {
+        <div class="d-flex justify-content-center align-items-center py-5">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando pacientes...</p>
+          </div>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="text-center" style="width: 50px;">#</th>
+                <th style="width: 100px;">Tipo doc.</th>
+                <th>N° documento</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Fecha nacimiento</th>
+                <th>Género</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th class="text-center" style="width: 150px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (pacientesFiltrados?.length) {
+                @for (pac of pacientesFiltrados; track pac.id; let i = $index) {
+                  <tr>
+                    <td class="text-center fw-bold text-muted">{{ i + 1 }}</td>
+                    <td class="text-center">{{ pac.tipoDocumento }}</td>
+                    <td class="text-center">{{ pac.numeroDocumento }}</td>
+                    <td class="fw-semibold">
+                      <i class="fa fa-user text-muted me-2"></i>{{ pac.nombres }}
+                    </td>
+                    <td>{{ pac.apellidos }}</td>
+                    <td><i class="fa fa-calendar text-muted me-1"></i>{{ pac.fechaNacimiento | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ pac.genero }}</td>
+                    <td>{{ pac.telefono }}</td>
+                    <td>{{ pac.direccion }}</td>
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm" role="group">
+                        <button 
+                          class="btn btn-outline-primary"
+                          (click)="editarPaciente(pac)"
+                          title="Editar paciente">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button 
+                          class="btn btn-outline-danger"
+                          (click)="eliminarPaciente(pac)"
+                          title="Eliminar paciente">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              } @else {
+                <tr>
+                  <td colspan="10" class="text-center py-5">
+                    <div class="text-muted">
+                      <i class="fa fa-inbox fa-3x mb-3 d-block"></i>
+                      <h5>No hay pacientes registrados</h5>
+                      <p class="mb-0">Comienza agregando un nuevo paciente</p>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    @if (!isLoading && pacientesFiltrados?.length) {
+      <div class="card-footer text-muted bg-light">
+        <small>
+          <i class="fa fa-info-circle me-1"></i>
+          Total de pacientes: <strong>{{ pacientesFiltrados.length }}</strong>
+        </small>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- 🧾 Modal -->
+<div class="modal fade" id="modalPaciente" tabindex="-1" aria-labelledby="modalPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" [ngClass]="modoEdicion ? 'bg-warning' : 'bg-success text-white'">
+        <h5 class="modal-title" id="modalPacienteLabel">
+          <i class="fa me-2" [ngClass]="modoEdicion ? 'fa-edit' : 'fa-plus'"></i>
+          {{ modoEdicion ? 'Editar Paciente' : 'Nuevo Paciente' }}
+        </h5>
+        <button type="button" class="btn-close" [class.btn-close-white]="!modoEdicion" (click)="cancelarEdicion()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Usuario *</label>
+              <input type="number" formControlName="usuarioId" class="form-control" placeholder="ID usuario" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Tipo documento *</label>
+              <input type="text" formControlName="tipoDocumento" class="form-control" placeholder="Ej: CC, TI, CE" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Número documento *</label>
+              <input type="text" formControlName="numeroDocumento" class="form-control" placeholder="Ingrese número de documento" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Nombres *</label>
+              <input type="text" formControlName="nombres" class="form-control" placeholder="Ingrese nombres" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Apellidos *</label>
+              <input type="text" formControlName="apellidos" class="form-control" placeholder="Ingrese apellidos" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Fecha nacimiento *</label>
+              <input type="date" formControlName="fechaNacimiento" class="form-control" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Género *</label>
+              <input type="text" formControlName="genero" class="form-control" placeholder="Ej: Masculino, Femenino" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Teléfono *</label>
+              <input type="text" formControlName="telefono" class="form-control" placeholder="Ingrese teléfono" />
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Dirección *</label>
+              <input type="text" formControlName="direccion" class="form-control" placeholder="Ingrese dirección completa" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">
+          <i class="fa fa-times me-1"></i>Cancelar
+        </button>
+        <button 
+          type="button"
+          class="btn"
+          [ngClass]="modoEdicion ? 'btn-warning' : 'btn-success'"
+          (click)="guardarPaciente()"
+          [disabled]="form.invalid">
+          <i class="fa me-1" [ngClass]="modoEdicion ? 'fa-edit' : 'fa-save'"></i>
+          {{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

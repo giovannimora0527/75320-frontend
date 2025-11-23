@@ -1,0 +1,198 @@
+// 🎨 Paleta de colores base
+$color-primary: #0d6efd;
+$color-success: #198754;
+$color-warning: #ffc107;
+$color-danger: #dc3545;
+$color-light: #f8f9fa;
+$color-muted: #6c757d;
+
+// 🌐 Contenedor principal
+.container-fluid {
+  padding: 1rem 1.5rem;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+// 📦 Tarjeta principal
+.card {
+  border: none;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+  }
+
+  .card-header {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: none;
+  }
+
+  .card-footer {
+    font-size: 0.9rem;
+  }
+}
+
+// 📋 Tabla
+.table {
+  th {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: $color-muted;
+    border-top: none;
+  }
+
+  td {
+    vertical-align: middle;
+    font-size: 0.95rem;
+  }
+
+  tr {
+    transition: background-color 0.25s ease;
+
+    &:hover {
+      background-color: rgba($color-primary, 0.05);
+    }
+  }
+
+  .btn-group .btn {
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    i {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// 🌀 Loader centrado
+.spinner-border {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+// 💬 Estado vacío
+.table tbody tr td {
+  .fa-inbox {
+    opacity: 0.5;
+  }
+  h5 {
+    font-weight: 600;
+  }
+}
+
+// 🧾 Modal
+.modal-content {
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  .modal-header {
+    padding: 1rem 1.5rem;
+
+    h5 {
+      font-weight: 600;
+    }
+
+    .btn-close-white {
+      filter: invert(1);
+    }
+  }
+
+  .modal-body {
+    background-color: #fff;
+    padding: 1.5rem;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #eee;
+    padding: 1rem 1.5rem;
+
+    .btn {
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:hover {
+        opacity: 0.9;
+      }
+
+      i {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// 🧩 Formulario
+.form-label {
+  font-size: 0.9rem;
+  color: $color-muted;
+}
+
+.form-control {
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ced4da;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 0.2rem rgba($color-primary, 0.15);
+  }
+
+  &.is-invalid {
+    border-color: $color-danger;
+  }
+}
+
+textarea.form-control {
+  resize: none;
+}
+
+.invalid-feedback {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+// ⚡ Animaciones sutiles
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ✅ Responsivo
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+
+    button {
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+  }
+
+  .table th,
+  .table td {
+    font-size: 0.85rem;
+  }
+}

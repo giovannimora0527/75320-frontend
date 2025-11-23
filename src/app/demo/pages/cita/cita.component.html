@@ -1,0 +1,163 @@
+<<<<<<< HEAD
+<div class="container-fluid">
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="fa fa-calendar-check me-2"></i>Listado de Citas
+      </h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-light btn-sm" (click)="listarCitas()" [disabled]="isLoading">
+          <i class="fa" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-refresh'"></i> 
+          {{ isLoading ? 'Cargando...' : 'Actualizar' }}
+        </button>
+        <button class="btn btn-success btn-sm" (click)="abrirNuevaCita()">
+          <i class="fa fa-plus"></i> Nueva Cita
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div *ngIf="isLoading" class="d-flex justify-content-center align-items-center py-5">
+        <div class="text-center">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-3 text-muted">Cargando citas...</p>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading" class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center" style="width: 50px;">#</th>
+              <th>Paciente</th>
+              <th>Medico</th>
+              <th>Fecha & Hora</th>
+              <th>Estado</th>
+              <th>Motivo</th>
+              <th class="text-center" style="width: 150px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cita of filtrarCitas(); let i = index">
+              <td class="text-center fw-bold text-muted">{{ i + 1 }}</td>
+              <td>{{ cita.paciente?.nombres }}</td>
+              <td>{{ cita.medico?.nombres }}</td>
+              <td>{{ cita.fechaHora | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ cita.estado }}</td>
+              <td>{{ cita.motivo }}</td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button 
+                    class="btn btn-outline-primary" 
+                    (click)="abrirEditarCita(cita)" 
+                    title="Editar cita">
+                    <i class="fa fa-edit"></i>
+                  </button>
+                  <button 
+                    class="btn btn-outline-danger" 
+                    (click)="eliminarCita(cita)" 
+                    title="Eliminar cita">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="!filtrarCitas()?.length">
+              <td colspan="7" class="text-center py-5">
+                <div class="text-muted">
+                  <i class="fa fa-inbox fa-3x mb-3 d-block"></i>
+                  <h5>No hay citas registradas</h5>
+                  <p class="mb-0">Comienza agregando una nueva cita</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading && citas?.length" class="card-footer text-muted bg-light">
+      <small>
+        <i class="fa fa-info-circle me-1"></i>
+        Total de citas: <strong>{{ citas.length }}</strong>
+      </small>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCita" tabindex="-1" aria-labelledby="modalCitaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" [ngClass]="modoFormulario === 'C' ? 'bg-success text-white' : 'bg-warning'">
+        <h5 class="modal-title" id="modalCitaLabel">
+          <i class="fa me-2" [ngClass]="modoFormulario === 'C' ? 'fa-plus' : 'fa-edit'"></i>
+          {{ titleModal }}
+        </h5>
+        <button type="button" class="btn-close" [class.btn-close-white]="modoFormulario === 'C'" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <!-- Paciente -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Paciente *</label>
+            <select formControlName="pacienteId" class="form-select" [class.is-invalid]="form.get('pacienteId')?.invalid && form.get('pacienteId')?.touched">
+              <option value="" disabled>Seleccione un paciente</option>
+              <option *ngFor="let p of pacientes" [value]="p.id">{{ p.nombres }}</option>
+            </select>
+            <div class="invalid-feedback">Seleccione un paciente</div>
+          </div>
+
+          <!-- Medico -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Médico *</label>
+            <select formControlName="medicoId" class="form-select" [class.is-invalid]="form.get('medicoId')?.invalid && form.get('medicoId')?.touched">
+              <option value="" disabled>Seleccione un médico</option>
+              <option *ngFor="let m of medicos" [value]="m.id">{{ m.nombres }}</option>
+            </select>
+            <div class="invalid-feedback">Seleccione un médico</div>
+          </div>
+
+          <!-- Fecha y Hora -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Fecha y Hora *</label>
+            <input type="datetime-local" formControlName="fechaHora" class="form-control" 
+                   [class.is-invalid]="form.get('fechaHora')?.invalid && form.get('fechaHora')?.touched">
+            <div class="invalid-feedback">Ingrese la fecha y hora de la cita</div>
+          </div>
+
+          <!-- Estado -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Estado *</label>
+            <input type="text" formControlName="estado" class="form-control" 
+                   [class.is-invalid]="form.get('estado')?.invalid && form.get('estado')?.touched">
+            <div class="invalid-feedback">Ingrese el estado</div>
+          </div>
+
+          <!-- Motivo -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Motivo *</label>
+            <textarea formControlName="motivo" rows="2" class="form-control" 
+                      [class.is-invalid]="form.get('motivo')?.invalid && form.get('motivo')?.touched"></textarea>
+            <div class="invalid-feedback">Ingrese el motivo de la cita</div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          <i class="fa fa-times me-1"></i>Cerrar
+        </button>
+        <button type="button" class="btn" 
+                [ngClass]="modoFormulario === 'C' ? 'btn-success' : 'btn-warning'" 
+                (click)="guardarCita()" [disabled]="form.invalid">
+          <i class="fa me-1" [ngClass]="modoFormulario === 'C' ? 'fa-save' : 'fa-edit'"></i>
+          {{ titleBoton }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

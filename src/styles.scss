@@ -5,6 +5,8 @@
 /* fonts-icon */
 @import 'scss/fonts/fontawesome/scss/fontawesome';
 @import 'scss/fonts/feather/iconfont';
+/* include icofont so we can map pills */
+@import 'assets/icon/icofont/css/icofont';
 
 @import 'scss/general';
 @import 'scss/generic';
@@ -20,17 +22,95 @@
 @import 'scss/plugins/plugins';
 
 @import 'scss/custom';
+@import 'scss/spinner';
+
+/* map feather's icon-pills to IcoFont glyph without changing HTML */
+.feather.icon-pills:before {
+  font-family: 'IcoFont' !important;
+  content: '\ed0b';
+}
+
 /* Ajusta el z-index del modal y su backdrop */
 .modal {
-  z-index: 1040 !important; 
+  z-index: 1040 !important; /* Menor que el de SweetAlert2 */
 }
 
 .modal-backdrop {
-  z-index: 1030 !important;
+  z-index: 1030 !important; /* Menor que el modal */
 }
 
 /* Asegura que SweetAlert2 siempre esté al frente */
 .swal2-container {
-  z-index: 1060 !important; 
+  z-index: 1060 !important; /* Mayor que el modal (1040) */
+}
+
+/* Spinner styles */
+.ngx-spinner {
+  position: fixed !important;
+  z-index: 1061 !important;
+  height: 100vh !important;
+  width: 100vw !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  
+  > div {
+    transform: scale(1.5) !important;
+  }
+}
+
+.loading-text {
+  position: relative;
+  top: 80px;
+  text-align: center;
+}
+
+/* Pacman spinner custom styles */
+.pacman > div:first-child,
+.pacman > div:nth-child(2) {
+  border: 25px solid #ffd700 !important;
+  border-radius: 50% !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+}
+
+.pacman > div:nth-child(3),
+.pacman > div:nth-child(4),
+.pacman > div:nth-child(5) {
+  background-color: #ffd700 !important;
+  width: 15px !important;
+  height: 15px !important;
+  margin: 2px !important;
+}
+
+/* Styles for ngx-spinner */
+.ngx-spinner {
+  position: fixed !important;
+  z-index: 1061 !important;
+  height: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.loading-text {
+  color: white;
+  font-size: 1.5em;
+  margin-top: 1em;
+}
+
+/* Pacman spinner custom styles */
+.pacman > div:nth-child(3), 
+.pacman > div:nth-child(4), 
+.pacman > div:nth-child(5) {
+  background-color: #ffd700 !important; /* Golden dots */
+}
+
+.pacman > div:first-child, 
+.pacman > div:nth-child(2) {
+  border-color: #ffd700 !important; /* Golden pacman */
 }
 

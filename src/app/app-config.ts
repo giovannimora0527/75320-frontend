@@ -1,10 +1,11 @@
 import { HTTP_INTERCEPTORS, provideHttpClient } from "@angular/common/http";
-import { ApplicationConfig } from "@angular/core";
+import { ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { provideClientHydration } from "@angular/platform-browser";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideRouter, withEnabledBlockingInitialNavigation, withHashLocation, withInMemoryScrolling, withRouterConfig, withViewTransitions } from "@angular/router";
 import { routes } from './app-routing.module';
 import { HeadersInterceptor } from "./interceptors/headers.interceptor";
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
       provideHttpClient(),     
       provideAnimations(),
       provideClientHydration(),
+      importProvidersFrom(NgxSpinnerModule),
       {
         provide: HTTP_INTERCEPTORS,
         useClass: HeadersInterceptor,
