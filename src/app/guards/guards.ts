@@ -305,8 +305,15 @@ export const modulePermissionGuard: CanActivateFn = (route: ActivatedRouteSnapsh
     case 'especializaciones':
       return authService.hasRole('ADMIN');
 
-    case 'auditorias':
-        return authService.hasRole('ADMIN');
+/**
+ * Regla de autorización para el módulo de Auditorías.
+ * * Estrategia de seguridad: Restricción estricta.
+ * * Valida que el usuario activo posea el rol de 'ADMIN'.
+ * Si no cumple, el servicio de autenticación denegará el acceso (false).
+ */
+case 'auditorias':
+    return authService.hasRole('ADMIN');
+
     
     default:
       return true;

@@ -145,46 +145,73 @@ export class LoginComponent {
       cancelButtonText: 'Cancelar',
       showLoaderOnConfirm: true,
 
-      preConfirm: (username) => {
-        if (!username) {
-          Swal.showValidationMessage('El nombre de usuario es requerido');
-          return false;
-        }
+/**
+ * Lógica de interceptación antes de la confirmación (`preConfirm`).
+ * * Se ejecuta al pulsar el botón de "Aceptar" en el modal.
+ *
+ * Flujo de Ejecución:
+ * 1. **Validación Local**: Verifica que el username no esté vacío y cumpla la longitud mínima.
+ * 2. **Llamada al Servicio**: Realiza la petición HTTP para verificar el email.
+ * 3. **Manejo de Errores**: Si el servicio falla, captura la excepción, muestra el mensaje dentro del propio modal
+ * y retorna `false` para impedir que se cierre.
+ *
+ * @param {string} username - El valor capturado del input del modal.
+ * @returns {Promise<RespuestaRs | boolean>} Promesa que resuelve con la respuesta del backend o false si falla.
+ */
+preConfirm: (username) => {
+  // 1. Validaciones Síncronas de entrada
+  if (!username) {
+    Swal.showValidationMessage('El nombre de usuario es requerido');
+    return false;
+  }
 
-        if (username.length < 3) {
-          Swal.showValidationMessage('El nombre de usuario debe tener al menos 3 caracteres');
-          return false;
-        }
+  if (username.length < 3) {
+    Swal.showValidationMessage('El nombre de usuario debe tener al menos 3 caracteres');
+    return false;
+  }
 
-        const request: RecuperarPasswordRq = {
-          username: username
-        };
+  // 2. Preparación de la solicitud
+  const request: RecuperarPasswordRq = {
+    username: username
+  };
 
-        return this.service.testEmail(request).toPromise()
-          .then((response: RespuestaRs) => {
-            // Retornamos el mensaje del backend para usarlo en el then
-            return response;
-          })
-          .catch((err) => {
-            // Extraemos el mensaje de error del backend
-            const errorMsg = err?.error?.mensaje || err?.error?.message || err?.message || 'Error inesperado';
-            Swal.showValidationMessage(`Error enviando la solicitud: ${errorMsg}`);
-            return false;
-          });
-      },
+  // 3. Conversión de Observable a Promise para compatibilidad con SweetAlert
+  return this.service.testEmail(request).toPromise()
+    .then((response: RespuestaRs) => {
+      // Éxito: Pasamos la respuesta completa al siguiente bloque (.then del Swal)
+      return response;
+    })
+    .catch((err) => {
+      // Error: Jerarquía de extracción del mensaje de error (Backend > Genérico > Default)
+      const errorMsg = err?.error?.mensaje || err?.error?.message || err?.message || 'Error inesperado';
+      
+      // Inyectamos el error visualmente en el modal sin cerrarlo
+      Swal.showValidationMessage(`Error enviando la solicitud: ${errorMsg}`);
+      return false; // Mantiene el modal abierto
+    });
+},
 
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        // Usamos el mensaje del backend desde result.value.mensaje
-        const mensajeExito = result.value.mensaje || 'Se ha procesado su solicitud de recuperación de contraseña';
-        
-        Swal.fire({
-          title: 'Solicitud enviada',
-          text: mensajeExito,
-          icon: 'success'
-        });
-      }
+/**
+ * Bloquea la interacción externa mientras la petición está en curso (loading).
+ * Evita que el usuario cierre el modal accidentalmente mientras espera al backend.
+ */
+allowOutsideClick: () => !Swal.isLoading()
+
+}).then((result) => {
+  /**
+   * Bloque de resolución final.
+   * Se ejecuta solo si `preConfirm` resolvió exitosamente (no retornó false).
+   */
+  if (result.isConfirmed && result.value) {
+    // Extracción del mensaje de éxito proveniente del backend (pasado por el return del then anterior)
+    const mensajeExito = result.value.mensaje || 'Se ha procesado su solicitud de recuperación de contraseña';
+
+    Swal.fire({
+      title: 'Solicitud enviada',
+      text: mensajeExito,
+      icon: 'success'
     });
   }
+});
+}
 }

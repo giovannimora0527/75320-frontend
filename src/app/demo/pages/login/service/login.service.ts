@@ -20,6 +20,15 @@ export class LoginService {
     return this.backendService.post(this.urlBase, this.endpoint, 'login', loginForm);
   }
 
+/**
+   * Inicia el proceso de recuperación de contraseña.
+   * * Realiza una petición HTTP POST al endpoint `'recuperar'`.
+   * * Funcionalmente: Verifica que el usuario/email exista y, de ser así,
+   * gatilla el envío del correo electrónico con las instrucciones de recuperación.
+   *
+   * @param {RecuperarPasswordRq} recuperarPassword - Objeto de petición (DTO) que contiene el identificador del usuario (username o email).
+   * @returns {Observable<RespuestaRs>} Observable que emite la respuesta del servidor (éxito o mensaje de error).
+   */
   testEmail(recuperarPassword: RecuperarPasswordRq): Observable<RespuestaRs> {
     return this.backendService.post(
       this.urlBase,
