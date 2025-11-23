@@ -1,0 +1,28 @@
+.card {
+    border-radius: 12px;
+  }
+  
+  .card-header {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .table {
+    font-size: 0.9rem;
+  }
+  
+  .table th {
+    text-transform: capitalize;
+    font-weight: 600;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  input.form-control {
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+  
