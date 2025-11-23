@@ -1,1 +1,178 @@
-<p>especializacion works!</p>
+<<ngx-spinner type="pacman" size="medium">
+  <p style="color: rgb(67, 188, 37)">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-11">
+      <div class="card shadow-sm border-0">
+
+        <!-- 🔹 ENCABEZADO -->
+        <div class="card-header bg-primary text-white py-3">
+          <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mb-0 fw-semibold">
+              <i class="fa fa-cogs me-2"></i> Lista de Especializaciones
+            </h3>
+            <button class="btn btn-light btn-lg px-4" (click)="abrirNuevaExpecializacion()">
+              <i class="fa fa-plus me-2"></i> Nueva Especialización
+            </button>
+          </div>
+        </div>
+
+        <!-- 🔍 BARRA DE BÚSQUEDA -->
+        <div class="p-3 border-bottom bg-light">
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="fa fa-search text-muted"></i>
+            </span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nombre o código..."
+              [(ngModel)]="filtroPaciente"
+              (keyup)="filtrarEspecializaciones()"
+            />
+            
+          </div>
+        </div>
+
+        <!-- 🔹 TABLA DE ESPECIALIZACIONES -->
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th class="ps-4" (click)="ordenarPor('codigoEspecializacion')">
+                    <i class="fa fa-barcode me-2"></i> Código
+                    <span *ngIf="criterioOrden === 'codigoEspecializacion'">
+                      <i class="fa" [ngClass]="direccionOrden === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                    </span>
+                  </th>
+
+                  <th (click)="ordenarPor('nombre')">
+                    <i class="fa fa-cogs me-2"></i> Nombre
+                    <span *ngIf="criterioOrden === 'nombre'">
+                      <i class="fa" [ngClass]="direccionOrden === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                    </span>
+                  </th>
+
+                  <th (click)="ordenarPor('descripcion')">
+                    <i class="fa fa-info-circle me-2"></i> Descripción
+                    <span *ngIf="criterioOrden === 'descripcion'">
+                      <i class="fa" [ngClass]="direccionOrden === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                    </span>
+                  </th>
+
+                  <th class="text-center pe-4">
+                    <i class="fa fa-cogs"></i> Acciones
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <ng-container *ngIf="especializacionFiltrado.length > 0; else noEspecializaciones">
+                  <tr *ngFor="let especializacion of especializacionFiltrado" class="align-middle">
+                    <td class="ps-4">
+                      <span class="badge bg-light text-dark border">{{ especializacion.codigoEspecializacion }}</span>
+                    </td>
+                    <td>{{ especializacion.nombre }}</td>
+                    <td>{{ especializacion.descripcion }}</td>
+
+                    <td class="text-center pe-4">
+                      <button
+                        type="button"
+                        class="btn btn-outline-warning btn-sm me-2"
+                        title="Editar"
+                        (click)="abrirEditarExpecializacion(especializacion)">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        title="Eliminar"
+                        (click)="confirmarEliminarEspecializacion(especializacion)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+
+            <!-- 🔸 SIN ESPECIALIZACIONES -->
+            <ng-template #noEspecializaciones>
+              <div class="text-center py-5">
+                <i class="fa fa-cogs fa-4x text-muted opacity-50 mb-3"></i>
+                <h5 class="text-muted">No hay especializaciones registradas</h5>
+                <p class="text-muted">Comienza agregando una nueva especialización</p>
+                <button class="btn btn-primary btn-lg px-4" (click)="abrirNuevaExpecializacion()">
+                  <i class="fa fa-plus me-2"></i> Crear primera especialización
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- 🔹 PIE DE TABLA -->
+        <div class="card-footer bg-light border-top">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              Mostrando {{ especializacionFiltrado.length }} de {{ especializacionList.length }} especializaciones
+            </small>
+            <button class="btn btn-outline-secondary btn-sm" (click)="listarEspecializaciones()">
+              <i class="fa fa-sync"></i> Actualizar
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 MODAL CREAR / EDITAR ESPECIALIZACION -->
+<div class="modal fade" id="modalCrearEspecializacion" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">{{ titleModal }}</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="form" (ngSubmit)="guardarEspecializacion()">
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label">Código Especialización *</label>
+              <input type="text" class="form-control" formControlName="codigoEspecializacion" />
+              <div *ngIf="form.get('codigoEspecializacion')?.invalid && form.get('codigoEspecializacion')?.touched" class="text-danger small">
+                * Campo obligatorio
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Nombre *</label>
+              <input type="text" class="form-control" formControlName="nombre" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Descripción *</label>
+              <input type="text" class="form-control" formControlName="descripcion" />
+            </div>
+
+          </div>
+
+          <div class="mt-4 text-end">
+            <button type="submit" class="btn btn-primary px-4" [disabled]="form.invalid">
+              <i class="fa fa-save me-2"></i>{{ titleBoton }}
+            </button>
+            <button type="button" class="btn btn-secondary px-4" (click)="closeModal()">Cancelar</button>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

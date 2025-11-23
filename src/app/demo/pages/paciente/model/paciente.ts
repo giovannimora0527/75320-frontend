@@ -10,5 +10,3 @@ export class Paciente {
     telefono!: string;
     direccion!: string;
 }
-
-
