@@ -16,6 +16,7 @@
         </button>
       </div>
     </div>
+    
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-striped table-hover">
@@ -53,6 +54,14 @@
             </tr>
           </tbody>
         </table>
+
+        <!-- Paginador -->
+        <mat-paginator 
+          [pageSizeOptions]="[5, 10, 25, 100]" 
+          [pageSize]="10"
+          showFirstLastButtons
+          aria-label="Seleccionar página de usuarios">
+        </mat-paginator>
       </div>
     </div>
   </div>

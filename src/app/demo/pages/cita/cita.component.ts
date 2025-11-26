@@ -7,5 +7,4 @@ import { Component } from '@angular/core';
   styleUrl: './cita.component.scss'
 })
 export class CitaComponent {
-
 }

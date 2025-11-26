@@ -12,7 +12,7 @@ export class MedicoService {
   urlBase = environment.apiUrl;
   endpoint: string = 'medico';
 
-  constructor(private readonly backendService: BackendService) {}
+  constructor(private readonly backendService: BackendService) { }
 
   listarMedicos(): Observable<Medico[]> {
     return this.backendService.get(this.urlBase, this.endpoint, 'listar');

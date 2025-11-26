@@ -1,23 +1,42 @@
 <ul class="navbar-nav">
-  <li>
-    <div class="dropdown drp-user" ngbDropdown placement="auto">
-      <a href="javascript:" ngbDropdownToggle data-toggle="dropdown">
-        <i class="icon feather icon-settings"></i>
-      </a>
-      <div class="dropdown-menu dropdown-menu-end profile-notification" ngbDropdownMenu>
-        <div class="pro-head">
-          <img src="assets/images/user/avatar-1.jpg" class="img-radius" alt="User-Profile-Image" />
-          <span>{{ usuarioActual?.username || 'Usuario' }}</span>
-        </div>
-        <ul class="pro-body">
-          <li>
-            <a href="javascript:" class="dropdown-item" (click)="cerrarSesion()">
-              <i class="feather icon-log-out"></i>
-              Cerrar Sesión
-            </a>
-          </li>
-        </ul>
+
+  <!-- Dropdown de usuario -->
+  <li class="dropdown drp-user" ngbDropdown placement="bottom-end">
+
+    <!-- Botón que abre el menú -->
+    <a ngbDropdownToggle href="javascript:void(0)" class="d-flex align-items-center">
+      <img 
+        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+        class="img-radius me-2"
+        width="40"
+        alt="Avatar Eevee">
+      <span>{{ usuarioActual?.username || 'Usuario' }}</span>
+    </a>
+
+    <!-- Menú desplegable -->
+    <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end profile-notification">
+
+      <!-- Encabezado -->
+      <div class="pro-head d-flex justify-content-between align-items-center">
+        <span class="fw-bold">{{ usuarioActual?.username || 'Usuario' }}</span>
+        <a href="javascript:" class="dud-logout" title="Cerrar Sesión" (click)="cerrarSesion()">
+          <i class="feather icon-log-out"></i>
+        </a>
       </div>
+
+      <ul class="pro-body">
+
+        <!-- ÚNICO BOTÓN: CERRAR SESIÓN -->
+        <li>
+          <a href="javascript:" class="dropdown-item" (click)="cerrarSesion()">
+            <i class="feather icon-log-out"></i>
+            Cerrar Sesión
+          </a>
+        </li>
+
+      </ul>
     </div>
+
   </li>
+
 </ul>

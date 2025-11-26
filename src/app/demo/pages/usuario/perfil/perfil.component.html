@@ -1,0 +1,40 @@
+<div class="card p-4 shadow-lg">
+  <h2 class="mb-3">Mi Perfil</h2>
+
+  <div class="d-flex align-items-center mb-4">
+    <img src="assets/images/user/avatar-1.jpg" class="img-radius me-3" width="80" alt="avatar">
+    <div>
+      <h4 class="mb-0">{{ usuarioActual?.username }}</h4>
+      <small class="text-muted">{{ usuarioActual?.email }}</small>
+    </div>
+  </div>
+
+  <ul class="list-group">
+    <li class="list-group-item">
+      <strong>ID:</strong> {{ usuarioActual?.id }}
+    </li>
+
+    <li class="list-group-item">
+      <strong>Usuario:</strong> {{ usuarioActual?.username }}
+    </li>
+
+    <li class="list-group-item">
+      <strong>Email:</strong> {{ usuarioActual?.email }}
+    </li>
+
+    <li class="list-group-item">
+      <strong>Rol:</strong> {{ usuarioActual?.rol }}
+    </li>
+
+    <li class="list-group-item">
+      <strong>Fecha de creación:</strong> {{ usuarioActual?.fechaCreacion | date:'dd/MM/yyyy' }}
+    </li>
+
+    <li class="list-group-item">
+      <strong>Estado:</strong>
+      <span [ngClass]="usuarioActual?.activo ? 'text-success' : 'text-danger'">
+        {{ usuarioActual?.activo ? 'Activo' : 'Inactivo' }}
+      </span>
+    </li>
+  </ul>
+</div>
